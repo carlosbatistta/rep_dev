@@ -40,7 +40,7 @@ class AppTheme {
       backgroundColor: colorBackgroundSecondary,
       scaffoldBackgroundColor: colorBackgroundPrimary,
       primaryColor: colorBackgroundSecondary,
-      accentColor: colorGreen,
+      //   accentColor: colorGreen,
       toggleableActiveColor: colorGreen,
       canvasColor: colorBackgroundPrimary,
       cardColor: colorBackgroundSecondary,
