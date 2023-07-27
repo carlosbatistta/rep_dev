@@ -24,3 +24,14 @@ void main() {
     ),
   );
 }
+
+class MyApp extends StatelessWidget {
+  //statelesswidget é uma das principais classes do flutter, são locais estáticos da pagina, geralmente Menus, Help, etc
+  const MyApp(
+      {super.key}); //const é um construtor, o super usar o parametro Key da classe pai
+
+  @override
+  Widget build(BuildContext context) {
+    return Container();
+  }
+}
