@@ -43,15 +43,23 @@ class App extends StatefulWidget {
 }
 
 class _App extends State<App> {
-  int salario = 500;
+  int salario = 800; //função abreviada
   //armazenados os dados alteráveis
   //a chamada vai criar essa classe do tipo state e com um método build, com a função de ataualização da página
   @override
   Widget build(BuildContext context) {
     //widget build irá fazer a contrução da página
-    return Container(
-      child: Center(
-        child: Text("Funcionário: ${widget.nome}",
+    return Center(
+      child: GestureDetector(
+        // widget de manipulação
+        onTap: () {
+          //função de clica na tela
+          setState(() {
+            salario = salario + 20;
+          });
+        },
+        child: Text(
+            "Funcionário => ${widget.nome} salario => $salario", //forma de acessar constantes da classe statefulwidget
             textDirection: TextDirection.ltr),
       ),
     );
