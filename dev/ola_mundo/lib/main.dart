@@ -84,12 +84,33 @@ class _AppMyState extends State<AppMy> {
       home: Scaffold(
         appBar: AppBar(title: Text("App scaffold")),
         body: Row(
+          //organiza os widgets em linha
+          mainAxisAlignment: MainAxisAlignment
+              .spaceAround, //organiza a disposição dos childrens na tela
           children: [
             Center(
               child: Text(
-                "Meu aplicativo",
+                "Row01",
                 textAlign: TextAlign.right,
                 style: TextStyle(fontSize: 30, color: Colors.blueGrey),
+              ),
+            ),
+            Center(
+              child: Text(
+                "Row02",
+                textAlign: TextAlign.right,
+                style: TextStyle(fontSize: 30, color: Colors.blueGrey),
+              ),
+            ),
+            Center(
+              child: Column(
+                children: [
+                  Text(
+                    "Colm03",
+                    textAlign: TextAlign.right,
+                    style: TextStyle(fontSize: 30, color: Colors.blueGrey),
+                  ),
+                ],
               ),
             ),
           ],
