@@ -3,10 +3,12 @@
 import 'package:flutter/material.dart';
 
 void main() {
-  //runApp(MyApp(title: "Barra de teste"));
-  runApp(App());
+  //runApp(MyApp(title: "Barra de teste")); //Exempo 1
+  //runApp(App()); //Exemplo 2
+  runApp(AppMy());
 }
 
+//Exemplo 1: App estático, sem manipulação
 class MyApp extends StatelessWidget {
   final String title;
   //statelesswidget é uma das principais classes do flutter, são locais estáticos da pagina, geralmente Menus, Help, etc
@@ -33,6 +35,7 @@ class MyApp extends StatelessWidget {
   }
 }
 
+//Exemplo 2: App variavel, com manipulação
 class App extends StatefulWidget {
   //statefulwidget são widgets dinâmicos que mudam na IA, essa primeira classe serão guardados os apps que não serão mudados
   final String nome = "Carlos";
@@ -61,6 +64,36 @@ class _App extends State<App> {
         child: Text(
             "Funcionário => ${widget.nome} salario => $salario", //forma de acessar constantes da classe statefulwidget
             textDirection: TextDirection.ltr),
+      ),
+    );
+  }
+}
+
+//Exemplo 3: mix de app estático e de manipulação
+class AppMy extends StatefulWidget {
+  const AppMy({super.key});
+
+  @override
+  State<AppMy> createState() => _AppMyState();
+}
+
+class _AppMyState extends State<AppMy> {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      home: Scaffold(
+        appBar: AppBar(title: Text("App scaffold")),
+        body: Row(
+          children: [
+            Center(
+              child: Text(
+                "Meu aplicativo",
+                textAlign: TextAlign.right,
+                style: TextStyle(fontSize: 30, color: Colors.blueGrey),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
