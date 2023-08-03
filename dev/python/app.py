@@ -36,15 +36,15 @@ def obter_livros():
 @app.route('/livros/<int:id>',methods=['GET']) # /livros/<int:id> espera receber um inteiro, o def irá receber esse inteiro.
 def obter_livro_por_id(id):
     for livro in livros: #pesquisa um livro no array de livros
-        if livro.get('id') == id:
-            return jsonify(livro)
+        if livro.get('id') == id: # faz a verificação do id passado na rota com o array
+            return jsonify(livro) # retorna o dicinário do id referenciado
 # Editar
 @app.route('/livros/<int:id>',methods=['PUT'])
 def editar_livro_por_id(id):
     livro_alterado = request.get_json()
-    for indice,livro in enumerate(livros):
+    for indice,livro in enumerate(livros): #irá varrer o array e fazer a enumeração dos livros
         if livro.get('id') == id:
-            livros[indice].update(livro_alterado)
+            livros[indice].update(livro_alterado) #recebe e adiciona um livro alterado
             return jsonify(livros[indice])
 # Criar
 @app.route('/livros',methods=['POST'])
@@ -58,7 +58,7 @@ def incluir_novo_livro():
 def excluir_livro(id):
     for indice, livro in enumerate(livros):
         if livro.get('id') == id:
-            del livros[indice]
+            del livros[indice] #deleta o livro do indice relacionado
 
     return jsonify(livros)
 
