@@ -6,7 +6,9 @@ from flask import Flask, jsonify, request
 
 app = Flask(__name__)
 
-livros = [
+#arry com um dicionário dentro, existe a forma de arquivos verificar posteriormente
+#aprender usando Django
+livros = [ 
     {
         'id': 1,
         'título': 'O Senhor dos Anéis - A Sociedade do Anel',
@@ -25,14 +27,15 @@ livros = [
 ]
 
 # Consultar(todos)
-@app.route('/livros',methods=['GET'])
+# o @app irá definir que essa consulta é uma consulta via api o \livros irá completar o link do servidor e o methods sempre será o GET para essa consulta
+@app.route('/livros',methods=['GET']) #definição da rota
 def obter_livros():
     return jsonify(livros)
 
 # Consultar(id)
-@app.route('/livros/<int:id>',methods=['GET'])
+@app.route('/livros/<int:id>',methods=['GET']) # /livros/<int:id> espera receber um inteiro, o def irá receber esse inteiro.
 def obter_livro_por_id(id):
-    for livro in livros:
+    for livro in livros: #pesquisa um livro no array de livros
         if livro.get('id') == id:
             return jsonify(livro)
 # Editar
