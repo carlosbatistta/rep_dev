@@ -5,7 +5,8 @@ import 'package:flutter/material.dart';
 void main() {
   //runApp(MyApp(title: "Barra de teste")); //Exempo 1
   //runApp(App()); //Exemplo 2
-  runApp(AppMy());
+  //runApp(AppMy()); //Exemplo 3
+  runApp(MyApl());
 }
 
 //Exemplo 1: App estático, sem manipulação
@@ -69,7 +70,7 @@ class _App extends State<App> {
   }
 }
 
-//Exemplo 3: mix de app estático e de manipulação
+//Exemplo 3: mix de row e column
 class AppMy extends StatefulWidget {
   const AppMy({super.key});
 
@@ -114,6 +115,26 @@ class _AppMyState extends State<AppMy> {
               ),
             ),
           ],
+        ),
+      ),
+    );
+  }
+}
+
+class MyApl extends StatefulWidget {
+  const MyApl({super.key});
+
+  @override
+  State<MyApl> createState() => _MyApl();
+}
+
+class _MyApl extends State<MyApl> {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      home: Scaffold(
+        appBar: AppBar(
+          title: Text("Stack APP"),
         ),
       ),
     );
