@@ -40,7 +40,10 @@ class MyApp extends StatelessWidget {
 class App extends StatefulWidget {
   //statefulwidget são widgets dinâmicos que mudam na IA, essa primeira classe serão guardados os apps que não serão mudados
   final String nome = "Carlos";
-  const App({Key? key}) : super(key: key); // construtor
+  const App({Key? key})
+      : super(
+            key:
+                key); // construtor |Operador ternário ? verifica se uma variável é verdadeira sem sim atribui o valor ou executa o processo posterior
 
   @override
   State<App> createState() => _App();
