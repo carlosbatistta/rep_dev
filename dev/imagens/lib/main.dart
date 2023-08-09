@@ -11,10 +11,11 @@ class MyApp extends StatelessWidget {
       title: 'Material App',
       home: Scaffold(
         appBar: AppBar(
-          title: const Text('Material App Bar'),
+          title: const Text('Imgens'),
         ),
-        body: const Center(
-          child: Text('Hello World'),
+        body: Image.asset(
+          'assets/images/amg_blue_resized.png',
+          width: 200,
         ),
       ),
     );
