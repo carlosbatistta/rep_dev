@@ -15,7 +15,7 @@ class MyApp extends StatelessWidget {
         ),
         body: Image.asset(
           'assets/images/amg_blue_resized.png',
-          width: 200,
+          width: 200, //mexendo só na altura mantem a proporção
         ),
       ),
     );
