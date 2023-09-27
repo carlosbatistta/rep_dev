@@ -16,8 +16,24 @@ var variavel = 1
 const constante = 1
       constante = 2 //constante não pode ser alterado
 
-# Loop's
+# Funções
+void main(){
+    saudacoes() //forma de chamar uma função
+}
+void saudacoes(String nome, [String mensagem, String mensagem_2]){ //funções void não possuem retorno. Os parâmetros entre colchetes [] são parâmetros opcionais, mas que devem ser respeitados 
+                                                                   // a ordem de posição.
+    
+    print("Saudações!! $nome")
+    print("& * 20")
+    print("Agora: ${agora()}") //chamada da função atribuindo valor 
+}
+String agora(String estado, {String cidade, String rua}){ //funções String, int, double, etc possuem retorno, então possuem valor. Os parâmetros entre chaves {}  são parâmetros 
+opcionais 
+    Datetime agora = Date.time.now()
+    return agora.toString()
+}
 
+# Loop's
 int numero = 1;
 
 for(var i = 1;i<3;i++){
