@@ -6,6 +6,8 @@ A new Flutter project.
 
 # Variáveis
 int numero = 1;
+int? numero_2; //são variaveis nullable, que podem ser nulas. *Não podem fazer operações, ++, atribuições, funções.
+int numero_3 = numero_2 ?? "0" // operador Non-Nullable valida se a variavel é nula se for difine como "0".
 double valor = 1.5;
 String nome = 'Maiza' ou "Maiza";
 bool validacao = false;
@@ -18,17 +20,17 @@ const constante = 1
 
 # Funções
 void main(){
-    saudacoes() //forma de chamar uma função
+    saudacoes("Carlos") //forma de chamar uma função
+    agora("PE", ativo: true)
 }
-void saudacoes(String nome, [String mensagem, String mensagem_2]){ //funções void não possuem retorno. Os parâmetros entre colchetes [] são parâmetros opcionais, mas que devem ser respeitados 
-                                                                   // a ordem de posição.
+void saudacoes(String nome, [String mensagem, String mensagem_2]){ //funções void não possuem retorno. Os parâmetros entre colchetes [] são parâmetros opcionais, mas que devem  ser respeitados a ordem de posição.
     
-    print("Saudações!! $nome")
+    print("Saudações!! ${nome.toUpperCase()}") //chamar métodos dentro de um texto " ${} "
     print("& * 20")
     print("Agora: ${agora()}") //chamada da função atribuindo valor 
 }
-String agora(String estado, {String cidade, String rua}){ //funções String, int, double, etc possuem retorno, então possuem valor. Os parâmetros entre chaves {}  são parâmetros 
-opcionais 
+String agora(String estado, {String cidade, bool ativo}){ //funções String, int, double, etc possuem retorno, então possuem valor. Os parâmetros entre chaves {}  são parâmetros 
+opcionais mas não importa a ordem.
     Datetime agora = Date.time.now()
     return agora.toString()
 }
