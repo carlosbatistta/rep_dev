@@ -21,7 +21,7 @@ const constante = 1
 # Funções
 void main(){
     saudacoes("Carlos") //forma de chamar uma função
-    agora("PE", ativo: true)
+    agora("PE", ativo: true, corpo: funcao) //se você receber uma função como parâmetro, se colocar sem o () vai chamar a função para ser executada, se colocar com os () vai chamar apenas o return da função.
 }
 void saudacoes(String nome, [String mensagem, String mensagem_2]){ //funções void não possuem retorno. Os parâmetros entre colchetes [] são parâmetros opcionais, mas que devem  ser respeitados a ordem de posição.
     
@@ -29,11 +29,18 @@ void saudacoes(String nome, [String mensagem, String mensagem_2]){ //funções v
     print("& * 20")
     print("Agora: ${agora()}") //chamada da função atribuindo valor 
 }
-String agora(String estado, {String cidade, bool ativo}){ //funções String, int, double, etc possuem retorno, então possuem valor. Os parâmetros entre chaves {}  são parâmetros 
-opcionais mas não importa a ordem.
+String agora(String estado, {String cidade, bool ativo, required Function(int) corpo}){ //funções String, int, double, etc possuem retorno, então possuem valor. Os parâmetros entre chaves {}  são parâmetros opcionais mas não importa a ordem. Mesmo dentro de {} parâmetros "required" são obrigatórios.
     Datetime agora = Date.time.now()
+    corpo();
     return agora.toString()
 }
+void funcao (int i){
+    for(int j = 0; j < i; j++){
+        print('Olá')
+    }
+}
+String imprimir_nome (String nome) => nome.toString(); //O fletcher "=>" equivale ao return da função.
+
 
 # Loop's
 int numero = 1;
