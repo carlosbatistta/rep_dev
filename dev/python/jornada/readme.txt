@@ -29,3 +29,5 @@ if var < 7:
 
 if var <= 5:
     print('O valor da variável é menor ou igual a 5')
+
+************** Automação
