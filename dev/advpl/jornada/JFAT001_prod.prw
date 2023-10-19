@@ -5,6 +5,7 @@
 #Include "RPTDEF.ch"
 #Include "TOPCONN.CH"
  
+//atual
 //00
 //rotinas execução via JOB
 //mauro nagata, lurin, 20211226
