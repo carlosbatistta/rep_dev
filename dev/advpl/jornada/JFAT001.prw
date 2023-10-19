@@ -34,16 +34,13 @@ ConOut(_cEmp)
 ConOut(_cFilial)
 
 If IsBlind() 
-   _Enter  := chr(13) + Chr(10)
    _cMsglog := "["+DTOC(Date())+"-"+Time()+"] JFAT001 - Rodando via job - Empresa: ["+_cEmp+"] Filial: ["+_cFilial+"]"
-   
-   MemoWrite("C:\TEMP\JFAT001_RUN_JOB_Empresa_"+_cEmp+"_Filial_"+_cFilial+".log",_cMsglog)
-   MemoWrite("JFAT001_RUN_JOB_Empresa_"+_cEmp+"_Filial_"+_cFilial+".log",_cMsglog)
+   MemoWrite("C:\TEMP\JFAT001_RUN_JOB_Empresa_"+_cEmp+"_Filial_"+_cFilial+"_.log",_cMsglog)
+   MemoWrite("JFAT001_RUN_JOB_Empresa_"+_cEmp+"_Filial_"+_cFilial+"_.log",_cMsglog)
    RPCClearEnv()
    RPCSetType(3)
    RPCSetEnv(_cEmp,_cFilial,"","","FAT",,{"SB1"}) 
-   _cMsglog := "["+DTOC(Date())+"-"+Time()+"] JFAT001 - Rodando via job - Empresa: ["+_cEmp+"] Filial: ["+_cFilial+"]"
-   _cTxtGlog:= _cMsglog + _Enter
+
    _cEmp		:= Alltrim( aParam[1] )
    _cFilial	:= Alltrim( aParam[2] )
    _lCD := If(Alltrim(_cFilial) == "01010101000",.T.,.F.) //Ita - 17/07/2023
@@ -56,11 +53,9 @@ If IsBlind()
    aAdd(aNatFil, {"01010101005","1211003006"}) //Trasnf. mercadoria filial Caruaru: 1211003006 
 
 Else
-   _Enter  := chr(13) + Chr(10)
    _cMsglog := "["+DTOC(Date())+"-"+Time()+"] JFAT001 - Rodando via Menu - Empresa: ["+_cEmp+"] Filial: ["+_cFilial+"]"
-   _cTxtGlog:= _cMsglog + _Enter
-   MemoWrite("C:\TEMP\JFAT001_RUN_MENU_Empresa_"+_cEmp+"_Filial_"+_cFilial+".log",_cMsglog)
-   MemoWrite("JFAT001_RUN_MENU_Empresa_"+_cEmp+"_Filial_"+_cFilial+".log",_cMsglog)
+   MemoWrite("C:\TEMP\JFAT001_RUN_MENU_Empresa_"+_cEmp+"_Filial_"+_cFilial+"_.log",_cMsglog)
+   MemoWrite("JFAT001_RUN_MENU_Empresa_"+_cEmp+"_Filial_"+_cFilial+"_.log",_cMsglog)
 EndIf
 
 //PREPARE ENVIRONMENT EMPRESA _cEmp FILIAL _cFilial Modulo "FAT" Tables "SC5", "SC6", "DA1"
@@ -71,24 +66,20 @@ JEecuta()
 If IsBlind() 
    RPCClearEnv()
    _cMsglog := "["+DTOC(Date())+"-"+Time()+"] JFAT001 - Finalizado execucao via job  - Empresa: ["+_cEmp+"] Filial: ["+_cFilial+"]"
-   _cTxtGlog += _cMsglog + _Enter
-   MemoWrite("C:\TEMP\JFAT001_END_JOB_Empresa_"+_cEmp+"_Filial_"+_cFilial+".log",_cMsglog)   
-   MemoWrite("JFAT001_END_JOB_Empresa_"+_cEmp+"_Filial_"+_cFilial+".log",_cMsglog)   
+   MemoWrite("C:\TEMP\JFAT001_END_JOB_Empresa_"+_cEmp+"_Filial_"+_cFilial+"_.log",_cMsglog)   
+   MemoWrite("JFAT001_END_JOB_Empresa_"+_cEmp+"_Filial_"+_cFilial+"_.log",_cMsglog)   
 Else
    _cMsglog := "["+DTOC(Date())+"-"+Time()+"] JFAT001 - Finalizado execucao via Menu  - Empresa: ["+_cEmp+"] Filial: ["+_cFilial+"]"
-   _cTxtGlog += _cMsglog + _Enter
-   MemoWrite("C:\TEMP\JFAT001_END_MENU_Empresa_"+_cEmp+"_Filial_"+_cFilial+".log",_cMsglog)   
-   MemoWrite("JFAT001_END_MENU_Empresa_"+_cEmp+"_Filial_"+_cFilial+".log",_cMsglog)   
+   MemoWrite("C:\TEMP\JFAT001_END_MENU_Empresa_"+_cEmp+"_Filial_"+_cFilial+"_.log",_cMsglog)   
+   MemoWrite("JFAT001_END_MENU_Empresa_"+_cEmp+"_Filial_"+_cFilial+"_.log",_cMsglog)   
 EndIf
 
 ConOut( "JFAT001 - Fim " + Dtoc( Date() ) + " " + Time() )
 cTxtLog := "JFAT001 - Fim " + Dtoc( Date() ) + " " + Time() + " - Empresa: ["+_cEmp+"] Filial: ["+_cFilial+"]"
-_cTxtGlog += cTxtLog + _Enter
-MemoWrite("C:\TEMP\JFAT001_Fim_Empresa_"+_cEmp+"_Filial_"+_cFilial+".log",cTxtLog)
-MemoWrite("JFAT001_Fim_Empresa_"+_cEmp+"_Filial_"+_cFilial+".log",cTxtLog)
-MemoWrite("C:\TEMP\JFAT001_Pedidos_Empresa_"+_cEmp+"_Filial_"+_cFilial+".log",cLogPeds)
-MemoWrite("JFAT001_Pedidos_Empresa_"+_cEmp+"_Filial_"+_cFilial+".log",cLogPeds)
-MemoWrite("JFAT001_LOGGERAL_Empresa_"+_cEmp+"_Filial_"+_cFilial+".log",_cTxtGlog)
+MemoWrite("C:\TEMP\JFAT001_Fim_Empresa_"+_cEmp+"_Filial_"+_cFilial+"_.log",cTxtLog)
+MemoWrite("JFAT001_Fim_Empresa_"+_cEmp+"_Filial_"+_cFilial+"_.log",cTxtLog)
+MemoWrite("C:\TEMP\JFAT001_Pedidos_Empresa_"+_cEmp+"_Filial_"+_cFilial+"_.log",cLogPeds)
+MemoWrite("JFAT001_Pedidos_Empresa_"+_cEmp+"_Filial_"+_cFilial+"_.log",cLogPeds)
 
 
 Return()
@@ -155,11 +146,8 @@ cLastQuery    := aLastQuery[2]
 
 ConOut(cLastQuery)
 
-MemoWrite("C:\TEMP\JEecuta_QUERY_Empresa_"+_cEmp+"_Filial_"+_cFilial+".SQL",cLastQuery)
-MemoWrite("JEecuta_QUERY_Empresa_"+_cEmp+"_Filial_"+_cFilial+".SQL",cLastQuery)
-
-_cTxtGlog += "JFAT001 " + Dtoc( Date() ) + " " + Time() + " - Empresa: ["+_cEmp+"] Filial: ["+_cFilial+"] - Query_Pedidos ["+cLastQuery+"]" + _Enter
-
+MemoWrite("C:\TEMP\JEecuta.SQL",cLastQuery)
+MemoWrite("JEecuta.SQL",cLastQuery)
 cpare:=""
 If !Eof()
 
@@ -197,7 +185,6 @@ If !Eof()
          DBSeek(xFilial("SC5")+cNumPV)
 
          ConOut(cNumPV)
-         _cTxtGlog += "JFAT001 " + Dtoc( Date() ) + " " + Time() + " - Empresa: ["+_cEmp+"] Filial: ["+_cFilial+"] - Pedido ["+cNumPV+"]" + _Enter
 
          ////substituùdo bloco acima pelo abaixo [Mauro Nagata, www.lurin.com.br, 20220502]
          aCabec         := {}
@@ -223,7 +210,7 @@ If !Eof()
          //aAdd( aCabec, { "C5_REAJUST" , cTipReaj   , Nil } ) //Tipo Reajuste
          aAdd( aCabec, { "C5_CONDPAG" , cCndPg     , Nil } ) //Condiùùo Pagamento  [desde que seja diferente do Tipo 9, conforme faq em anexo]
          aAdd( aCabec, { "C5_VEND1"   , cVnd1      , Nil } ) //Vendedor - (Todos os pedidos devem ter a mesma quantidade de vendedores, registrados os mesmos cùdigos, e nos mesmos campos)
-         //aAdd( aCabec, { "C5_VEND1"   , cVnd1      , Nil } ) //Vendedor 1 - (Todos os pedidos devem ter a mesma quantidade de vendedores, registrados os mesmos cùdigos, e nos mesmos campos)
+         aAdd( aCabec, { "C5_VEND1"   , cVnd1      , Nil } ) //Vendedor 1 - (Todos os pedidos devem ter a mesma quantidade de vendedores, registrados os mesmos cùdigos, e nos mesmos campos)
          //aAdd( aCabec, { "C5_VEND2"   , cVnd2      , Nil } ) //Vendedor 2 - (Todos os pedidos devem ter a mesma quantidade de vendedores, registrados os mesmos cùdigos, e nos mesmos campos)
          //aAdd( aCabec, { "C5_VEND3"   , cVnd3      , Nil } ) //Vendedor 3 - (Todos os pedidos devem ter a mesma quantidade de vendedores, registrados os mesmos cùdigos, e nos mesmos campos)
          //aAdd( aCabec, { "C5_VEND4"   , cVnd4      , Nil } ) //Vendedor 4 - (Todos os pedidos devem ter a mesma quantidade de vendedores, registrados os mesmos cùdigos, e nos mesmos campos)
@@ -237,7 +224,7 @@ If !Eof()
          //aAdd( aCabec, { "C5_FORNISS" , cForISS    , Nil } ) //Fornecedor ISS
          //aAdd( aCabec, { "C5_INDPRES" , cIndPres   , Nil } ) //Presenùa Com 
          aAdd( aCabec, { "C5_ESPECI1" , "SPED"    , Nil } ) //Ita - 30/08/2023 - Alterar de  NFCE para SPED
-         //aAdd( aCabec, { "C5_VEICULO" , _cVeicul  , Nil } ) //Ita - 15/09/2023
+         aAdd( aCabec, { "C5_VEICULO" , _cVeicul  , Nil } ) //Ita - 15/09/2023
          /*
 - Tipo Pedido (C5_TIPO)
 - Cliente (C5_CLIENTE)
@@ -291,7 +278,6 @@ If !Eof()
             aAdd( aItens, aLinha )
          
             ConOut( "Montagem Item PV - Pedido de venda: " + SC5->C5_NUM + " Produto: " + SC6->C6_PRODUTO  )
-            _cTxtGlog += "JFAT001 " + Dtoc( Date() ) + " " + Time() + " - Empresa: ["+_cEmp+"] Filial: ["+_cFilial+"] - Pedido ["+cNumPV+"]  Item: "+SC6->C6_ITEM+" Produto...: " + SC6->C6_PRODUTO + "Quantiade: ["+CVALTOCHAR( SC6->C6_QTDVEN )+"] Valor Unitario: ["+CVALTOCHAR( nvlrUnit )+"] Operacao: ["+_cOperPV+"]" + _Enter
 
             DbSelectArea( "SC6" )
             DbSkip()
@@ -301,65 +287,35 @@ If !Eof()
          nOpc := 4 
 
          ConOut("antes-exec")
-
-         lAutoErrNoFile := .T.
          
          MSExecAuto( { |a, b, c, d| MATA410( a, b, c, d ) }, aCabec, aItens, nOpc, .F. )
          
          ConOut("depois-exec")
-
+         
          If !lMsErroAuto
          
-            /////////////////////
-            /// Ita - 20/07/2023
-            //ConOut( "Chamndo Funùùo fUpdOrcs - para alterar ocùamentos..." )
-            //Ita - 26/09/2023 - fUpdOrcs()
-            //ConOut("Retornou das alteraùùes dos orùamentos")
-            ///////////////////////////////////////////////////////////////////
-
-            /////////////////////
-            /// Ita - 26/09/2023
-            ///       Faz desvinculo com orùamento
-            ///////////////////////////////////////
-            DbSelectArea("SC5")
-            RecLock("SC5",.F.)
-               SC5->C5_ORCRES := ""
-            MsunLock()
-
             ConOut( "Alterado com sucesso! " + cNumPV )
             cLogPeds += "Alterado com sucesso! " + cNumPV + _Enter
+            
 
-            _cTxtGlog += "JFAT001 " + Dtoc( Date() ) + " " + Time() + " - Empresa: ["+_cEmp+"] Filial: ["+_cFilial+"] - Pedido ["+cNumPV+"]  Alterado com Sucesso!" + _Enter
-
+            /////////////////////
+            /// Ita - 20/07/2023
+            ConOut( "Chamndo Funùùo fUpdOrcs - para alterar ocùamentos..." )
+            fUpdOrcs()
+            ConOut("Retornou das alteraùùes dos orùamentos")
+            ///////////////////////////////////////////////////////////////////
          
          Else
          
             ConOut( "Erro na alteraùùo" )
             cLogPeds += "Erro na alteraùùo! " + cNumPV + _Enter
-            //Ita - 06/10/2023 - MostraErro()
-            /* Ita - 06/10/2023
+            MostraErro()
             aErroAuto := GetAutoGRLog()            
 
             For nCount := 1 To Len(aErroAuto)
                cLogErro += StrTran( StrTran( aErroAuto[nCount], "<", "" ), "-", "" ) + " "
                ConOut( cLogErro )
             Next nCount
-            */
-            cLogTxt  := ""            
-
-            //Pegando log do ExecAuto
-            aLogAuto := GetAutoGRLog()
-            
-            _cTxtGlog += "JFAT001 " + Dtoc( Date() ) + " " + Time() + " - Empresa: ["+_cEmp+"] Filial: ["+_cFilial+"] - Pedido ["+cNumPV+"]  Erro na Alteracao - Len(aLogAuto): ["+CVALTOCHAR( Len(aLogAuto) )+"] " + _Enter
-
-            //Percorrendo o Log e incrementando o texto (para usar o CRLF vocù deve usar a include "Protheus.ch")
-            For nCount := 1 To Len(aLogAuto)
-               ConOut("JFAT001 " + Dtoc( Date() ) + " " + Time() + " - Empresa: ["+_cEmp+"] Filial: ["+_cFilial+"] - Pedido ["+cNumPV+"]  Erro na Alteracao - Detalhe por linha - aLogAuto["+CVALTOCHAR( nCount )+"]: ["+ aLogAuto[nCount] +"] ")
-               cLogTxt += aLogAuto[nCount] + _Enter //CRLF
-            Next nCount
-
-            //Ita - 06/10/2023 - _cTxtGlog += "JFAT001 " + Dtoc( Date() ) + " " + Time() + " - Empresa: ["+_cEmp+"] Filial: ["+_cFilial+"] - Pedido ["+cNumPV+"]  Erro na Alteracao - Detalhe: ["+cLogErro+"]" + _Enter
-            _cTxtGlog += "JFAT001 " + Dtoc( Date() ) + " " + Time() + " - Empresa: ["+_cEmp+"] Filial: ["+_cFilial+"] - Pedido ["+cNumPV+"]  Erro na Alteracao - C5_NUM["+cNumPV+"] C5_TABELA["+cTabPrc+"] C5_NATUREZ["+cNaturez+"] C5_CONDPAG["+cCndPg+"] C5_VEND1["+cVnd1+"] C5_TPFRETE[R] C5_ESPECI1[SPED] C6_ITEM:["+SC6->C6_ITEM+"] C6_PRODUTO["+SC6->C6_PRODUTO+"] C6_QTDVEN["+CVALTOCHAR( SC6->C6_QTDVEN )+"] C6_QTDLIB["+CVALTOCHAR( SC6->C6_QTDVEN )+"] C6_PRCVEN["+CVALTOCHAR( nvlrUnit )+"] C6_PRUNIT["+CVALTOCHAR( nvlrUnit )+"] C6_OPER["+_cOperPV+"] - Detalhe: ["+cLogTxt+"]" + _Enter
 
             DbSelectArea( cAliasQry )
             DbSkip()
@@ -381,17 +337,14 @@ If !Eof()
    ConOut( "JFAT001 - Query " + cLastQuery)
    ConOut( "JFAT001 - Finalizada a rotina do JOB" )
 
-   _cTxtGlog += "JFAT001 " + Dtoc( Date() ) + " " + Time() + " - Empresa: ["+_cEmp+"] Filial: ["+_cFilial+"] - Finalizada a rotina do JOB " + _Enter
-
 Else
    ConOut( "JFAT001 - Nùo existe registro para esta query" )
    ConOut( "JFAT001 - Query " + cLastQuery)
    _Enter  := chr(13) + Chr(10)
    cTxtlog := "JFAT001 - Nùo existe registro para esta query" + _Enter
    cTxtlog += "JFAT001 - Query " + cLastQuery
-   MemoWrite("C:\TEMP\JFAT001_Emp_"+_cEmp+"_Filial_"+_cFilial+".LOG",cTxtlog)
-   MemoWrite("JFAT001_Emp_"+_cEmp+"_Filial_"+_cFilial+".LOG",cTxtlog)
-   _cTxtGlog += "JFAT001 " + Dtoc( Date() ) + " " + Time() + " - Empresa: ["+_cEmp+"] Filial: ["+_cFilial+"] " + cTxtlog + _Enter
+   MemoWrite("C:\TEMP\JFAT001.LOG",cTxtlog)
+   MemoWrite("JFAT001.LOG",cTxtlog)
 
 Endif
 
@@ -425,15 +378,10 @@ If !Eof()
    cLastQuery    := aLastQuery[2] 
 
    ConOut( "JFAT001 - Query executada: " + cLastQuery )
-   MemoWrite("C:\TEMP\BuscaPrc_QUERY_Empresa_"+_cEmp+"_Filial_"+_cFilial+".SQL",cLastQuery)
-   MemoWrite("BuscaPrc_QUERY_Empresa_"+_cEmp+"_Filial_"+_cFilial+".SQL",cLastQuery)
+   MemoWrite("C:\TEMP\BuscaPrc.SQL",cLastQuery)
+   MemoWrite("BuscaPrc.SQL",cLastQuery)
 
    nVlrUnit := (cAlias)->DA1_PRCVEN
-
-   _cTxtGlog += "JFAT001 " + Dtoc( Date() ) + " " + Time() + " - Empresa: ["+_cEmp+"] Filial: ["+_cFilial+"] BuscaPrc - Query executada: [" + cLastQuery + "] Valor Encontrado: ["+CVALTOCHAR( nVlrUnit )+"]" + _Enter   
-
-Else
-   _cTxtGlog += "JFAT001 " + Dtoc( Date() ) + " " + Time() + " - Empresa: ["+_cEmp+"] Filial: ["+_cFilial+"] BuscaPrc - Query executada: [" + cLastQuery + "] Valor Encontrado: [ NAO ENCONTROU PRECO!]" + _Enter   
 EndIf
 
 (cAlias)->( DbCloseArea() )
@@ -464,8 +412,8 @@ Static Function fGetUNFE(xProd)//,xFornece,xLojFor)
    cQryUNFE += "    AND SD1.D_E_L_E_T_ <> '*'" + _Enter
    cQryUNFE += "  ORDER BY SD1.D1_EMISSAO DESC" + _Enter
 
-   MemoWrite("C:\TEMP\fGetUNFE_QUERY_Empresa_"+_cEmp+"_Filial_"+_cFilial+".SQL",cQryUNFE)
-   MemoWrite("fGetUNFE_QUERY_Empresa_"+_cEmp+"_Filial_"+_cFilial+".SQL",cQryUNFE)
+   MemoWrite("C:\TEMP\fGetUNFE.SQL",cQryUNFE)
+   MemoWrite("fGetUNFE.SQL",cQryUNFE)
 
    TCQuery cQryUNFE NEW ALIAS "XUNFESD1"
 
@@ -473,8 +421,6 @@ Static Function fGetUNFE(xProd)//,xFornece,xLojFor)
    DbSelectArea("XUNFESD1")
    _nRtUVlr := If(XUNFESD1->D1_VUNIT > 0, XUNFESD1->D1_VUNIT, 0)
    DbCloseArea()
-
-   _cTxtGlog += "JFAT001 " + Dtoc( Date() ) + " " + Time() + " - Empresa: ["+_cEmp+"] Filial: ["+_cFilial+"] Busca Ultima NF de Entrada - Query executada: [" + cQryUNFE + "] Valor Encontrado: [ "+CVALTOCHAR( _nRtUVlr )+" ]" + _Enter   
 
 Return(_nRtUVlr)
 
@@ -502,15 +448,7 @@ Static Function fUpdOrcs
          ConOut("while-sl2")
 
          nVlrTab := 0
-         //Ita - 26/09/2023 - nVlrTab := BuscaPrc( cTabPrc, SL2->L2_PRODUTO )
-         If _lCD
-            nVlrTab := BuscaPrc( cTabPrc, SL2->L2_PRODUTO )
-         Else
-            nVlrTab := fGetUNFE(SL2->L2_PRODUTO)
-            If nVlrTab == 0
-               nVlrTab := BuscaPrc( cTabPrc, SL2->L2_PRODUTO )
-            EndIf            
-         EndIf         
+         nVlrTab := BuscaPrc( cTabPrc, SL2->L2_PRODUTO )
 
          nVlrDesc := SL2->L2_VALDESC
 
