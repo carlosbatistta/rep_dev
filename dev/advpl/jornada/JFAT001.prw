@@ -6,7 +6,7 @@
 #Include "TOPCONN.CH"
  
 //00
-//rotinas execução via JOB
+//rotinas execuo via JOB
 //mauro nagata, lurin, 20211226
 User Function JFAT001(aParam)
 
@@ -15,7 +15,7 @@ Private _Enter  := chr(13) + Chr(10)
 cLogPeds := ""
 Default aParam	:= { "01",SM0->M0_CODFIL }
 
-ConOut( "JFAT001 - Início " + Dtoc( Date() ) + " " + Time() )
+ConOut( "JFAT001 - Incio " + Dtoc( Date() ) + " " + Time() )
 
 //RetailSales
 
@@ -24,9 +24,9 @@ _cFilial	:= Alltrim( aParam[2] )
 _lCD := If(Alltrim(_cFilial) == "01010101000",.T.,.F.) //Ita - 17/07/2023
 aNatFil := {} //Ita - 18/07/2023 - Array com filiais e suas respectivas naturezas
 aAdd(aNatFil, {"01010101000","1211003001"})       //As naturezas: Trasnf. mercadoria CD: 1211003001
-aAdd(aNatFil, {"01010101001","1211003002"}) //Trasnf. mercadoria filial Custódia: 1211003002 
+aAdd(aNatFil, {"01010101001","1211003002"}) //Trasnf. mercadoria filial Custdia: 1211003002 
 aAdd(aNatFil, {"01010101002","1211003003"}) //Trasnf. mercadoria filial Afogados: 1211003003
-aAdd(aNatFil, {"01010101003","1211003004"}) //Trasnf. mercadoria filial Sertânia: 1211003004
+aAdd(aNatFil, {"01010101003","1211003004"}) //Trasnf. mercadoria filial Sertnia: 1211003004
 aAdd(aNatFil, {"01010101004","1211003005"}) //Trasnf. mercadoria filial Salgueiro: 1211003005
 aAdd(aNatFil, {"01010101005","1211003006"}) //Trasnf. mercadoria filial Caruaru: 1211003006 
 
@@ -49,9 +49,9 @@ If IsBlind()
    _lCD := If(Alltrim(_cFilial) == "01010101000",.T.,.F.) //Ita - 17/07/2023
    aNatFil := {} //Ita - 18/07/2023 - Array com filiais e suas respectivas naturezas
    aAdd(aNatFil, {"01010101000","1211003001"})       //As naturezas: Trasnf. mercadoria CD: 1211003001
-   aAdd(aNatFil, {"01010101001","1211003002"}) //Trasnf. mercadoria filial Custódia: 1211003002 
+   aAdd(aNatFil, {"01010101001","1211003002"}) //Trasnf. mercadoria filial Custdia: 1211003002 
    aAdd(aNatFil, {"01010101002","1211003003"}) //Trasnf. mercadoria filial Afogados: 1211003003
-   aAdd(aNatFil, {"01010101003","1211003004"}) //Trasnf. mercadoria filial Sertânia: 1211003004
+   aAdd(aNatFil, {"01010101003","1211003004"}) //Trasnf. mercadoria filial Sertnia: 1211003004
    aAdd(aNatFil, {"01010101004","1211003005"}) //Trasnf. mercadoria filial Salgueiro: 1211003005
    aAdd(aNatFil, {"01010101005","1211003006"}) //Trasnf. mercadoria filial Caruaru: 1211003006 
 
@@ -103,8 +103,8 @@ Local cAliasQry 	:=  GetNextAlias()
 //Local nRecnoSC5   
 //Local nRecnoSC6
 Local nVlrUnit
-//Ita - 21/08/2023 - Local cTabPrc     := "003"             //tabela de preço definida
-Local cNaturez    := "1211003001"      //código da natureza definido
+//Ita - 21/08/2023 - Local cTabPrc     := "003"             //tabela de preo definida
+Local cNaturez    := "1211003001"      //cdigo da natureza definido
 Local aLastQuery   
 Local cLogErro    := ""
 Local nOpc        := 0
@@ -120,14 +120,14 @@ Local ntotSDesc
 Local nVlrTab
 Local nVlrDesc
 Local nVlrUnit
-Private cTabPrc     := "003"             //tabela de preço definida
+Private cTabPrc     := "003"             //tabela de preo definida
 Private _CGC := Alltrim( SM0->M0_CGC )
 
 //pedido normal
 //vendedor 1 informado
-//tabela de preço não informada
-//natureza não informado
-//pedido não faturado
+//tabela de preo no informada
+//natureza no informado
+//pedido no faturado
 
 
 BeginSql Alias cAliasQry    
@@ -167,7 +167,7 @@ If !Eof()
 
       Do While !Eof()
 
-         //número do pedido de vendas
+         //nmero do pedido de vendas
          cNumPV := (cAliasQry)->C5_NUM
          _cVeicul := (cAliasQry)->C5_VEICULO //Ita - 15/09/2023
          If Empty(_cVeicul)
@@ -199,7 +199,7 @@ If !Eof()
          ConOut(cNumPV)
          _cTxtGlog += "JFAT001 " + Dtoc( Date() ) + " " + Time() + " - Empresa: ["+_cEmp+"] Filial: ["+_cFilial+"] - Pedido ["+cNumPV+"]" + _Enter
 
-         ////substituído bloco acima pelo abaixo [Mauro Nagata, www.lurin.com.br, 20220502]
+         ////substitudo bloco acima pelo abaixo [Mauro Nagata, www.lurin.com.br, 20220502]
          aCabec         := {}
          aItens         := {}
          aLinha         := {}
@@ -209,7 +209,7 @@ If !Eof()
          //01010101005
          nPsNat := aScan(aNatFil, {|x,y| x[1] == Substr(Alltrim( _cFilial ),1,11) }) //Ita - 18/07/2023
          If nPsNat > 0
-            cNaturez := aNatFil[nPsNat,2] //Obtém a natureza correspondente a filial
+            cNaturez := aNatFil[nPsNat,2] //Obtm a natureza correspondente a filial
          EndIf
 
          aAdd( aCabec, { "C5_NUM"     , cNumPV     , Nil } )
@@ -221,13 +221,13 @@ If !Eof()
          //Ita - 30/08/2023 - aAdd( aCabec, { "C5_CLIENT" , cCliEnt     , Nil } ) //Cliente Entrega
          //Ita - 30/08/2023 - aAdd( aCabec, { "C5_LOJAENT" , cLojEnt    , Nil } ) //Loja Entrega
          //aAdd( aCabec, { "C5_REAJUST" , cTipReaj   , Nil } ) //Tipo Reajuste
-         aAdd( aCabec, { "C5_CONDPAG" , cCndPg     , Nil } ) //Condição Pagamento  [desde que seja diferente do Tipo 9, conforme faq em anexo]
-         aAdd( aCabec, { "C5_VEND1"   , cVnd1      , Nil } ) //Vendedor - (Todos os pedidos devem ter a mesma quantidade de vendedores, registrados os mesmos códigos, e nos mesmos campos)
-         //aAdd( aCabec, { "C5_VEND1"   , cVnd1      , Nil } ) //Vendedor 1 - (Todos os pedidos devem ter a mesma quantidade de vendedores, registrados os mesmos códigos, e nos mesmos campos)
-         //aAdd( aCabec, { "C5_VEND2"   , cVnd2      , Nil } ) //Vendedor 2 - (Todos os pedidos devem ter a mesma quantidade de vendedores, registrados os mesmos códigos, e nos mesmos campos)
-         //aAdd( aCabec, { "C5_VEND3"   , cVnd3      , Nil } ) //Vendedor 3 - (Todos os pedidos devem ter a mesma quantidade de vendedores, registrados os mesmos códigos, e nos mesmos campos)
-         //aAdd( aCabec, { "C5_VEND4"   , cVnd4      , Nil } ) //Vendedor 4 - (Todos os pedidos devem ter a mesma quantidade de vendedores, registrados os mesmos códigos, e nos mesmos campos)
-         //aAdd( aCabec, { "C5_VEND5"   , cVnd5      , Nil } ) //Vendedor 5 - (Todos os pedidos devem ter a mesma quantidade de vendedores, registrados os mesmos códigos, e nos mesmos campos)
+         aAdd( aCabec, { "C5_CONDPAG" , cCndPg     , Nil } ) //Condio Pagamento  [desde que seja diferente do Tipo 9, conforme faq em anexo]
+         aAdd( aCabec, { "C5_VEND1"   , cVnd1      , Nil } ) //Vendedor - (Todos os pedidos devem ter a mesma quantidade de vendedores, registrados os mesmos cdigos, e nos mesmos campos)
+         //aAdd( aCabec, { "C5_VEND1"   , cVnd1      , Nil } ) //Vendedor 1 - (Todos os pedidos devem ter a mesma quantidade de vendedores, registrados os mesmos cdigos, e nos mesmos campos)
+         //aAdd( aCabec, { "C5_VEND2"   , cVnd2      , Nil } ) //Vendedor 2 - (Todos os pedidos devem ter a mesma quantidade de vendedores, registrados os mesmos cdigos, e nos mesmos campos)
+         //aAdd( aCabec, { "C5_VEND3"   , cVnd3      , Nil } ) //Vendedor 3 - (Todos os pedidos devem ter a mesma quantidade de vendedores, registrados os mesmos cdigos, e nos mesmos campos)
+         //aAdd( aCabec, { "C5_VEND4"   , cVnd4      , Nil } ) //Vendedor 4 - (Todos os pedidos devem ter a mesma quantidade de vendedores, registrados os mesmos cdigos, e nos mesmos campos)
+         //aAdd( aCabec, { "C5_VEND5"   , cVnd5      , Nil } ) //Vendedor 5 - (Todos os pedidos devem ter a mesma quantidade de vendedores, registrados os mesmos cdigos, e nos mesmos campos)
          //Ita - 15/09/2023 - aAdd( aCabec, { "C5_TPFRETE" , cTpFret    , Nil } ) //Tipo de Frete
          aAdd( aCabec, { "C5_TPFRETE" , 'R'    , Nil } ) //Tipo de Frete - R-Por conta do remetente
          
@@ -235,8 +235,8 @@ If !Eof()
          //aAdd( aCabec, { "C5_INCISS"  , cIncISS    , Nil } ) //ISS Incluso
          //aAdd( aCabec, { "C5_RECISS"  , cRecISS    , Nil } ) //Recolhe ISS
          //aAdd( aCabec, { "C5_FORNISS" , cForISS    , Nil } ) //Fornecedor ISS
-         //aAdd( aCabec, { "C5_INDPRES" , cIndPres   , Nil } ) //Presença Com 
-         //aAdd( aCabec, { "C5_ESPECI1" , "SPED"    , Nil } ) //Ita - 30/08/2023 - Alterar de  NFCE para SPED
+         //aAdd( aCabec, { "C5_INDPRES" , cIndPres   , Nil } ) //Presena Com 
+         aAdd( aCabec, { "C5_ESPECI1" , "SPED"    , Nil } ) //Ita - 30/08/2023 - Alterar de  NFCE para SPED
          //aAdd( aCabec, { "C5_VEICULO" , _cVeicul  , Nil } ) //Ita - 15/09/2023
          /*
 - Tipo Pedido (C5_TIPO)
@@ -246,14 +246,14 @@ If !Eof()
 - Cliente Entrega (C5_CLIENT)
 - Loja Entrega (C5_LOJAENT)
 - Tipo Reajuste (C5_REAJUST)
-- Condição Pagamento (C5_CONDPAG) [desde que seja diferente do Tipo 9, conforme faq em anexo]
-- Vendedores (C5_VEND'x') (Todos os pedidos devem ter a mesma quantidade de vendedores, registrados os mesmos códigos, e nos mesmos campos)
+- Condio Pagamento (C5_CONDPAG) [desde que seja diferente do Tipo 9, conforme faq em anexo]
+- Vendedores (C5_VEND'x') (Todos os pedidos devem ter a mesma quantidade de vendedores, registrados os mesmos cdigos, e nos mesmos campos)
 - Tipo Frete (C5_TPFRETE)
 - Transportadora (C5_TRANSP)
 - ISS Incluso (C5_INCISS)
 - Recolhe ISS (C5_RECISS)
 - Fornecedor ISS (C5_FORNISS)
-- Presença Com (C5_INDPRES)
+- Presena Com (C5_INDPRES)
          */
 
          DbSelectArea( "SC6" )
@@ -301,23 +301,25 @@ If !Eof()
          nOpc := 4 
 
          ConOut("antes-exec")
+
+         lAutoErrNoFile := .T.
          
          MSExecAuto( { |a, b, c, d| MATA410( a, b, c, d ) }, aCabec, aItens, nOpc, .F. )
          
          ConOut("depois-exec")
-         
+
          If !lMsErroAuto
          
             /////////////////////
             /// Ita - 20/07/2023
-            //ConOut( "Chamndo Função fUpdOrcs - para alterar ocçamentos..." )
+            //ConOut( "Chamndo Funo fUpdOrcs - para alterar ocamentos..." )
             //Ita - 26/09/2023 - fUpdOrcs()
-            //ConOut("Retornou das alterações dos orçamentos")
+            //ConOut("Retornou das alteraes dos oramentos")
             ///////////////////////////////////////////////////////////////////
 
             /////////////////////
             /// Ita - 26/09/2023
-            ///       Faz desvinculo com orçamento
+            ///       Faz desvinculo com oramento
             ///////////////////////////////////////
             DbSelectArea("SC5")
             RecLock("SC5",.F.)
@@ -332,8 +334,8 @@ If !Eof()
          
          Else
          
-            ConOut( "Erro na alteração" )
-            cLogPeds += "Erro na alteração! " + cNumPV + _Enter
+            ConOut( "Erro na alterao" )
+            cLogPeds += "Erro na alterao! " + cNumPV + _Enter
             //Ita - 06/10/2023 - MostraErro()
             /* Ita - 06/10/2023
             aErroAuto := GetAutoGRLog()            
@@ -348,8 +350,11 @@ If !Eof()
             //Pegando log do ExecAuto
             aLogAuto := GetAutoGRLog()
             
-            //Percorrendo o Log e incrementando o texto (para usar o CRLF você deve usar a include "Protheus.ch")
+            _cTxtGlog += "JFAT001 " + Dtoc( Date() ) + " " + Time() + " - Empresa: ["+_cEmp+"] Filial: ["+_cFilial+"] - Pedido ["+cNumPV+"]  Erro na Alteracao - Len(aLogAuto): ["+CVALTOCHAR( Len(aLogAuto) )+"] " + _Enter
+
+            //Percorrendo o Log e incrementando o texto (para usar o CRLF voc deve usar a include "Protheus.ch")
             For nCount := 1 To Len(aLogAuto)
+               ConOut("JFAT001 " + Dtoc( Date() ) + " " + Time() + " - Empresa: ["+_cEmp+"] Filial: ["+_cFilial+"] - Pedido ["+cNumPV+"]  Erro na Alteracao - Detalhe por linha - aLogAuto["+CVALTOCHAR( nCount )+"]: ["+ aLogAuto[nCount] +"] ")
                cLogTxt += aLogAuto[nCount] + _Enter //CRLF
             Next nCount
 
@@ -379,10 +384,10 @@ If !Eof()
    _cTxtGlog += "JFAT001 " + Dtoc( Date() ) + " " + Time() + " - Empresa: ["+_cEmp+"] Filial: ["+_cFilial+"] - Finalizada a rotina do JOB " + _Enter
 
 Else
-   ConOut( "JFAT001 - Não existe registro para esta query" )
+   ConOut( "JFAT001 - No existe registro para esta query" )
    ConOut( "JFAT001 - Query " + cLastQuery)
    _Enter  := chr(13) + Chr(10)
-   cTxtlog := "JFAT001 - Não existe registro para esta query" + _Enter
+   cTxtlog := "JFAT001 - No existe registro para esta query" + _Enter
    cTxtlog += "JFAT001 - Query " + cLastQuery
    MemoWrite("C:\TEMP\JFAT001_Emp_"+_cEmp+"_Filial_"+_cFilial+".LOG",cTxtlog)
    MemoWrite("JFAT001_Emp_"+_cEmp+"_Filial_"+_cFilial+".LOG",cTxtlog)
@@ -394,14 +399,14 @@ Return lRet
 
 
 
-//Excluído bloco abaixo [Mauro Nagata, wwww.lurin.com.br, 20220502]
-//busca o preço do produto na tabela de preço
+//Excludo bloco abaixo [Mauro Nagata, wwww.lurin.com.br, 20220502]
+//busca o preo do produto na tabela de preo
 Static Function BuscaPrc( cTabela, cCodProd )        
 Local aLastQuery  := {} 
 Local cLastQuery  := ""
 Local cAlias 	   := GetNextAlias() 
-//Ita - 17/07/2023 Local nVlrUnit    := 999999999      //caso não localize o valor do produto na tabela de preço
-Local nVlrUnit    := 1      //Ita - 17/07/2023 - caso não localize o valor do produto na tabela de preço
+//Ita - 17/07/2023 Local nVlrUnit    := 999999999      //caso no localize o valor do produto na tabela de preo
+Local nVlrUnit    := 1      //Ita - 17/07/2023 - caso no localize o valor do produto na tabela de preo
 
 BEGINSQL ALIAS cAlias
    %noParser%        
@@ -414,7 +419,7 @@ BEGINSQL ALIAS cAlias
             
 ENDSQL
 
-//se encontrar o produto na tabela de preço 
+//se encontrar o produto na tabela de preo 
 If !Eof()
    aLastQuery    := GetLastQuery()
    cLastQuery    := aLastQuery[2] 
@@ -439,8 +444,8 @@ Return( nVlrUnit )
 
 //////////////////////
 /// Ita - 17/07/2023
-///       Função fGetUNFE
-///       Obttém valor da última NF de Entrada.
+///       Funo fGetUNFE
+///       Obttm valor da ltima NF de Entrada.
 ///////////////////////////////////////////////
 
 Static Function fGetUNFE(xProd)//,xFornece,xLojFor)
@@ -475,8 +480,8 @@ Return(_nRtUVlr)
 
 /////////////////////////////
 /// Ita - 20/07/2023
-///       Função fUpdOrcs
-///       Atualiza Orçamentos
+///       Funo fUpdOrcs
+///       Atualiza Oramentos
 //////////////////////////////////////
 Static Function fUpdOrcs
       
@@ -517,44 +522,44 @@ Static Function fUpdOrcs
          nTotCDesc += SL2->L2_VLRITEM
          ntotSDesc += (SL2->L2_VRUNIT * SL2->L2_QUANT)
 
-         //ConOut( "Gravação Item Orçamento SL2 - Orçamento: " + cNumOrc + " Pedido de venda: " + SC5->C5_NUM + " Produto: " + SC6->C6_PRODUTO + " Preço: "+ Str( SC6->C6_PRCVEN, 14, 2 ) )
+         //ConOut( "Gravao Item Oramento SL2 - Oramento: " + cNumOrc + " Pedido de venda: " + SC5->C5_NUM + " Produto: " + SC6->C6_PRODUTO + " Preo: "+ Str( SC6->C6_PRCVEN, 14, 2 ) )
 
          DbSelectArea( "SL2" )
          DbSkip()
 
       EndDo
 
-      DbSelectArea( "SL1" )      //orçamento
+      DbSelectArea( "SL1" )      //oramento
       DbSetOrder(1)
       If DbSeek( xFilial( "SL1" ) + cNumOrc )
          
-         ConOut( "Achou SL1 - Orçamento: " + xFilial( "SL1" )+"|"+cNumOrc )
+         ConOut( "Achou SL1 - Oramento: " + xFilial( "SL1" )+"|"+cNumOrc )
 
          RecLock( "SL1", .F. )
          SL1->L1_VLRTOT    := nTotCDesc
          SL1->L1_VALMERC   := nTotSDesc
          SL1->( MsUnLock() )
 
-         ConOut( "Gravação Orçamento SL1 - Orçamento: " + cNumOrc )
+         ConOut( "Gravao Oramento SL1 - Oramento: " + cNumOrc )
 
 
-         //ConOut( "Gravação Orçamento SL1 - Orçamento: " + cNumOrc + " Pedido de venda: " + SC5->C5_NUM + " Produto: " + SC6->C6_PRODUTO + " Total C/Desc: "+ Str(  nTotCDesc, 14, 2 ) + " Total S/Desc: "+ Str(  nTotSDesc, 14, 2 ) )
+         //ConOut( "Gravao Oramento SL1 - Oramento: " + cNumOrc + " Pedido de venda: " + SC5->C5_NUM + " Produto: " + SC6->C6_PRODUTO + " Total C/Desc: "+ Str(  nTotCDesc, 14, 2 ) + " Total S/Desc: "+ Str(  nTotSDesc, 14, 2 ) )
 
       EndIf
 
-      DbSelectArea( "SL4" )   //condição negociada
+      DbSelectArea( "SL4" )   //condio negociada
       DbSetOrder(1)
       If DbSeek( xFilial( "SL4" ) + cNumOrc )
 
-         ConOut( "Achou SL4 - Orçamento: " + xFilial( "SL4" ) +"|"+ cNumOrc )
+         ConOut( "Achou SL4 - Oramento: " + xFilial( "SL4" ) +"|"+ cNumOrc )
 
          RecLock( "SL4", .F. )
          SL4->L4_VALOR     := nTotCDesc
          SL4->( MsUnLock() )
 
-         ConOut( "Gravação Orçamento SL4 - Orçamento: " + cNumOrc )
+         ConOut( "Gravao Oramento SL4 - Oramento: " + cNumOrc )
 
-         //ConOut( "Gravação Orçamento SL4 - Orçamento: " + cNumOrc + " Pedido de venda: " + SC5->C5_NUM + " Produto: " + SC6->C6_PRODUTO + " Total C/Desc: "+ Str(  nTotCDesc, 14, 2 ) )
+         //ConOut( "Gravao Oramento SL4 - Oramento: " + cNumOrc + " Pedido de venda: " + SC5->C5_NUM + " Produto: " + SC6->C6_PRODUTO + " Total C/Desc: "+ Str(  nTotCDesc, 14, 2 ) )
       EndIf
 
    EndIf
