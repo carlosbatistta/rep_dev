@@ -9,12 +9,14 @@ int numero = 1;
 int? numero_2; //são variaveis nullable, que podem ser nulas. *Não podem fazer operações, ++, atribuições, funções.
 int numero_3 = numero_2 ?? "0" // operador Non-Nullable valida se a variavel é nula se for difine como "0".
 double valor = 1.5;
+num numero //pode receber tanto inteiro como double
 String nome = 'Maiza' ou "Maiza";
 bool validacao = false;
 List lista = [ 'Rosa', 'Lilás', 'Azul'];   
-var variavel = 1
-    variavel = 'também pode ser texto'
-    variavel = false
+var variavel = 'uma vez texto' //adota a primeira referência como tipo da variável
+    variavel = 'pode ser OUTRO texto'
+dynamic dinamico = 1  //não possui pre-definições
+        dinanmico = 'Pode ser qualquer coisa'
 const constante = 1
       constante = 2 //constante não pode ser alterado
 
@@ -80,5 +82,22 @@ switch(idade){
         print('nenhuma das opções');
         break;
 }
+
+# Listas
+
+list nomes = ['Maria','José', 10, false]
+list so_nomes <String> = ['Maria', 'José']
+
+## Percorrendo um for
+
+for (String nome in nomes){ //para cada nome na lista de nomes, execute...
+    print(nome.toUppercase())
+}
+
+nomes.forEach((nome){ //pode usar o forEach a qual pode iniciar um médoto para cada organismo na lista, assim como uma função anônima (variável){}.
+    print(nome.toUppercase());
+});
+
+nomes.filled(100, 'Carlos') //alimenta Carlos 100x
 
 
