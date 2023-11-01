@@ -101,3 +101,4 @@ nomes.forEach((nome){ //pode usar o forEach a qual pode iniciar um médoto para 
 nomes.filled(100, 'Carlos') //alimenta Carlos 100x
 nomes.generate(10, (i) => i * 10) //essa função permite colocar 10 vezes numa lista um valor dinâmico, como uma função anônima
 
+List<String?> lista_nullsafety = ['Carlos', null, 'Maria'];
