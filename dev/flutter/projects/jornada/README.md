@@ -119,6 +119,15 @@ ddd.removeWhere((key, value)=> key > 20)
 
 ## JSON
 
+void main(){}
+
+String dados_user(){
+    return """
+    {
+        
+    }
+}
+
 
 
 
