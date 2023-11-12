@@ -87,6 +87,11 @@ switch(idade){
 
 list nomes = ['Maria','José', 10, false]
 list so_nomes <String> = ['Maria', 'José']
+List<String?> lista_nullsafety = ['Carlos', null, 'Maria'];
+List<String?>? lista_null_full;  //listas com duplas ? não precisam ser inicializadas e podem aceitar valores nulos, ou seja, a lista pode ser nula e receber valores nulos
+    if(lista_null_full != null){
+        lista_null_full.add(null);
+    }
 
 ## Percorrendo um for
 
@@ -94,11 +99,22 @@ for (String nome in nomes){ //para cada nome na lista de nomes, execute...
     print(nome.toUppercase())
 }
 
-nomes.forEach((nome){ //pode usar o forEach a qual pode iniciar um médoto para cada organismo na lista, assim como uma função anônima (variável){}.
+nomes.forEach((nome){ //pode usar o forEach a qual pode iniciar um médoto para cada organismo na lista e um mapa, assim como uma função anônima (variável){}.
     print(nome.toUppercase());
 });
 
 nomes.filled(100, 'Carlos') //alimenta Carlos 100x
 nomes.generate(10, (i) => i * 10) //essa função permite colocar 10 vezes numa lista um valor dinâmico, como uma função anônima
 
-List<String?> lista_nullsafety = ['Carlos', null, 'Maria'];
+## Mapas
+
+Map<int, String?> ddd = { //Um mapa um dado a outro, por exemplo se usar um print(ddd[11]), irá retornar São Paulo
+    11: 'São Paulo',
+    81: 'Pernambuco',
+    83: 'Paraiba',
+};
+ddd[87] = 'Interior de Pernambuco' // adiciona itens ao Mapa
+ddd.remove[87]; //remoção de dados
+ddd.removeWhere((key, value)=> key > 20)
+
+
