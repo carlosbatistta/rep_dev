@@ -20,6 +20,8 @@ dynamic dinamico = 1  //não possui pre-definições
 const constante = 1
       constante = 2 //constante não pode ser alterado
 
+
+
 # Funções
 void main(){
     saudacoes("Carlos") //forma de chamar uma função
@@ -108,7 +110,8 @@ nomes.generate(10, (i) => i * 10) //essa função permite colocar 10 vezes numa 
 
 ## Mapas
 
-Map<int, String?> ddd = { //Um mapa um dado a outro, por exemplo se usar um print(ddd[11]), irá retornar São Paulo
+//Sempre será desta forma: Map <"Chave que liga os dados", "valor retornado">, ou seja, a chave é inteiro e o valor recebido é uma string
+Map<int, String?> ddd = { //Um mapa liga um dado a outro, por exemplo se usar um print(ddd[11]), irá retornar São Paulo
     11: 'São Paulo',
     81: 'Pernambuco',
     83: 'Paraiba',
@@ -118,16 +121,69 @@ ddd.remove[87]; //remoção de dados
 ddd.removeWhere((key, value)=> key > 20)
 
 ## JSON
+import 'dart:convert'; //biblioteca usada para decodificação de JSON
 
-void main(){}
+void main(){
+    Map<String, dynamic> dados = json.decode(dados_user()); //a chave é Srting e os valores recebidos são listas, strings, inteiros, então esse é um caso de uso da variável      dynamic
+    //Após a decodificação poderá ser tratado como um Map
+    print(dados['nome']); //retorna: Daniel
+    print(dados['endereco']['numero']); //retorna:422
+    print(dados['curso'][0]['nome']); //retorna: Dart
 
-String dados_user(){
+}
+
+//JSON
+String dados_user(){ //observe que o formato de JSON é o mesmo formato que um MAP
     return """
     {
-        
+       "nome": "Daniel", //String
+       "idade": 18, //Inteiro
+       "cadastro": false, //boo
+       "cursos":[ //lista
+        {
+            "nome": "Dart",
+            "dificuldade": 1
+        },
+        {
+            "nome": "Java",
+            "dificuldade": 2
+        }
+        ]
+        "endereco": //map
+        {
+            "rua": "Inocencio Oliveira",
+            "numero": 422,
+            "bairro": "Centro"
+        }
+    }
+    """;
+}
+
+## TRY CATCH
+
+void main(){
+    try{
+    int resultado = 100 ~/ 7 //divisão arredondado para valores inteiros
+    int resto = 100 % 7 //resto da divisão
+    } on UnsupportedError{ //on: são várias casos que o erro pode entrar, onde se o erro dor de formato, vai cair no FormatException por exemplo, então o tratamento pode ser realizado de acordo com o erro cadastrado no "on"
+        print('Erro não suportado');
+    } on FormatException catch (error) {
+        print('Erro de formato: $(error.message)');
+    }
+    catch(e){
+        print("Erro na operação: $e)
+    }
+    finally{ //Executa o código independente se cair em exceção ou não
+        print('Execução do código') 
     }
 }
 
+## Enumeradores
 
+enum Status_pagamento {pendente, pago, estornado} //Apenas um conjunto de dados que deliminta um intervalo de dados.
+
+void main(){
+    Status_pagamento status = Status_pagamento.pago;
+}
 
 
