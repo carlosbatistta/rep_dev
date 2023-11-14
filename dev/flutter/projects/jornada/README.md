@@ -12,14 +12,14 @@ double valor = 1.5;
 num numero //pode receber tanto inteiro como double
 String nome = 'Maiza' ou "Maiza";
 bool validacao = false;
-List lista = [ 'Rosa', 'Lilás', 'Azul'];   
+List lista = [ 'Rosa', 'Lilás', 'Azul' ];   
 var variavel = 'uma vez texto' //adota a primeira referência como tipo da variável
     variavel = 'pode ser OUTRO texto'
 dynamic dinamico = 1  //não possui pre-definições
         dinanmico = 'Pode ser qualquer coisa'
 const constante = 1
       constante = 2 //constante não pode ser alterado
-
+final Datetime data = Datetime.now() //a diferença entre const e final é que final é chave única assim que receber algum valor, já const precisa ter algum valor antes de debugar o código.
 
 
 # Funções
@@ -184,6 +184,41 @@ enum Status_pagamento {pendente, pago, estornado} //Apenas um conjunto de dados 
 
 void main(){
     Status_pagamento status = Status_pagamento.pago;
+}
+
+## Classes, Objetos, Atributos, Métodos
+
+void main(){
+    Pessoa user = Pessoa("Carlos", 18); //Instanciando a classe
+    user.aniversario();
+    user.casar(user.casado);
+}
+
+//a classe é organizada da seguinte forma: Contrutor, Atributos, Métodos.
+Class Pessoa { //Classe nomeada
+    
+    //Construtor
+    Pessoa({required this.nome. required this.idade});
+    //Construtores nomeados são construtores com alterações mais específicas.
+    Pessoa.casada({required this.nome. required this.idade}){
+        this.casado = true;
+    }
+    
+    String? nome;
+    int? idade;
+    bool? casado;
+
+    //Metodos
+    void aniversario(){
+        print('Parabéns: $nome');
+        idade = idade! + 1;
+    }
+    bool casar (bool casado){
+        if(casado == false){
+            casado = true
+        }
+        return casado
+    }
 }
 
 
