@@ -192,6 +192,9 @@ void main(){
     Pessoa user = Pessoa("Carlos", 18); //Instanciando a classe
     user.aniversario();
     user.casar(user.casado);
+    //o acesso direto, atribuindo ou printado o atributo são os acessos por get e set.
+    user.dinheiro = 300;
+    print('seu dinheiro: $dinheiro')
 }
 
 //a classe é organizada da seguinte forma: Contrutor, Atributos, Métodos.
@@ -207,6 +210,7 @@ Class Pessoa { //Classe nomeada
     String? nome;
     int? idade;
     bool? casado;
+    double _dinheiro; //atributos com _ antecessor ao atributo, indica que é do tipo private, todo tipo de acesso desse atributo são pelos métodos GET e SET
 
     //Metodos
     void aniversario(){
@@ -219,6 +223,15 @@ Class Pessoa { //Classe nomeada
         }
         return casado
     }
+    set dinheiro(double valor){
+        _dinheiro = valor;
+    }
+    double get dinheiro(){
+        return _dinheiro;
+    }
+
 }
+
+
 
 
