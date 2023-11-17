@@ -206,7 +206,7 @@ Class Pessoa { //Classe nomeada
     
     String? nome;
     int? idade;
-    bool? casado;
+    bool? casado
 
     //Metodos
     void aniversario(){
