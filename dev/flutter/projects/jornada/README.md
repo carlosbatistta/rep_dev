@@ -229,4 +229,50 @@ Class Pessoa { //Classe nomeada
     }
 }
 
+## Herança e Polimorfismo
 
+void main(){
+
+     Cachorro dog = Cachorro();
+     dog.nome = 'Bob';
+     dog.idade = 6;
+     dog.latir();
+     dog.dormir();
+     dog.comer();
+
+     Gato cat = Gato();
+     cat.nome = 'Orion';
+     cat.idade = 4;
+     cat.miar();
+     cat.dormir();
+     cat.comer();
+
+}
+
+Classe Animal{
+    String? nome;
+    int? idade;
+
+    void comer(){
+        print('Comeu');
+    }
+    void dormir(){
+        print ('Dormiu');
+    }
+}
+
+Classe Cachorro extends Animal{ // Cachorro extende de animais.
+    void latir(){
+        print('Latiu');
+    }
+    @override // boas práticas de programação
+    void dormir(){ //a reescrita tem que manter o padrão da classe mãe.
+        print('Dormiu roncando');
+    }
+}
+
+Class Gato extends Animal{
+    void miar(){
+        print('Miau');
+    }
+}
