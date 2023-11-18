@@ -186,12 +186,17 @@ void main(){
     Status_pagamento status = Status_pagamento.pago;
 }
 
-## Classes, Objetos, Atributos, Métodos
+## Classes, Objetos, Atributos, Métodos, Static
 
 void main(){
     Pessoa user = Pessoa("Carlos", 18); //Instanciando a classe
     user.aniversario();
     user.casar(user.casado);
+
+    print(Pessoa.atributo_static); // chamando o atributo static
+
+    user.cpf = 10144698480;
+    print("CPF: $user.cpf");
 }
 
 //a classe é organizada da seguinte forma: Contrutor, Atributos, Métodos.
@@ -204,9 +209,12 @@ Class Pessoa { //Classe nomeada
         this.casado = true;
     }
     
+    //Atributos
     String? nome;
     int? idade;
     bool? casado
+    Static String atributo_static = "Atributo estático"; //Static são relacionados a classe, não ao objeto
+    late int cpf; //o Late são variáveis que serão obrigatóriamente preenchida pelo sistema em alguma parte após a execução.
 
     //Metodos
     void aniversario(){
