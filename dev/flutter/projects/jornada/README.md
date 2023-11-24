@@ -233,25 +233,22 @@ Class Pessoa { //Classe nomeada
 
 void main(){
 
-     Cachorro dog = Cachorro();
-     dog.nome = 'Bob';
-     dog.idade = 6;
+     Cachorro dog = Cachorro('Bob', 6); //nomeação do objeto se deu no momento da instância
      dog.latir();
      dog.dormir();
      dog.comer();
 
-     Gato cat = Gato();
-     cat.nome = 'Orion';
-     cat.idade = 4;
+     Gato cat = Gato('Orion', 4);
      cat.miar();
      cat.dormir();
      cat.comer();
 
 }
 
-Classe Animal{
-    String? nome;
-    int? idade;
+abstract class Animal{ //classe abstrata, não pode ser instânciada
+    Animal(this.nome, this.idade);
+    String nome;
+    int idade;
 
     void comer(){
         print('Comeu');
@@ -259,20 +256,66 @@ Classe Animal{
     void dormir(){
         print ('Dormiu');
     }
+    void morrer(); //repare que falta corpo nesse método nas classes filhas, nesse caso vai dar um erro informando que esse método está faltando nas classes filhas, logo toda classe abstrata que for estendida, as filhas tem que sobrescrever todos os métodos da mãe sem corpo.
+       
 }
 
 Classe Cachorro extends Animal{ // Cachorro extende de animais.
+    Cachorro(String nomr. int idade) : (super.nome, super.idade); //referencia o nome e idade de Animal
     void latir(){
         print('Latiu');
     }
     @override // boas práticas de programação
     void dormir(){ //a reescrita tem que manter o padrão da classe mãe.
+        super.dormiu()//o super vai chamar o método da classe Animal
         print('Dormiu roncando');
     }
 }
 
 Class Gato extends Animal{
+    Gato (String nome, int idade) : (super.nome, int.idade);
     void miar(){
         print('Miau');
     }
+}
+
+## Interfaces
+
+void main(){
+
+    Pessoa user = Controle_cliente(); //instacia uma pessoa do tipo controle_cliente, todos os métodos de user são direcionados para o controle_cliente.
+    user.adicioar();
+
+}
+
+abstract class Pessoa{
+    bool adicionar();
+    bool remover();
+}
+
+class Controle_cliente implements Pessoa{ //o uso do implents considera Pessoa como uma interface.
+
+    @override
+    bool adicionar(){
+        print('adicionado')
+        return true;
+    }
+
+    @override
+    bool adicionar(){
+        return true;
+    }
+}
+class Controle_usuario implements Pessoa{
+
+    override
+    bool adicionar(){
+        return true;
+    }
+    
+    @override
+    bool adicionar(){
+        return true;
+    }
+
 }
