@@ -10,7 +10,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const MaterialApp(
-      home: ThirdPage(), // a alteração do return altera o que será exibido
+      home: ThirdPage1(), // a alteração do return altera o que será exibido
     );
   }
 }
