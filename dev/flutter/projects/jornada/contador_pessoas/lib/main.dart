@@ -10,7 +10,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const MaterialApp(
-      home: ThirdPage1(), // a alteração do return altera o que será exibido
+      home: ThirdPage(), // a alteração do return altera o que será exibido
     );
   }
 }
@@ -52,9 +52,10 @@ class ThirdPage extends StatelessWidget {
   Widget build(BuildContext context) {
     // TODO: implement build
     return Scaffold(
-      body: Container(
-        color: Colors.red,
-      ), //corpo da tela
+      body: Column(
+        //body é o corpo ta tela
+        children: [],
+      ),
     );
   }
 }
