@@ -39,9 +39,9 @@ class SecondPage extends StatelessWidget {
     return Scaffold(
       //como o container o scaffold reune diversas ferramentas para compor sua page.
       appBar: AppBar(
-        title: Text('Olá mundo'),
+        title: const Text('Olá mundo'),
       ),
-      drawer: Drawer(),
+      drawer: const Drawer(),
     );
   }
 }
@@ -51,10 +51,21 @@ class ThirdPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
-    return Scaffold(
+    return const Scaffold(
+      backgroundColor: Colors.black,
       body: Column(
         //body é o corpo ta tela
-        children: [],
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text(
+            "Pode entrar",
+            style: TextStyle(
+              fontSize: 30,
+              color: Colors.white,
+              fontWeight: FontWeight.w700,
+            ),
+          )
+        ],
       ),
     );
   }
