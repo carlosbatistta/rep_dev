@@ -4,6 +4,14 @@ void main() {
   runApp(const MyApp());
 }
 
+void incrementar() {
+  print('incrementar');
+}
+
+void decrementar() {
+  print('decrementar');
+}
+
 class MyApp extends StatelessWidget {
   //criado uma classe widget editada voltada para definir o que será exibido para o cliente
   const MyApp({super.key});
@@ -68,6 +76,13 @@ class ThirdPage extends StatelessWidget {
           Text(
             "0",
             style: TextStyle(fontSize: 100, color: Colors.white),
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              TextButton(onPressed: decrementar, child: Text('saiu')),
+              TextButton(onPressed: incrementar, child: Text('entrou'))
+            ],
           )
         ],
       ),
