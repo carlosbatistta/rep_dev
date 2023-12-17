@@ -64,8 +64,8 @@ class ThirdPage extends StatelessWidget {
               color: Colors.white,
               fontWeight: FontWeight.w700,
             ),
-          )
-        ],
+          ),
+        Text("0", )],
       ),
     );
   }
