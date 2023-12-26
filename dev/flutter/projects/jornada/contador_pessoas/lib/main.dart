@@ -78,7 +78,8 @@ class ThirdPage extends StatelessWidget {
             style: TextStyle(fontSize: 100, color: Colors.white),
           ),
           Row(
-            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.center
+            ,
             children: [
               TextButton(onPressed: decrementar, child: Text('saiu')),
               TextButton(onPressed: incrementar, child: Text('entrou'))
