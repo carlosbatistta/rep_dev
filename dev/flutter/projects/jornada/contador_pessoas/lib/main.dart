@@ -82,19 +82,23 @@ class ThirdPage extends StatelessWidget {
             children: [
               TextButton(
                 onPressed: decrementar,
-                style: TextButton.styleFrom(
+                style: ButtonStyle.styleFrom(
                   backgroundColor: Colors.white,
                   fixedSize: Size(100, 100),
                 ),
                 child: Text(
-                  'saiu',
-                  style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 16,
-                  ),
+                  'sair',
+                  style: TextStyle(color: Colors.black, fontSize: 16),
                 ),
               ),
-              TextButton(onPressed: incrementar, child: Text('entrou'))
+              TextButton(onPressed: incrementar, child: Text('entrou')),
+              TextButton(
+                style: TextButton.styleFrom(
+                  textStyle: const TextStyle(fontSize: 20),
+                ),
+                onPressed: null,
+                child: const Text('Disabled'),
+              ),
             ],
           )
         ],
