@@ -80,7 +80,7 @@ class ThirdPage extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              TextButton(
+              /*TextButton(
                 onPressed: decrementar,
                 style: ButtonStyle.styleFrom(
                   backgroundColor: Colors.white,
@@ -98,7 +98,7 @@ class ThirdPage extends StatelessWidget {
                 ),
                 onPressed: null,
                 child: const Text('Disabled'),
-              ),
+              ),*/
             ],
           )
         ],

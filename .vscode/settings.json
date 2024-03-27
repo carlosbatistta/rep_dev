@@ -6,5 +6,6 @@
     "python.formatting.provider": "none",
     "python.linting.pylintEnabled": true,
     "python.linting.enabled": true,
-    "totvsLanguageServer.editor.toggle.autocomplete": "Basic"
+    "totvsLanguageServer.editor.toggle.autocomplete": "Basic",
+    "totvsLanguageServer.editor.linter.includes": "C:\\TOTVS\\21-06-29-P12_INCLUDES"
 }

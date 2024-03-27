@@ -323,7 +323,9 @@ class Controle_usuario implements Pessoa{
 ## Widget
 
 Todos os componentes em tela são widgets.
-documentação oficial: https://docs.flutter.dev/reference/widgets
+Toda a Interface gráfica, textos, botões, bordas, planos de fundo, etc..
+documentação oficial, lista de todos os widgets: https://docs.flutter.dev/reference/widgets
 
 ## MaterialApp
 
+Todos os componentes do Material Desing 

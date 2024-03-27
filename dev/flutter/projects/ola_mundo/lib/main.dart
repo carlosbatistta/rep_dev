@@ -5,8 +5,8 @@ import 'package:flutter/material.dart';
 void main() {
   //runApp(MyApp(title: "Barra de teste")); //Exempo 1
   //runApp(App()); //Exemplo 2
-  //runApp(AppMy()); //Exemplo 3
-  runApp(MyApl());
+  runApp(AppMy()); //Exemplo 3
+  //runApp(MyApl());
 }
 
 //Exemplo 1: App estático, sem manipulação
