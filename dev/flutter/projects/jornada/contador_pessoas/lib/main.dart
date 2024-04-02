@@ -59,46 +59,67 @@ class ThirdPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
-    return const Scaffold(
-      backgroundColor: Colors.black,
+    return Scaffold(
+      backgroundColor: Colors.green,
       body: Column(
         //body é o corpo ta tela
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Text(
+          const Text(
             "Pode entrar",
             style: TextStyle(
-              fontSize: 30,
-              color: Colors.white,
-              fontWeight: FontWeight.w700,
+              fontSize: 60,
+              color: Colors.black87,
+              fontWeight: FontWeight.w500, //Negrito
             ),
           ),
-          Text(
+          const Text(
             "0",
-            style: TextStyle(fontSize: 100, color: Colors.white),
+            style: TextStyle(
+              fontSize: 60,
+              color: Colors.black87,
+              fontWeight: FontWeight.w200,
+            ),
+          ),
+          const Padding(
+            //Substituir o Text do 0
+            padding: EdgeInsets.all(8),
+            child: Text(
+              '',
+              style: TextStyle(fontSize: 80, color: Colors.white),
+            ),
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              /*TextButton(
+              TextButton(
                 onPressed: decrementar,
-                style: ButtonStyle.styleFrom(
-                  backgroundColor: Colors.white,
-                  fixedSize: Size(100, 100),
-                ),
-                child: Text(
+                style: TextButton.styleFrom(
+                    foregroundColor: Colors.black,
+                    backgroundColor: Colors.white,
+                    fixedSize: const Size(100, 40)),
+                child: const Text(
                   'sair',
-                  style: TextStyle(color: Colors.black, fontSize: 16),
+                  style: TextStyle(
+                      color: Colors.black,
+                      fontSize: 20,
+                      fontWeight: FontWeight.w200),
                 ),
               ),
-              TextButton(onPressed: incrementar, child: Text('entrou')),
+              const SizedBox(width: 15),
               TextButton(
-                style: TextButton.styleFrom(
-                  textStyle: const TextStyle(fontSize: 20),
-                ),
-                onPressed: null,
-                child: const Text('Disabled'),
-              ),*/
+                  onPressed: incrementar,
+                  style: TextButton.styleFrom(
+                      foregroundColor: Colors.black,
+                      backgroundColor: Colors.white,
+                      fixedSize: const Size(100, 40)),
+                  child: const Text(
+                    'entrou',
+                    style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 20,
+                        fontWeight: FontWeight.w200),
+                  )),
             ],
           )
         ],
