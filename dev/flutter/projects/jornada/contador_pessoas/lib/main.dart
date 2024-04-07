@@ -61,68 +61,70 @@ class ThirdPage extends StatelessWidget {
     // TODO: implement build
     return Scaffold(
       backgroundColor: Colors.green,
-      body: Column(
-        //body é o corpo ta tela
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          const Text(
-            "Pode entrar",
-            style: TextStyle(
-              fontSize: 60,
-              color: Colors.black87,
-              fontWeight: FontWeight.w500, //Negrito
-            ),
-          ),
-          const Text(
-            "0",
-            style: TextStyle(
-              fontSize: 60,
-              color: Colors.black87,
-              fontWeight: FontWeight.w200,
-            ),
-          ),
-          const Padding(
-            //Substituir o Text do 0
-            padding: EdgeInsets.all(8),
-            child: Text(
-              '',
-              style: TextStyle(fontSize: 80, color: Colors.white),
-            ),
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              TextButton(
-                onPressed: decrementar,
-                style: TextButton.styleFrom(
-                    foregroundColor: Colors.black,
-                    backgroundColor: Colors.white,
-                    fixedSize: const Size(100, 40)),
-                child: const Text(
-                  'sair',
-                  style: TextStyle(
-                      color: Colors.black,
-                      fontSize: 20,
-                      fontWeight: FontWeight.w200),
-                ),
+      body: Container(
+        decoration: BoxDecoration(
+            image: DecorationImage(
+          image: AssetImage('assets/images/background.jpg'),
+          fit: BoxFit.cover, //aqui redimencionamos de acordo com o Box.fit
+        )),
+        child: Column(
+          //body é o corpo ta tela
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Text(
+              "Pode entrar",
+              style: TextStyle(
+                fontSize: 60,
+                color: Colors.white,
+                fontWeight: FontWeight.w500, //Negrito
               ),
-              const SizedBox(width: 15),
-              TextButton(
-                  onPressed: incrementar,
+            ),
+            const Padding(
+              //Substituir o Text do 0
+              padding: EdgeInsets.all(35),
+              child: Text(
+                '0',
+                style: TextStyle(
+                    fontSize: 60,
+                    color: Colors.white,
+                    fontWeight: FontWeight.w500),
+              ),
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                TextButton(
+                  onPressed: decrementar,
                   style: TextButton.styleFrom(
                       foregroundColor: Colors.black,
                       backgroundColor: Colors.white,
                       fixedSize: const Size(100, 40)),
                   child: const Text(
-                    'entrou',
+                    'sair',
                     style: TextStyle(
                         color: Colors.black,
                         fontSize: 20,
                         fontWeight: FontWeight.w200),
-                  )),
-            ],
-          )
-        ],
+                  ),
+                ),
+                const SizedBox(width: 15),
+                TextButton(
+                    onPressed: incrementar,
+                    style: TextButton.styleFrom(
+                        foregroundColor: Colors.black,
+                        backgroundColor: Colors.white,
+                        fixedSize: const Size(100, 40)),
+                    child: const Text(
+                      'entrou',
+                      style: TextStyle(
+                          color: Colors.black,
+                          fontSize: 20,
+                          fontWeight: FontWeight.w200),
+                    )),
+              ],
+            )
+          ],
+        ),
       ),
     );
   }
