@@ -4,21 +4,13 @@ void main() {
   runApp(const MyApp());
 }
 
-void incrementar() {
-  print('incrementar');
-}
-
-void decrementar() {
-  print('decrementar');
-}
-
 class MyApp extends StatelessWidget {
   //criado uma classe widget editada voltada para definir o que será exibido para o cliente
   const MyApp({super.key});
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
-      home: ThirdPage(), // a alteração do return altera o que será exibido
+    return MaterialApp(
+      home: FourthPage(), // a alteração do return altera o que será exibido
     );
   }
 }
@@ -54,15 +46,35 @@ class SecondPage extends StatelessWidget {
   }
 }
 
-class ThirdPage extends StatelessWidget {
-  const ThirdPage({super.key});
+class FourthPage extends StatefulWidget {
+  const FourthPage({super.key});
+
   @override
+  State<FourthPage> createState() => _FourthPageState();
+}
+
+class _FourthPageState extends State<FourthPage> {
+  int count = 0;
+  void incrementar() {
+    setState(() {
+      count--;
+    });
+    print('$count');
+  }
+
+  void decrementar() {
+    setState(() {
+      count++;
+    });
+    print('$count');
+  }
+
   Widget build(BuildContext context) {
     // TODO: implement build
     return Scaffold(
       backgroundColor: Colors.green,
       body: Container(
-        decoration: BoxDecoration(
+        decoration: const BoxDecoration(
             image: DecorationImage(
           image: AssetImage('assets/images/background.jpg'),
           fit: BoxFit.cover, //aqui redimencionamos de acordo com o Box.fit
@@ -79,12 +91,12 @@ class ThirdPage extends StatelessWidget {
                 fontWeight: FontWeight.w500, //Negrito
               ),
             ),
-            const Padding(
+            Padding(
               //Substituir o Text do 0
               padding: EdgeInsets.all(35),
               child: Text(
-                '0',
-                style: TextStyle(
+                count.toString(),
+                style: const TextStyle(
                     fontSize: 60,
                     color: Colors.white,
                     fontWeight: FontWeight.w500),
