@@ -56,30 +56,31 @@ class FourthPage extends StatefulWidget {
 class _FourthPageState extends State<FourthPage> {
   int count = 0;
   bool isFull = false;
-  bool isVazio = false;
+  bool isVazio = true;
   void incrementar() {
-    setState(() {
-      count++;
-    });
-    if (count <= 0) {
-      isVazio = true;
+    if (count == 20) {
+      isFull = true;
       print('$isVazio');
     }
-    if (count > 0) {
-      isVazio = false;
-      print('$isVazio'+ '02');
+    if (count < 20) {
+      isFull = false;
+      setState(() {
+        count++;
+        isVazio = false;
+      });
+      print('$isVazio' + '02');
     }
   }
 
   void decrementar() {
-    setState(() {
-      count--;
-    });
-    if (count == 20) {
-      isFull = true;
+    if (count == 0) {
+      isVazio = true;
     }
-    if (count < 20) {
-      isFull = false;
+    if (count > 0) {
+      isVazio = false;
+      setState(() {
+        count--;
+      });
     }
   }
 
