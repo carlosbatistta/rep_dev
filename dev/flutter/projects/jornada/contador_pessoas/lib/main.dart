@@ -55,18 +55,32 @@ class FourthPage extends StatefulWidget {
 
 class _FourthPageState extends State<FourthPage> {
   int count = 0;
+  bool isFull = false;
+  bool isVazio = false;
   void incrementar() {
     setState(() {
-      count--;
+      count++;
     });
-    print('$count');
+    if (count <= 0) {
+      isVazio = true;
+      print('$isVazio');
+    }
+    if (count > 0) {
+      isVazio = false;
+      print('$isVazio'+ '02');
+    }
   }
 
   void decrementar() {
     setState(() {
-      count++;
+      count--;
     });
-    print('$count');
+    if (count == 20) {
+      isFull = true;
+    }
+    if (count < 20) {
+      isFull = false;
+    }
   }
 
   Widget build(BuildContext context) {
@@ -106,7 +120,7 @@ class _FourthPageState extends State<FourthPage> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 TextButton(
-                  onPressed: decrementar,
+                  onPressed: isVazio ? null : decrementar,
                   style: TextButton.styleFrom(
                       foregroundColor: Colors.black,
                       backgroundColor: Colors.white,
