@@ -35,6 +35,9 @@ class TodoListPage3 extends StatelessWidget {
                   ),
                 ],
               ),
+              SizedBox(
+                height: 5,
+              ),
               Row(
                 children: [
                   Expanded(
