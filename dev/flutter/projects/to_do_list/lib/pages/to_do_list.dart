@@ -29,7 +29,6 @@ class TodoListPage3 extends StatelessWidget {
                       size: 30,
                     ),
                     style: ElevatedButton.styleFrom(
-                      primary: Color(0xff00d7f3),
                       padding: EdgeInsets.all(18),
                     ),
                   ),
@@ -48,7 +47,7 @@ class TodoListPage3 extends StatelessWidget {
                     onPressed: () {},
                     child: Text('Limpar'),
                     style: ElevatedButton.styleFrom(
-                      primary: Color(0xff00d7f3),
+                      //primary: Color(0xff00d7f3),
                       padding: EdgeInsets.all(18),
                     ),
                   ),
