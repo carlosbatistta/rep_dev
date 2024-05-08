@@ -1,4 +1,13 @@
-distancia = float(input("Uma distância em metros?"))
+'''
+Exercício Python: Faça um programa que leia algo pelo teclado
+e mostre na tela a conversão de metros para KM, HM, DAM, DM, CM e MM.
+'''
+distancia = input("Uma distância em metros?")
+
+## A raise palavra-chave é usada para gerar uma exceção. Gere um TypeError se distancia não for um número float:
+if not type(distancia) is float:
+  raise TypeError("Tipo não é alfanumérico")
+
 print("A medida de {} corresponde a:".format(distancia))
 print("{}km".format(distancia*0.001))
 print("{}hm".format(distancia*0.010))
