@@ -10,7 +10,8 @@ lista = []
 
 try:
     for i in range(4):
-        lista = str(input("Digite o {}ª nome: ".format(i+1)))
+        valor = str(input("Digite o {}ª nome: ".format(i+1)))
+        lista.append(valor)
 except:
     print("Erro de conversão")
 

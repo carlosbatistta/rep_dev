@@ -7,11 +7,12 @@ lista = []
 
 for i in range(3):
     try:
-        lista = int(input('Digite um número: '))
+        valor = int(input('Digite um número: '))
+        lista.append(valor)
     except:
         print('Erro na conversão')
         lista.clear
         i=0
 
-##lista.sort()
+lista.sort()
 print('O item de menor valor é {} e o de menor valor é {}'.format(lista[0], lista[2]))
