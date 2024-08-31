@@ -1,4 +1,4 @@
-import PySimpleGUI as sg
+import jls_extract_var as sg
 from interface_clerk import ApplicationClerk
 from interface_admin import ApplicationAdmin
 from model import Model, FileAuthentication, Databases
