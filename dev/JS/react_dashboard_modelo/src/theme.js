@@ -4,6 +4,15 @@ import { useState } from "react";
 import { createContext } from "react";
 
 // Color Design Tokens
+
+/**
+ * Função que define um conjunto de cores para o tema, dependendo do modo (dark ou light).
+As cores estão organizadas em categorias como:
+gray (tons de cinza),
+primary (cor principal do tema),
+greenAccent, redAccent, e blueAccent (cores de destaque).
+Cada categoria tem diferentes níveis de intensidade (100 a 900), permitindo uma paleta flexível para usar em elementos variados.
+ */
 export const tokens = (mode) => ({
   ...(mode === "dark"
     ? {
