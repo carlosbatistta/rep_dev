@@ -1,0 +1,58 @@
+/* Font Family Import */
+@import url("https://fonts.googleapis.com/css2?family=Source+Code+Pro:ital,wght@0,200..900;1,200..900&family=Source+Sans+3:ital,wght@0,200..900;1,200..900&display=swap");
+/*
+Importa as fontes Source Code Pro e Source Sans 3 do Google Fonts.
+1) wght@0,200..900: Define as variantes de peso da fonte de 200 (fina) a 900 (grossa).
+2) ital: Suporte a variantes itálicas.
+3) display=swap: Garante que uma fonte de fallback seja usada enquanto as fontes personalizadas estão sendo carregadas.
+*/
+
+/* Global Style */
+html,
+body,
+#root {
+  height: 100%;
+  width: 100%;
+  font-family: "Source Sans 3", sans-serif;
+  /*
+html, body, e #root:
+1) Define que o documento HTML, o corpo da página e o elemento #root (onde a aplicação React é montada) devem ocupar 100% da altura e largura da tela.
+2) font-family: "Source Sans 3", sans-serif;:
+3) Aplica a fonte Source Sans 3 para todo o texto na aplicação.
+4) Caso essa fonte não esteja disponível, a fonte genérica sans-serif será usada como fallback.
+*/
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+  /*Define que a barra de rolagem terá 10 pixels de largura.*/
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: #e0e0e0;
+  /*O trilho da barra de rolagem será cinza claro (#e0e0e0).*/
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #888;
+  /*O polegar da barra de rolagem será cinza médio (#888).*/
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-track:hover {
+  background: #555;
+  /*Quando o usuário passa o mouse sobre o trilho, ele ficará cinza escuro (#555).*/
+}
+
+/*
+Este arquivo de estilos:
+
+Configura uma fonte global para a aplicação.
+Garante que os elementos base da página (HTML, corpo e #root) ocupem 100% da tela.
+Personaliza a barra de rolagem:
+Define tamanhos e cores específicas para o trilho e o polegar.
+Adiciona um efeito de hover para melhorar a interação.
+Esses estilos ajudam a criar uma aparência consistente e personalizada para a interface da aplicação React.
+*/
