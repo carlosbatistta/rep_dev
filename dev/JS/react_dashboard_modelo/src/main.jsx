@@ -3,29 +3,41 @@ import ReactDOM from 'react-dom/client';
 import AppRouter from './Router';
 import './index.css';
 
-ReactDOM.createRoot(document.getElementById('root')).render(
-/**
-Procura o elemento HTML com o ID root no documento. Esse é o contêiner onde a aplicação React será montada.
-Geralmente, no arquivo HTML da aplicação (como index.html), existe uma tag <div id="root"></div>.
-Cria a "raiz" da aplicação React no elemento identificado.
-Esse método, introduzido no React 18, substitui o antigo ReactDOM.render.
+/**import React from 'react': Importa a biblioteca React, necessária para criar componentes e trabalhar com JSX (JavaScript XML).
+import ReactDOM from 'react-dom/client': Importa o módulo ReactDOM, que é usado para manipular o DOM (Document Object Model)
+e renderizar a aplicação React na página.
+import AppRouter from './Router': Importa o componente AppRouter que provavelmente gerencia as rotas da aplicação 
+(baseado na nomenclatura). Esse é o componente principal que será renderizado.
+import './index.css': Importa um arquivo de estilo CSS global, aplicando estilos básicos para toda a aplicação.
  */
 
+ReactDOM.createRoot(document.getElementById('root')).render(
+/**document.getElementById('root'): Localiza o elemento HTML com o ID root. Esse elemento é o "container" 
+onde a aplicação React será renderizada.
+Normalmente, no arquivo public/index.html, há algo como:
+<div id="root"></div>
+ReactDOM.createRoot(): Inicializa o novo método de renderização do React (a partir do React 18), 
+criando a "raiz" para a aplicação React.
+.render(): Renderiza o conteúdo JSX dentro do elemento HTML selecionado.
+ */
     <React.StrictMode>
         <AppRouter />
     </React.StrictMode>
+/**<React.StrictMode>: Um componente especial do React que verifica possíveis problemas no código durante
+o desenvolvimento (como práticas obsoletas). Não afeta o funcionamento em produção.
+<AppRouter />: O componente principal da aplicação. Geralmente, um roteador que define as páginas e as rotas, 
+fornecendo navegação dinâmica dentro da aplicação. 
+*/
 
 /**
- <React.StrictMode>:
-Um componente que ativa verificações adicionais e ajuda a identificar potenciais problemas no código durante o desenvolvimento (não afeta a produção).
-<AppRouter />:
-Renderiza o componente principal da aplicação, responsável por gerenciar as rotas e páginas.
+ * Resumo do fluxo
+1) HTML básico: No arquivo HTML principal (index.html), existe um elemento <div id="root"></div>, que serve como 
+o ponto de montagem da aplicação.
+
+2) ReactDOM: Usa o método createRoot para conectar o React a esse elemento HTML.
+
+3) Renderização: O React renderiza o componente AppRouter (que gerencia as rotas) dentro do <React.StrictMode>, garantindo boas práticas e verificações de erros em desenvolvimento.
+
+4) Estilos: O arquivo CSS global (index.css) define estilos que se aplicam a toda a aplicação.
  */
 );
-
-/**
-Fluxo Completo
-O arquivo HTML contém um <div id="root"></div>.
-O React encontra o elemento com o ID root e o usa como ponto de entrada.
-O componente principal da aplicação (AppRouter 'Router') é renderizado dentro do <div id="root">, e a aplicação ganha vida.
- */
