@@ -26,9 +26,9 @@ function sair() {
 
 function media(nota1, nota2) {
     var lista_notas = [];
-    var lista_notas[1] = prompt("Informe a 1ª nota: ");
-    var nota2 = prompt("Informe a 2ª nota: ");
-    var media = ((nota1 * 1) + (nota2 * 1)) / 2;
+    lista_notas[0] = prompt("Informe a 1ª nota: ");
+    lista_notas[1] = prompt("Informe a 2ª nota: ");
+    var media = (Number(lista_notas[0]) + Number(lista_notas[1])) / 2;
     if (media >= 7) {
         areah3.innerHTML = "Aluno aprovado com a média: " + media;
     } else {
