@@ -1,0 +1,24 @@
+
+/* Define o estilo do cabeçalho da página */
+header {
+  width: 100%; /* O cabeçalho ocupa toda a largura da página */
+  height: 100px; /* Define uma altura fixa de 100px */
+  background-color: #121212; /* Fundo preto (cinza muito escuro) */
+  color: #FFF; /* Texto branco para contraste */
+
+  display: flex; /* Usa Flexbox para alinhar os itens no cabeçalho */
+  align-items: center; /* Alinha os itens verticalmente no centro */
+  justify-content: space-between; /* Distribui os itens horizontalmente com espaço entre eles */
+  padding: 0 24px; /* Adiciona um espaçamento interno horizontal de 24px (esquerda e direita) */
+}
+
+/* Estilo geral para links dentro do cabeçalho */
+header a {
+  color: #FFF; /* Texto branco */
+  font-size: 20px; /* Define o tamanho da fonte como 20px */
+}
+
+/* Aplica margem à esquerda nos links subsequentes no cabeçalho */
+header a + a {
+  margin-left: 10px; /* Adiciona um espaçamento de 10px à esquerda de cada link que segue outro link */
+}

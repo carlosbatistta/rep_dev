@@ -1,0 +1,73 @@
+/* Remove margens e padding padrão do body, e define box-sizing para incluir bordas e padding no tamanho total */
+body { 
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Define um contêiner flexível centralizado, organizado em coluna */
+.container {
+    display: flex;
+    flex-direction: column; /* Organiza os itens verticalmente */
+    width: 100%; /* Ocupa toda a largura disponível */
+    justify-content: center; /* Centraliza os itens verticalmente */
+    align-items: center; /* Centraliza os itens horizontalmente */
+}
+
+/* Estiliza o cabeçalho, centralizando o conteúdo e definindo cor de fundo e texto */
+header {
+    display: flex; /* Usa Flexbox para posicionar o conteúdo */
+    justify-content: center; /* Centraliza horizontalmente */
+    align-items: center; /* Centraliza verticalmente */
+    font-size: 35px; /* Define tamanho da fonte */
+    height: 60px; /* Altura fixa */
+    width: 100%; /* Largura total da página */
+    background-color: #4c89e3; /* Fundo azul */
+    color: #fff; /* Texto branco */
+}
+
+/* Define o estilo dos posts com layout flex, bordas arredondadas e espaçamento */
+.post {
+    display: flex; /* Flex container */
+    flex-direction: column; /* Organiza itens verticalmente */
+    justify-content: center; /* Centraliza verticalmente */
+    width: 700px; /* Largura fixa */
+    background-color: #fff; /* Fundo branco */
+    border-radius: 7px; /* Bordas arredondadas */
+    border-width: 5px; /* Define a largura da borda */
+    margin: 8px; /* Espaçamento externo ao redor do post */
+    padding: 10px; /* Espaçamento interno */
+}
+
+/* Estiliza o título do post com tamanho grande e espaçamento */
+.titulo {
+    font-size: 35px; /* Define tamanho da fonte */
+    margin-top: 10px; /* Espaçamento superior */
+    margin-bottom: 25px; /* Espaçamento inferior */
+}
+
+/* Define o estilo do subtítulo com espaçamento */
+.subtitulo {
+    margin: 5px; /* Espaçamento externo em todos os lados */
+}
+
+/* Estiliza o botão com bordas arredondadas, transição e centralização */
+.botao {
+    height: 40px; /* Altura fixa */
+    background: none; /* Sem fundo padrão */
+    border-radius: 5px; /* Bordas arredondadas */
+    color: #4c89e3; /* Texto azul */
+    border: 2px solid #4c89e3; /* Borda azul de 2px */
+    display: flex; /* Flex container */
+    justify-content: center; /* Centraliza horizontalmente */
+    align-items: center; /* Centraliza verticalmente */
+    font-size: 18px; /* Tamanho do texto */
+    font-weight: bold; /* Texto em negrito */
+    transition: all 0.3s; /* Animação suave para alterações */
+}
+
+/* Estilo do botão ao passar o mouse: altera fundo e cor do texto */
+.botao:hover {
+    background-color: #4c89e3; /* Fundo azul ao passar o mouse */
+    color: #fff; /* Texto branco ao passar o mouse */
+}
