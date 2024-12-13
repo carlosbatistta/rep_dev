@@ -4,7 +4,7 @@ import '../src/App.css'
 function App() {
 
   return (
-    <div>
+    <div className='app'>
       <RoutesApp />
     </div>
   )

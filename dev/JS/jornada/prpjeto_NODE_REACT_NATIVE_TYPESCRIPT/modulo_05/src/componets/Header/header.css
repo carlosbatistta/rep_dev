@@ -1,0 +1,47 @@
+/* Estiliza o cabeçalho da página */
+header {
+  display: flex;
+  /* Ativa o modelo de layout Flexbox para facilitar o alinhamento de itens */
+  align-items: center;
+  /* Alinha os itens verticalmente no centro do cabeçalho */
+  justify-content: space-between;
+  /* Distribui os itens horizontalmente com espaçamento uniforme ao redor */
+  width: 100%;
+  /* Define que o cabeçalho ocupará toda a largura da página */
+  height: 60px;
+  /* Define uma altura fixa de 60px */
+  background-color: #000000;
+  /* Define a cor de fundo como preto */
+  padding: 0 800px;
+  /* Adiciona um espaçamento interno horizontal de 24px (esquerda e direita) */
+}
+
+/* Estiliza o elemento da logo */
+.logo {
+  text-decoration: none;
+  /* Remove o sublinhado padrão de links */
+  font-size: 30px;
+  /* Define o tamanho da fonte como 30px */
+  cursor: pointer;
+  /* Mostra o cursor de "mãozinha" ao passar o mouse sobre a logo */
+  color: #FFF;
+  /* Define a cor do texto como branco */
+  font-weight: bold;
+  /* Deixa o texto em negrito */
+}
+
+/* Estiliza o botão ou link de "Favoritos" */
+.favoritos {
+  text-decoration: none;
+  /* Remove o sublinhado padrão de links */
+  cursor: pointer;
+  /* Mostra o cursor de "mãozinha" ao passar o mouse sobre o botão */
+  background-color: #FFF;
+  /* Define a cor de fundo como branco */
+  padding: 5px 14px;
+  /* Adiciona espaçamento interno: 5px no topo e embaixo, 14px nos lados */
+  color: #000000;
+  /* Define a cor do texto como preto */
+  border-radius: 4px;
+  /* Adiciona cantos arredondados com raio de 4px */
+}
