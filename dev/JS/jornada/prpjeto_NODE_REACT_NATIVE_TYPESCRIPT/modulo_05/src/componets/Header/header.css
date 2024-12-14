@@ -4,7 +4,7 @@ header {
   /* Ativa o modelo de layout Flexbox para facilitar o alinhamento de itens */
   align-items: center;
   /* Alinha os itens verticalmente no centro do cabeçalho */
-  justify-content: space-between;
+  justify-content: space-around;
   /* Distribui os itens horizontalmente com espaçamento uniforme ao redor */
   width: 100%;
   /* Define que o cabeçalho ocupará toda a largura da página */
@@ -12,7 +12,7 @@ header {
   /* Define uma altura fixa de 60px */
   background-color: #000000;
   /* Define a cor de fundo como preto */
-  padding: 0 800px;
+  padding: 0 600px;
   /* Adiciona um espaçamento interno horizontal de 24px (esquerda e direita) */
 }
 
