@@ -6,18 +6,18 @@ import Favoritos from './pages/Favoritos';
 
 import Erro from './pages/Erro';
 
-import Header from './components/Header';
+import Header from './components/Header/index.jsx';
 
-function RoutesApp(){
-  return(
+function RoutesApp() {
+  return (
     <BrowserRouter>
-      <Header/>
+      <Header />
       <Routes>
-        <Route path="/" element={ <Home/> } />
-        <Route path="/filme/:id" element={ <Filme/> } />
-        <Route path="/favoritos" element={ <Favoritos/> } />
+        <Route path="/" element={<Home />} />
+        <Route path="/filme/:id" element={<Filme />} />
+        <Route path="/favoritos" element={<Favoritos />} />
 
-        <Route path="*" element={ <Erro/> } />
+        <Route path="*" element={<Erro />} />
       </Routes>
     </BrowserRouter>
   )
