@@ -1,0 +1,13 @@
+npm init -y
+npm install
+instalando o typescript: npm install typescript tsx @types/node --save-dev
+inicialisando: npx tsc --init
+
+npm ts-node-dev -D
+Alterar "package.json": 
+    "scripts": {
+        "dev": "ts-node-dev src/server.ts"
+    },
+Como usando o typescript qualquer nova importação terá que adicionar no @types. Exemplo import cros, terá que rodar após a instalação: npm i --save-dev @types/cors
+Instalar prisma: npm install @prisma/client
+Inicializar prisma: npx prisma init

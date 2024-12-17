@@ -4,12 +4,13 @@ import cors from 'cors';
 import path from 'path'
 
 import { router } from './routes'
+/**Cada app.use é um verificador, um middleware */
 
 const app = express();
 app.use(express.json());
-app.use(cors());
+app.use(cors()); //libera para qualquer IP possa fazer requisição, pode fazer bloqueios aqui também
 
-app.use(router);
+app.use(router); //Envia para as rotas
 
 app.use(
   '/files',
