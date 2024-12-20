@@ -11,3 +11,4 @@ Alterar "package.json":
 Como usando o typescript qualquer nova importação terá que adicionar no @types. Exemplo import cros, terá que rodar após a instalação: npm i --save-dev @types/cors
 Instalar prisma: npm install @prisma/client
 Inicializar prisma: npx prisma init
+Instalar os plugins do Prisma e Prisma insider

@@ -10,7 +10,7 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-// criar uma migration: yarn prisma migrate dev
+// criar uma migration, cria as tabelas lá no BD:npx prisma migrate dev --schema=./src/prisma/schema.prisma
 model User {
   id String @id @default(uuid())
   name String
@@ -19,7 +19,7 @@ model User {
   created_at DateTime? @default(now())
   updated_at DateTime? @default(now())
 
-  @@map("users")
+  @@map("users") //nome da tabela
 }
 
 model Category{
