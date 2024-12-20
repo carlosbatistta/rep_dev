@@ -15,6 +15,7 @@ try:
 except:
     print("Erro de conversão")
 
+
 ##choice escolhe um item entre a lista e shufle embaralha
 escolha = choice(lista)
 print('O nome escolhido foi {}!'.format(escolha))
