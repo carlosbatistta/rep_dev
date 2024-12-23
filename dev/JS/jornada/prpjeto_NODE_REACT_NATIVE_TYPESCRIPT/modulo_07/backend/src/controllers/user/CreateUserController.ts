@@ -3,6 +3,7 @@ import { CreateUserService } from '../../services/user/CreateUserService'
 
 class CreateUserController{
   async handle(req: Request, res: Response){
+    // o req recebe dodos os dados do body via json
     const { name, email, password } = req.body;
 
     const createUserService = new CreateUserService();

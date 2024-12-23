@@ -18,6 +18,8 @@ export function isAuthenticated(
     return res.status(401).end();
   }
 
+  //é uma array pois o token vem: barrer vjsiovnsovnoanvsaa@@kopk.."token", como não queremos o "barrer", descartamos o primeiro elemento e usamos o token
+  //o split seleciona o tipo de separador, nesse caso é o espaço " "
   const [, token] = authToken.split(" ")
 
   

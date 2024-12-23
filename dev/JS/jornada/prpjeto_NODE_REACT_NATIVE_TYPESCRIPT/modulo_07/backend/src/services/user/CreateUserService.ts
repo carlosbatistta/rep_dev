@@ -26,6 +26,7 @@ class CreateUserService{
       throw new Error("User already exists")
     }
 
+    //criptografa a senha
     const passwordHash = await hash(password, 8)
 
     const user = await prismaClient.user.create({
@@ -34,6 +35,7 @@ class CreateUserService{
         email: email,
         password: passwordHash,
       },
+      //o select informa o que deverá ser retornado
       select:{
         id: true,
         name: true,       

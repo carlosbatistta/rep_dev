@@ -41,6 +41,7 @@ model Product{
   created_at DateTime? @default(now())
   updated_at DateTime? @default(now())
 
+  //cria chaves extrangeiras
   category Category @relation(fields: [category_id], references: [id])
 
   @@map("products")
@@ -53,7 +54,7 @@ model Order{
   table Int
   status Boolean @default(false)
   draft Boolean @default(true)
-  name String?
+  name String? //significa que não é obrigatório
 
   created_at DateTime? @default(now())
   updated_at DateTime? @default(now())

@@ -1,6 +1,6 @@
 npm init -y
 npm install
-instalando o typescript: npm install typescript tsx @types/node --save-dev
+instalando o typescript: npm install typescript@latest ts-node@latest ts-node-dev@latest
 inicialisando: npx tsc --init
 
 npm ts-node-dev -D
@@ -12,3 +12,6 @@ Como usando o typescript qualquer nova importação terá que adicionar no @type
 Instalar prisma: npm install @prisma/client
 Inicializar prisma: npx prisma init
 Instalar os plugins do Prisma e Prisma insider
+Instalar criptografia: npm install bcryptjs
+{ name: 'Carlos', email: 'carlos.teste@gmail.com', password: '12123' }
+para acessar as variaveis ambiente: npm install dotenv --save
