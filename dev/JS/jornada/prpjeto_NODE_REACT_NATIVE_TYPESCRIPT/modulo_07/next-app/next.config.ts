@@ -6,11 +6,11 @@ const nextConfig: NextConfig = {
     remotePatterns: [
       {
         protocol: 'https',
-        hostname: 'api.github.com',
+        hostname: '"avatars.githubusercontent.com"',
         port: '',
-      }
-    ]
-  }
+      },
+    ],
+  },
 };
 
 export default nextConfig;

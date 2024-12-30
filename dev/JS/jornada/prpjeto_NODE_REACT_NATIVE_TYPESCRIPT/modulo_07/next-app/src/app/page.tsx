@@ -15,7 +15,9 @@ interface DataProps{
 //adiciona um delay na requisição
 async function delayFetch(url: string, delay: number){
   await new Promise(resolve => setTimeout(resolve, delay))
-  const response = await fetch(url);
+  //por padrão o next.js faz cache das requisições, para desativar o cache, basta adicionar o next:{revalidate: 300} na requisição, també o cache no-store não habilita o cache por tempo
+  //ou seja, busca dinamicamente.
+  const response = await fetch(url,{next:{revalidate: 300}});
   return response.json();
 }
 
