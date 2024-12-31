@@ -5,10 +5,11 @@ interface UserRequest{
   name: string;
   email: string;
   password: string;
+  profile: string;
 }
 
 class CreateUserService{
-  async execute({ name, email, password }: UserRequest){
+  async execute({ name, email, password, profile }: UserRequest){
 
     // verificar se ele enviou um email
     if(!email){
@@ -34,12 +35,18 @@ class CreateUserService{
         name: name,
         email: email,
         password: passwordHash,
+        profile: {
+          connect: {
+            id: profile
+          }
+        },
       },
       //o select informa o que deverá ser retornado
       select:{
         id: true,
         name: true,       
         email: true,
+        profile: true,
       }
     })
 
