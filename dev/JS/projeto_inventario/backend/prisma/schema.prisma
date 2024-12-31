@@ -12,3 +12,123 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
+// criar uma migration, cria as tabelas lá no BD:npx prisma migrate dev --schema=./src/prisma/schema.prisma
+model User {
+  id         String    @id @default(uuid())
+  name       String
+  email      String
+  password   String
+  created_at DateTime? @default(now())
+  updated_at DateTime? @default(now())
+  profile_id String
+  profile    Profile   @relation(fields: [profile_id], references: [id])
+
+  @@map("users") //nome da tabela
+}
+
+model Profile {
+  id     String   @id @default(uuid())
+  name   String
+  users  User[]
+  access Access[]
+
+  @@map("profiles")
+}
+
+model Access {
+  id         String  @id @default(uuid())
+  access     String
+  profile_id String
+  profile    Profile @relation(fields: [profile_id], references: [id])
+
+  @@map("accesses")
+}
+
+model Branch {
+  id         String    @id @default(uuid())
+  name       String
+  status     Boolean   @default(true)
+  created_at DateTime? @default(now())
+  updated_at DateTime? @default(now())
+  storage    Storage[]
+  stock      stock[]
+  count      count[]
+
+  @@map("branches")
+}
+
+model Storage {
+  id         String    @id @default(uuid())
+  name       String
+  created_at DateTime? @default(now())
+  updated_at DateTime? @default(now())
+  branch_id  String
+  branch     Branch    @relation(fields: [branch_id], references: [id])
+  address    Address[]
+  stock      stock[]
+  count      count[]
+
+  @@map("storages")
+}
+
+model Address {
+  id         String    @id @default(uuid())
+  name       String
+  status     String
+  storage_id String
+  storage    Storage   @relation(fields: [storage_id], references: [id])
+  product    Product[]
+  stock      stock[]
+  count      count[]
+
+  @@map("addresses")
+}
+
+model Product {
+  id          String  @id @default(uuid())
+  name        String
+  code        Int
+  codBar      Int
+  cost        String
+  description String
+  address_id  String
+  address     Address @relation(fields: [address_id], references: [id])
+  stock       stock[]
+  count       count[]
+
+  @@map("products")
+}
+
+model stock {
+  id         String    @id @default(uuid())
+  quantity   Int
+  product_id String
+  product    Product   @relation(fields: [product_id], references: [id])
+  storage_id String
+  storage    Storage   @relation(fields: [storage_id], references: [id])
+  branch_id  String
+  branch     Branch    @relation(fields: [branch_id], references: [id])
+  address_id String
+  address    Address   @relation(fields: [address_id], references: [id])
+  count      count[]
+
+  @@map("stocks")
+}
+
+model count{
+  id         String    @id @default(uuid())
+  quantity   Int
+  product_id String
+  product    Product   @relation(fields: [product_id], references: [id])
+  storage_id String
+  storage    Storage   @relation(fields: [storage_id], references: [id])
+  branch_id  String
+  branch     Branch    @relation(fields: [branch_id], references: [id])
+  address_id String
+  address    Address   @relation(fields: [address_id], references: [id]) 
+  stock_id   String
+  stock      stock     @relation(fields: [stock_id], references: [id])
+
+  @@map("counts")
+}
