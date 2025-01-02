@@ -1,17 +1,23 @@
-import { Request, Response } from 'express'
+import { Request, RequestHandler, Response } from 'express'
 import { DetailUserService } from '../../services/user/DetailUserService'
+import { promises } from 'dns';
 
 class DetailuserController {
-  async handle(req: Request, res: Response) {
+  handle: RequestHandler = async (req: Request, res: Response): Promise<void> => {
+    try {
 
-    const user_id = req.user_id;
+      const user_id = req.user_id;
 
-    const detailUserService = new DetailUserService();
+      const detailUserService = new DetailUserService();
 
-    const user = await detailUserService.execute(user_id);
+      const user = await detailUserService.execute(user_id);
 
-    return res.json(user);
+      res.json(user);
 
+    } catch (error: any) {
+      console.error(error.message);
+      res.status(400).json({ error: error.message });
+    }
   }
 }
 
