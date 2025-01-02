@@ -30,10 +30,10 @@ model User {
 model Profile {
   id     String   @id @default(uuid())
   name   String
-  users  User[]
-  access Access[]
 
   @@map("profiles")
+  users  User[]
+  access Access[]
 }
 
 model Access {
@@ -51,11 +51,11 @@ model Branch {
   status     Boolean   @default(true)
   created_at DateTime? @default(now())
   updated_at DateTime? @default(now())
+
+  @@map("branches")
   storage    Storage[]
   stock      stock[]
   count      count[]
-
-  @@map("branches")
 }
 
 model Storage {
@@ -65,11 +65,11 @@ model Storage {
   updated_at DateTime? @default(now())
   branch_id  String
   branch     Branch    @relation(fields: [branch_id], references: [id])
-  address    Address[]
-  stock      stock[]
-  count      count[]
 
   @@map("storages")
+    address    Address[]
+  stock      stock[]
+  count      count[]
 }
 
 model Address {
@@ -78,11 +78,11 @@ model Address {
   status     String
   storage_id String
   storage    Storage   @relation(fields: [storage_id], references: [id])
+
+  @@map("addresses")
   product    Product[]
   stock      stock[]
   count      count[]
-
-  @@map("addresses")
 }
 
 model Product {
@@ -94,10 +94,10 @@ model Product {
   description String
   address_id  String
   address     Address @relation(fields: [address_id], references: [id])
-  stock       stock[]
-  count       count[]
 
   @@map("products")
+  stock       stock[]
+  count       count[]
 }
 
 model stock {
@@ -111,9 +111,9 @@ model stock {
   branch     Branch    @relation(fields: [branch_id], references: [id])
   address_id String
   address    Address   @relation(fields: [address_id], references: [id])
-  count      count[]
 
   @@map("stocks")
+  count      count[]
 }
 
 model count{

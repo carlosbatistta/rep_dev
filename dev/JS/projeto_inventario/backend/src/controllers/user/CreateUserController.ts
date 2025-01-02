@@ -1,10 +1,10 @@
-import {Request, Response} from 'express'
+import { Request, Response } from 'express'
 import { CreateUserService } from '../../services/user/CreateUserService'
 
-class CreateUserController{
-  async handle(req: Request, res: Response): Promise<Response>{
+class CreateUserController {
+  async handle(req: Request, res: Response) {
     // o req recebe dodos os dados do body via json
-    const { name, email, password, profile } = req.body;
+    const { name, email, password, profile_id } = req.body;
 
     const createUserService = new CreateUserService();
 
@@ -12,10 +12,10 @@ class CreateUserController{
       name,
       email,
       password,
-      profile,
+      profile_id,
     });
 
-    return res.json(user)
+    return res.json(user);
   }
 }
 
