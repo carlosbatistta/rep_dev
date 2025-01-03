@@ -30,17 +30,19 @@ model User {
 model Profile {
   id     String   @id @default(uuid())
   name   String
-
-  @@map("profiles")
+  nivel  Int
   users  User[]
   access Access[]
+
+  @@map("profiles")
 }
 
 model Access {
-  id         String  @id @default(uuid())
-  access     String
-  profile_id String
-  profile    Profile @relation(fields: [profile_id], references: [id])
+  id           String  @id @default(uuid())
+  permission   String
+  access_nivel String
+  profile_id   String
+  profile      Profile @relation(fields: [profile_id], references: [id])
 
   @@map("accesses")
 }
@@ -48,28 +50,28 @@ model Access {
 model Branch {
   id         String    @id @default(uuid())
   name       String
+  code       Int
   status     Boolean   @default(true)
+  address    Boolean   @default(true)
   created_at DateTime? @default(now())
   updated_at DateTime? @default(now())
-
-  @@map("branches")
   storage    Storage[]
   stock      stock[]
   count      count[]
+
+  @@map("branches")
 }
 
 model Storage {
   id         String    @id @default(uuid())
   name       String
-  created_at DateTime? @default(now())
-  updated_at DateTime? @default(now())
   branch_id  String
   branch     Branch    @relation(fields: [branch_id], references: [id])
-
-  @@map("storages")
-    address    Address[]
+  address    Address[]
   stock      stock[]
   count      count[]
+
+  @@map("storages")
 }
 
 model Address {
@@ -78,11 +80,11 @@ model Address {
   status     String
   storage_id String
   storage    Storage   @relation(fields: [storage_id], references: [id])
-
-  @@map("addresses")
   product    Product[]
   stock      stock[]
   count      count[]
+
+  @@map("addresses")
 }
 
 model Product {
@@ -94,41 +96,41 @@ model Product {
   description String
   address_id  String
   address     Address @relation(fields: [address_id], references: [id])
-
-  @@map("products")
   stock       stock[]
   count       count[]
+
+  @@map("products")
 }
 
 model stock {
-  id         String    @id @default(uuid())
+  id         String  @id @default(uuid())
   quantity   Int
   product_id String
-  product    Product   @relation(fields: [product_id], references: [id])
+  product    Product @relation(fields: [product_id], references: [id])
   storage_id String
-  storage    Storage   @relation(fields: [storage_id], references: [id])
+  storage    Storage @relation(fields: [storage_id], references: [id])
   branch_id  String
-  branch     Branch    @relation(fields: [branch_id], references: [id])
+  branch     Branch  @relation(fields: [branch_id], references: [id])
   address_id String
-  address    Address   @relation(fields: [address_id], references: [id])
+  address    Address @relation(fields: [address_id], references: [id])
+  count      count[]
 
   @@map("stocks")
-  count      count[]
 }
 
-model count{
-  id         String    @id @default(uuid())
+model count {
+  id         String  @id @default(uuid())
   quantity   Int
   product_id String
-  product    Product   @relation(fields: [product_id], references: [id])
+  product    Product @relation(fields: [product_id], references: [id])
   storage_id String
-  storage    Storage   @relation(fields: [storage_id], references: [id])
+  storage    Storage @relation(fields: [storage_id], references: [id])
   branch_id  String
-  branch     Branch    @relation(fields: [branch_id], references: [id])
+  branch     Branch  @relation(fields: [branch_id], references: [id])
   address_id String
-  address    Address   @relation(fields: [address_id], references: [id]) 
+  address    Address @relation(fields: [address_id], references: [id])
   stock_id   String
-  stock      stock     @relation(fields: [stock_id], references: [id])
+  stock      stock   @relation(fields: [stock_id], references: [id])
 
   @@map("counts")
 }

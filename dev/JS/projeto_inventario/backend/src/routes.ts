@@ -4,26 +4,9 @@ import multer from 'multer';
 import { CreateUserController } from './controllers/user/CreateUserController'
 import { AuthUserController } from './controllers/user/AuthUserController'
 import { DetailuserController } from './controllers/user/DetailUserController'
-
-import { CreateCategoryController } from './controllers/category/CreateCategoryController'
-import { ListCategoryController } from './controllers/category/ListCategoryController'
-
-import { CreateProductController } from './controllers/product/CreateProductController'
-import { ListByCategoryController } from './controllers/product/ListByCategoryController'
-
-import { CreateOrderController } from './controllers/order/CreateOrderController'
-import { RemoveOrderController } from './controllers/order/RemoveOrderController'
-
-import { AddItemController } from './controllers/order/AddItemController'
-import { RemoveItemController } from './controllers/order/RemoveItemController'
-import { SendOrderController } from './controllers/order/SendOrderController'
-
-import { ListOrdersController } from './controllers/order/ListOrdersController'
-import { DetailOrderController } from './controllers/order/DetailOrderController'
-import { FinishOrderController } from './controllers/order/FinishOrderController'
-import { CreateProfileController } from './controllers/profile/CreateProfileCOntroller'
-
-
+import { CreateProfileController } from './controllers/profile/CreateProfileController'
+import { CreateAccessController } from './controllers/access/CreateAccessController'
+import { CreateBranchController } from './controllers/branch/CreateBranchController';
 import { isAuthenticated } from './middlewares/isAuthenticated'
 
 import uploadConfig from './config/multer'
@@ -38,7 +21,13 @@ router.post('/session', new AuthUserController().handle)
 router.get('/me', isAuthenticated, new DetailuserController().handle)
 
 //-- ROTAS PROFILE
-router.post('/profile', isAuthenticated, new CreateProfileController().handle)
+router.post('/profile', new CreateProfileController().handle)
+
+//-- ROTAS ACCESS
+router.post('/access', isAuthenticated, new CreateAccessController().handle)
+
+//-- ROTAS BRANCH
+router.post('/branch', isAuthenticated, new CreateBranchController().handle)
 /*
 router.get('/category', isAuthenticated, new ListCategoryController().handle)
 

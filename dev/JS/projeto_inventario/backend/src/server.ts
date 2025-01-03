@@ -1,4 +1,6 @@
 import express, { Request, Response, NextFunction } from 'express'
+import connectSqlServer from './database/sqlServer';
+import disconnectSqlServer from './database/sqlServer';
 import 'express-async-errors';
 import cors from 'cors';
 import path from 'path'
@@ -30,6 +32,19 @@ app.use((err: Error, req: Request, res: Response, next: NextFunction): void => {
     message: 'Internal server error.',
   });
 });
+
+async function fetchProfiles() {
+  try {
+    const pool = await connectSqlServer();
+    console.log('SQL server Conectado');
+  } catch (error) {
+    console.error('Erro ao buscar dados do SQL Server:', error);
+  } finally {
+    await disconnectSqlServer();
+  }
+}
+
+fetchProfiles();
 
 
 app.listen(3333, () => console.log('Servidor online!!!!'))
