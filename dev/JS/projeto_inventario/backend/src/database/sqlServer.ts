@@ -1,7 +1,6 @@
 import sql from 'mssql';
 import dotenv from 'dotenv';
 
-// Carregar variáveis de ambiente
 dotenv.config();
 
 const sqlServerConfig = {
@@ -9,17 +8,22 @@ const sqlServerConfig = {
     password: process.env.SQLSERVER_PASSWORD,
     database: process.env.SQLSERVER_DATABASE,
     server: process.env.SQLSERVER_SERVER,
-    port: parseInt(process.env.SQLSERVER_PORT || '1433', 10), // Conversão para número
+    port: parseInt(process.env.SQLSERVER_PORT || '37000', 10),
     options: {
-        encrypt: true, // Geralmente necessário para conexões remotas
-        trustServerCertificate: true, // Ajuste para aceitar certificados não confiáveis
+        encrypt: true,
+        trustServerCertificate: true,
+        serverName: process.env.SQLSERVER_SERVER,
     },
 };
 
-async function connectToSqlServer() {
+let pool: sql.ConnectionPool | null = null;
+
+export async function connectToSqlServer() {
     try {
-        const pool = await sql.connect(sqlServerConfig);
-        console.log('Conectado ao SQL Server com sucesso!');
+        if (!pool) {
+            pool = await sql.connect(sqlServerConfig);
+            console.log('SQL Server conectado.');
+        }
         return pool;
     } catch (error) {
         console.error('Erro ao conectar ao SQL Server:', error);
@@ -27,9 +31,10 @@ async function connectToSqlServer() {
     }
 }
 
-export default connectToSqlServer;
-
-// Testando a conexão
-connectToSqlServer()
-    .then(() => console.log('Teste de conexão bem-sucedido!'))
-    .catch(err => console.error('Erro no teste de conexão:', err));
+export async function disconnectSqlServer() {
+    if (pool) {
+        await pool.close();
+        console.log('SQL Server desconectado.');
+        pool = null;
+    }
+}
