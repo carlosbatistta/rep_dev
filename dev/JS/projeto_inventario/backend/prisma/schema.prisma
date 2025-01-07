@@ -13,7 +13,7 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-// criar uma migration, cria as tabelas lá no BD:npx prisma migrate dev --schema=./src/prisma/schema.prisma
+// criar uma migration, cria as tabelas lá no BD:npx prisma migrate dev --schema=./prisma/schema.prisma
 model User {
   id         String    @id @default(uuid())
   name       String
@@ -63,26 +63,27 @@ model Branch {
 }
 
 model Storage {
-  id         String    @id @default(uuid())
-  name       String
-  branch_id  String
-  branch     Branch    @relation(fields: [branch_id], references: [id])
-  address    Address[]
-  stock      stock[]
-  count      count[]
+  id        String    @id @default(uuid())
+  name      String
+  branch_id String
+  branch    Branch    @relation(fields: [branch_id], references: [id])
+  address   Address[]
+  stock     stock[]
+  count     count[]
 
   @@map("storages")
 }
 
 model Address {
-  id         String    @id @default(uuid())
-  name       String
-  status     String
-  storage_id String
-  storage    Storage   @relation(fields: [storage_id], references: [id])
-  product    Product[]
-  stock      stock[]
-  count      count[]
+  id               String    @id @default(uuid())
+  name             String
+  status           String
+  virtual_location String
+  storage_id       String
+  storage          Storage   @relation(fields: [storage_id], references: [id])
+  product          Product[]
+  stock            stock[]
+  count            count[]
 
   @@map("addresses")
 }
