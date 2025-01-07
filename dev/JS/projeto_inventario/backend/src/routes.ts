@@ -8,6 +8,7 @@ import { CreateProfileController } from './controllers/profile/CreateProfileCont
 import { CreateAccessController } from './controllers/access/CreateAccessController'
 import { CreateBranchController } from './controllers/branch/CreateBranchController';
 import { isAuthenticated } from './middlewares/isAuthenticated'
+import { ImportStorageController } from './controllers/storage/ImportStorageController'
 
 import uploadConfig from './config/multer'
 
@@ -28,6 +29,9 @@ router.post('/access', isAuthenticated, new CreateAccessController().handle)
 
 //-- ROTAS BRANCH
 router.post('/branch', isAuthenticated, new CreateBranchController().handle)
+
+//-- ROTAS STORAGE
+router.post('/storage', new ImportStorageController().handle)
 /*
 router.get('/category', isAuthenticated, new ListCategoryController().handle)
 

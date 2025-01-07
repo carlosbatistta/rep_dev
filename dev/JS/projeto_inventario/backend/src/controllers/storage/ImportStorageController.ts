@@ -1,17 +1,12 @@
-import { Request, RequestHandler, Response } from "express";
-import { ImportStorageService } from "../../services/storage/ImportSorageService";
+import { Response, Request, RequestHandler } from "express";
+import { ImportStorageService } from "../../services/storage/ImportStorageService";
 
-class ImportStorageController {
+export class ImportStorageController {
     handle: RequestHandler = async (req: Request, res: Response) => {
         try {
-            const { name, branch_id } = req.body;
-
             const importStorageService = new ImportStorageService();
 
-            const storage = await importStorageService.execute({
-                name,
-                branch_id
-            });
+            const storage = await importStorageService.execute();
 
             res.json(storage);
         } catch (error: any) {

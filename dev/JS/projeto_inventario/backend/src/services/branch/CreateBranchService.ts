@@ -10,7 +10,7 @@ interface BranchRequest {
 export class CreateBranchService {
     async execute({ name, code, status, address }: BranchRequest) {
         if (!name && !code) { 
-            throw new Error("Name is required");
+            throw new Error("Name and code is required");
         }
 
         const newBranch = await prismaClient.branch.create({

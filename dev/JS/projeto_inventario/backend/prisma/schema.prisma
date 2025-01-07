@@ -55,7 +55,6 @@ model Branch {
   address    Boolean   @default(true)
   created_at DateTime? @default(now())
   updated_at DateTime? @default(now())
-  storage    Storage[]
   stock      stock[]
   count      count[]
 
@@ -63,13 +62,12 @@ model Branch {
 }
 
 model Storage {
-  id        String    @id @default(uuid())
-  name      String
-  branch_id String
-  branch    Branch    @relation(fields: [branch_id], references: [id])
-  address   Address[]
-  stock     stock[]
-  count     count[]
+  id      String    @id @default(uuid())
+  code    Int
+  name    String
+  address Address[]
+  stock   stock[]
+  count   count[]
 
   @@map("storages")
 }
