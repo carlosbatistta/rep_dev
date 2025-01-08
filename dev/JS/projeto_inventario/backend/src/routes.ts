@@ -31,7 +31,7 @@ router.post('/access', isAuthenticated, new CreateAccessController().handle)
 router.post('/branch', isAuthenticated, new CreateBranchController().handle)
 
 //-- ROTAS STORAGE
-router.post('/storage', new ImportStorageController().handle)
+router.post('/storage', isAuthenticated, new ImportStorageController().handle)
 /*
 router.get('/category', isAuthenticated, new ListCategoryController().handle)
 

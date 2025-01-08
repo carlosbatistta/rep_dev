@@ -1,5 +1,5 @@
 import prismaClient from "../../prisma";
-
+/*
 interface ItemRequest{
   item_id: string;
 }
@@ -19,3 +19,5 @@ class RemoveItemService{
 }
 
 export { RemoveItemService }
+
+*/
