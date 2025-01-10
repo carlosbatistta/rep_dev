@@ -20,3 +20,5 @@ class CreateStorageController {
         }
     }
 }
+
+export {CreateStorageController}

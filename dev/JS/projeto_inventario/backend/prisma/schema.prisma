@@ -63,20 +63,22 @@ model Branch {
 
 model Storage {
   id      String    @id @default(uuid())
-  code    Int
+  code    String
   name    String
   address Address[]
   stock   stock[]
   count   count[]
+  virtual VirtualLocation[]
 
   @@map("storages")
 }
 
 model Address {
   id               String    @id @default(uuid())
-  name             String
-  status           String
-  virtual_location String
+  address          String
+  description      String
+  status           Int
+  storage_code     String
   storage_id       String
   storage          Storage   @relation(fields: [storage_id], references: [id])
   product          Product[]
@@ -84,6 +86,15 @@ model Address {
   count            count[]
 
   @@map("addresses")
+}
+
+model VirtualLocation {
+  id         String  @id @default(uuid())
+  name       String
+  code       Int
+  storage_id String
+  storage Storage @relation(fields: [storage_id], references: [id])
+  @@map("virtual_locations")
 }
 
 model Product {

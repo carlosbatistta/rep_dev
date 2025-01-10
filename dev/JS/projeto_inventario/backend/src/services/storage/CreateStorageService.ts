@@ -1,7 +1,7 @@
 import prismaClient from "../../prisma";
 
 interface StorageRequest {
-    code: number;
+    code: string;
     name: string;
 }
 
