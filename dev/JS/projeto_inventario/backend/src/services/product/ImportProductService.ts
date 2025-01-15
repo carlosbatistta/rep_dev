@@ -1,18 +1,23 @@
-import { parse } from "dotenv";
 import { connectToSqlServer } from "../../database/sqlServer";
 import prismaClient from "../../prisma";
 
-export class ImportStorageService {
+interface ProductRequest {
+    branch_id: string;
+    branch_code: string;
+}
 
-    async execute(): Promise<any> {
-        let codigo = 0
+export class ImportProductService {
+
+    async execute({ branch_code }: ProductRequest): Promise<any> {
+        let status = 0
         try {
             // Conectar ao SQL Server
             const pool = await connectToSqlServer();
 
             // Query para buscar os dados da tabela no SQL Server
             const query = `
-        SELECT NNR_CODIGO, NNR_DESCRI FROM [dbo].[NNR010]
+        SELECT B1_DESC, B1_COD, B1_CODBAR, B1_CUSTD, B1_ESPECIF FROM [dbo].[SB1010]
+        WHERE SB1010.D_E_L_E_T_ <> '*'
       `;
 
             // Executar a query no SQL Server
@@ -26,27 +31,30 @@ export class ImportStorageService {
             // Iterar pelos resultados e inserir no Prisma
             const importedData = result.recordset;
             for (const record of importedData) {
-                const { NNR_CODIGO, NNR_DESCRI } = record;
+                const { B1_DESC, B1_COD, B1_CODBAR, B1_CUSTD, B1_ESPECIF } = record;
 
-                try {
-                    codigo = parseInt(NNR_CODIGO)
-                } catch (e) {
-                    console.log("Erro ao converter o código para inteiro")
-                    console.log(e)
-                }
+                const branch = await prismaClient.branch.findFirst({
+                    where: {
+                        code: branch_code
+                    }
+                })
+
                 // Inserir no banco usando Prisma
-                await prismaClient.storage.create({
+                await prismaClient.product.create({
                     data: {
-                        code: codigo,
-                        name: NNR_DESCRI,
+                        name: B1_DESC,
+                        code: B1_COD,
+                        codBar: B1_CODBAR,
+                        cost: B1_CUSTD,
+                        description: B1_ESPECIF,
+                        branch_code: branch.code,
+                        branch_id: branch.id,
                     },
                 });
-
             }
-
             console.log("Dados importados com sucesso.");
-            return importedData; // Retornar os dados importados, se necessário
-        } catch (error) {
+            return importedData;
+        } catch (e) {
             console.error("Erro ao importar dados do SQL Server:", error);
             throw new Error("Failed to import data from SQL Server.");
         }

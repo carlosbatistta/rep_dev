@@ -50,19 +50,20 @@ model Access {
 model Branch {
   id         String    @id @default(uuid())
   name       String
-  code       Int
+  code       String
   status     Boolean   @default(true)
   address    Boolean   @default(true)
   created_at DateTime? @default(now())
   updated_at DateTime? @default(now())
   stock      stock[]
   count      count[]
+  product    Product[]
 
   @@map("branches")
 }
 
 model Storage {
-  id      String    @id @default(uuid())
+  id      String            @id @default(uuid())
   code    String
   name    String
   address Address[]
@@ -74,16 +75,16 @@ model Storage {
 }
 
 model Address {
-  id               String    @id @default(uuid())
-  address          String
-  description      String
-  status           Int
-  storage_code     String
-  storage_id       String
-  storage          Storage   @relation(fields: [storage_id], references: [id])
-  product          Product[]
-  stock            stock[]
-  count            count[]
+  id           String    @id @default(uuid())
+  address      String
+  description  String
+  status       Int
+  storage_code String
+  storage_id   String
+  storage      Storage   @relation(fields: [storage_id], references: [id])
+  product      Product[]
+  stock        stock[]
+  count        count[]
 
   @@map("addresses")
 }
@@ -93,21 +94,26 @@ model VirtualLocation {
   name       String
   code       Int
   storage_id String
-  storage Storage @relation(fields: [storage_id], references: [id])
+  storage    Storage @relation(fields: [storage_id], references: [id])
+
   @@map("virtual_locations")
 }
 
 model Product {
-  id          String  @id @default(uuid())
-  name        String
-  code        Int
-  codBar      Int
-  cost        String
-  description String
-  address_id  String
-  address     Address @relation(fields: [address_id], references: [id])
-  stock       stock[]
-  count       count[]
+  id           String   @id @default(uuid())
+  name         String
+  code         String
+  codBar       String
+  cost         String
+  description  String
+  address_code String?
+  address_id   String?
+  address      Address? @relation(fields: [address_id], references: [id])
+  branch_code  String
+  branch_id    String
+  branch Branch @relation(fields: [branch_id], references: [id])
+  stock        stock[]
+  count        count[]
 
   @@map("products")
 }

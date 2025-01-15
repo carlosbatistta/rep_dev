@@ -2,7 +2,7 @@ import prismaClient from "../../prisma";
 
 interface StorageRequest {
     id: string;
-    code: number;
+    code: string;
     name: string;
 }
 

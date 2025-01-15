@@ -11,7 +11,6 @@ import { isAuthenticated } from './middlewares/isAuthenticated'
 import { CreateStorageController } from './controllers/storage/CreateStorageController'
 import { ImportAddressController } from './controllers/address/ImportAddressController';
 import uploadConfig from './config/multer'
-import { DeleteAddressController } from './controllers/address/DeleteAddressController';
 import { DeleteProfileController } from './controllers/profile/DeleteProfileController';
 import { AlterProfileController } from './controllers/profile/AlterProfileController';
 
@@ -41,7 +40,6 @@ router.post('/storage/add', isAuthenticated, new CreateStorageController().handl
 
 //-- ROTAS ADDRESS
 router.post('/address/import', isAuthenticated, new ImportAddressController().handle)
-router.delete('/address/remove', isAuthenticated, new DeleteAddressController().handle)
 /*
 router.get('/category', isAuthenticated, new ListCategoryController().handle)
 
