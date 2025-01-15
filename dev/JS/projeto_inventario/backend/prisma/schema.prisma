@@ -113,7 +113,7 @@ model Product {
 model stock {
   id                 String   @id @default(uuid())
   addressed_quantity Int
-  quantity           Int
+  total_quantity     Int
   product_code       String
   product_desc       String
   storage_code       String
@@ -133,18 +133,21 @@ model stock {
 }
 
 model count {
-  id         String  @id @default(uuid())
-  quantity   Int
-  product_id String
-  product    Product @relation(fields: [product_id], references: [id])
-  storage_id String
-  storage    Storage @relation(fields: [storage_id], references: [id])
-  branch_id  String
-  branch     Branch  @relation(fields: [branch_id], references: [id])
-  address_id String
-  address    Address @relation(fields: [address_id], references: [id])
-  stock_id   String
-  stock      stock   @relation(fields: [stock_id], references: [id])
+  id             String  @id @default(uuid())
+  count_quantity Int
+  difference     Int
+  status         String
+  user_name      String
+  product_id     String
+  product        Product @relation(fields: [product_id], references: [id])
+  storage_id     String
+  storage        Storage @relation(fields: [storage_id], references: [id])
+  branch_id      String
+  branch         Branch  @relation(fields: [branch_id], references: [id])
+  address_id     String
+  address        Address @relation(fields: [address_id], references: [id])
+  stock_id       String
+  stock          stock   @relation(fields: [stock_id], references: [id])
 
   @@map("counts")
 }
