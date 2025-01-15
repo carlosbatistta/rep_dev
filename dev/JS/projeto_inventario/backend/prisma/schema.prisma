@@ -57,7 +57,6 @@ model Branch {
   updated_at DateTime? @default(now())
   stock      stock[]
   count      count[]
-  product    Product[]
 
   @@map("branches")
 }
@@ -75,14 +74,13 @@ model Storage {
 }
 
 model Address {
-  id           String    @id @default(uuid())
+  id           String  @id @default(uuid())
   address      String
   description  String
   status       Int
   storage_code String
   storage_id   String
-  storage      Storage   @relation(fields: [storage_id], references: [id])
-  product      Product[]
+  storage      Storage @relation(fields: [storage_id], references: [id])
   stock        stock[]
   count        count[]
 
@@ -100,36 +98,36 @@ model VirtualLocation {
 }
 
 model Product {
-  id           String   @id @default(uuid())
-  name         String
-  code         String
-  codBar       String
-  cost         String
-  description  String
-  address_code String?
-  address_id   String?
-  address      Address? @relation(fields: [address_id], references: [id])
-  branch_code  String
-  branch_id    String
-  branch Branch @relation(fields: [branch_id], references: [id])
-  stock        stock[]
-  count        count[]
+  id          String  @id @default(uuid())
+  name        String
+  code        String
+  codBar      String
+  cost        String
+  description String
+  stock       stock[]
+  count       count[]
 
   @@map("products")
 }
 
 model stock {
-  id         String  @id @default(uuid())
-  quantity   Int
-  product_id String
-  product    Product @relation(fields: [product_id], references: [id])
-  storage_id String
-  storage    Storage @relation(fields: [storage_id], references: [id])
-  branch_id  String
-  branch     Branch  @relation(fields: [branch_id], references: [id])
-  address_id String
-  address    Address @relation(fields: [address_id], references: [id])
-  count      count[]
+  id                 String   @id @default(uuid())
+  addressed_quantity Int
+  quantity           Int
+  product_code       String
+  product_desc       String
+  storage_code       String
+  branch_code        String
+  address_code       String
+  address_id         String?
+  address            Address? @relation(fields: [address_id], references: [id])
+  product_id         String
+  product            Product  @relation(fields: [product_id], references: [id])
+  storage_id         String
+  storage            Storage  @relation(fields: [storage_id], references: [id])
+  branch_id          String
+  branch             Branch   @relation(fields: [branch_id], references: [id])
+  count              count[]
 
   @@map("stocks")
 }

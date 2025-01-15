@@ -9,7 +9,8 @@ class ImportAddressController {
             const deleteAddressService = new DeleteAddressService();
 
             const address_del = await deleteAddressService.execute();
-            const address_imp = await importAddressService.execute();
+            const {branch_code} = req.body;
+            const address_imp = await importAddressService.execute(branch_code);
 
             res.json({ address_imp, address_del });
         } catch (error: any) {

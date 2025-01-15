@@ -2,7 +2,7 @@ import prismaClient from "../../prisma";
 
 interface BranchRequest {
     name: string;
-    code: number;
+    code: string;
     status: boolean;
     address: boolean;
 }
