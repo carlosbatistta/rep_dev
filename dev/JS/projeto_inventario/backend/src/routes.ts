@@ -13,7 +13,7 @@ import { ImportAddressController } from './controllers/address/ImportAddressCont
 import uploadConfig from './config/multer'
 import { DeleteProfileController } from './controllers/profile/DeleteProfileController';
 import { AlterProfileController } from './controllers/profile/AlterProfileController';
-
+import { ImportStockController } from './controllers/stock/ImportStockController';
 
 const router = Router();
 
@@ -40,6 +40,9 @@ router.post('/storage/add', isAuthenticated, new CreateStorageController().handl
 
 //-- ROTAS ADDRESS
 router.post('/address/import', isAuthenticated, new ImportAddressController().handle)
+
+//-- ROTAS STOCK
+router.post('/stock/import', isAuthenticated, new ImportStockController().handle)
 /*
 router.get('/category', isAuthenticated, new ListCategoryController().handle)
 
