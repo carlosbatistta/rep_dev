@@ -16,11 +16,6 @@ export class CreateVirtualLocationService {
             data: {
                 code,
                 name,
-                storage: {
-                    connect: {
-                        id: "some-storage-id" // replace with actual storage id
-                    }
-                },
             },
             select: {
                 id: true,

@@ -61,7 +61,6 @@ export class ImportAddressService {
                             description: BE_DESCRIC,
                             status: status,
                             storage_code: BE_LOCAL,
-                            storage_id: storage.id,
                         },
                     });
 

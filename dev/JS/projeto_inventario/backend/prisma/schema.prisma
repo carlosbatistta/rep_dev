@@ -55,9 +55,6 @@ model Branch {
   address         Boolean           @default(true)
   created_at      DateTime?         @default(now())
   updated_at      DateTime?         @default(now())
-  stock           stock[]
-  count           count[]
-  addressed_stock addressed_stock[]
 
   @@map("branches")
 }
@@ -66,11 +63,6 @@ model Storage {
   id              String            @id @default(uuid())
   code            String
   name            String
-  address         Address[]
-  stock           stock[]
-  count           count[]
-  virtual         VirtualLocation[]
-  addressed_stock addressed_stock[]
 
   @@map("storages")
 }
@@ -81,10 +73,6 @@ model Address {
   description     String
   status          Int
   storage_code    String
-  storage_id      String
-  storage         Storage           @relation(fields: [storage_id], references: [id])
-  count           count[]
-  addressed_stock addressed_stock[]
 
   @@map("addresses")
 }
@@ -93,8 +81,6 @@ model VirtualLocation {
   id         String  @id @default(uuid())
   name       String
   code       Int
-  storage_id String
-  storage    Storage @relation(fields: [storage_id], references: [id])
 
   @@map("virtual_locations")
 }
@@ -106,9 +92,6 @@ model Product {
   codBar          String
   cost            String
   description     String
-  stock           stock[]
-  count           count[]
-  addressed_stock addressed_stock[]
 
   @@map("products")
 }
@@ -120,13 +103,6 @@ model stock {
   product_desc       String
   storage_code       String
   branch_code        String
-  product_id         String
-  product            Product  @relation(fields: [product_id], references: [id])
-  storage_id         String
-  storage            Storage  @relation(fields: [storage_id], references: [id])
-  branch_id          String
-  branch             Branch   @relation(fields: [branch_id], references: [id])
-  count              count[]
 
   @@map("stocks")
 }
@@ -139,14 +115,6 @@ model addressed_stock {
   storage_code       String
   branch_code        String
   address_code       String
-  address_id         String
-  address            Address @relation(fields: [address_id], references: [id])
-  product_id         String
-  product            Product  @relation(fields: [product_id], references: [id])
-  storage_id         String
-  storage            Storage  @relation(fields: [storage_id], references: [id])
-  branch_id          String
-  branch             Branch   @relation(fields: [branch_id], references: [id])
 
   @@map("addressed_stocks")
 }
@@ -157,16 +125,12 @@ model count {
   difference     Int
   status         String
   user_name      String
-  product_id     String
-  product        Product @relation(fields: [product_id], references: [id])
-  storage_id     String
-  storage        Storage @relation(fields: [storage_id], references: [id])
-  branch_id      String
-  branch         Branch  @relation(fields: [branch_id], references: [id])
-  address_id     String
-  address        Address @relation(fields: [address_id], references: [id])
-  stock_id       String
-  stock          stock   @relation(fields: [stock_id], references: [id])
+  product_code   String
+  product_desc   String
+  storage_code   String
+  branch_code    String
+  address_code   String
+
 
   @@map("counts")
 }

@@ -21,7 +21,7 @@ export class ImportAddressedStockService {
 
             // Query para buscar os dados da tabela no SQL Server
             const query = `
-            select D14_QTDEST, D14_PRODUT, D14_LOCAL, D14_FILIAL, D14_ENDER from [dbo].[D14010]
+            select D14_QTDEST, D14_PRODUT, D14_LOCAL, D14_ENDER from [dbo].[D14010]
             where D14010.D_E_L_E_T_ <> '*'
             and D14_FILIAL = @branch_code
                 `;
@@ -37,7 +37,7 @@ export class ImportAddressedStockService {
             // Iterar pelos resultados e inserir no Prisma
             const importedData = result.recordset;
             for (const record of importedData) {
-                const { D14_QTDEST, D14_PRODUT, D14_LOCAL, D14_FILIAL, D14_ENDER } = record;
+                const { D14_QTDEST, D14_PRODUT, D14_LOCAL, D14_ENDER } = record;
 
                 const product = await prismaClient.product.findFirst({
                     where: {
@@ -65,9 +65,7 @@ export class ImportAddressedStockService {
                         product_code: product.code,
                         storage_code: storage.code,
                         product_desc: product.description,
-                        storage: { connect: { id: storage.id } },
-                        product: { connect: { id: product.id } },
-                        branch: { connect: { id: branch.id } },
+                        address_code: D14_ENDER, // Assuming D14_ENDER is the address code
                     },
                 });
             }

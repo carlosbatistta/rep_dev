@@ -14,6 +14,7 @@ import uploadConfig from './config/multer'
 import { DeleteProfileController } from './controllers/profile/DeleteProfileController';
 import { AlterProfileController } from './controllers/profile/AlterProfileController';
 import { ImportStockController } from './controllers/stock/ImportStockController';
+import { ImportAddressedStockController } from './controllers/addressed_stock/ImportAddressedStockController';
 
 const router = Router();
 
@@ -43,6 +44,9 @@ router.post('/address/import', isAuthenticated, new ImportAddressController().ha
 
 //-- ROTAS STOCK
 router.post('/stock/import', isAuthenticated, new ImportStockController().handle)
+
+//-- ROTAS ADDRESSED STOCK
+router.post('/addressed_stock/import', isAuthenticated, new ImportAddressedStockController().handle)
 /*
 router.get('/category', isAuthenticated, new ListCategoryController().handle)
 

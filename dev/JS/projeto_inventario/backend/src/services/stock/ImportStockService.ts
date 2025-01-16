@@ -21,7 +21,7 @@ export class ImportStockService {
 
             // Query para buscar os dados da tabela no SQL Server
             const query = `
-                select B2_QATU, B2_COD, B2_LOCAL, B2_FILIAL from [dbo].[SB2010]
+                select B2_QATU, B2_COD, B2_LOCAL from [dbo].[SB2010]
                 where SB2010.D_E_L_E_T_ <> '*'
                 and B2_FILIAL = @branch_code
                 `;
@@ -37,7 +37,7 @@ export class ImportStockService {
             // Iterar pelos resultados e inserir no Prisma
             const importedData = result.recordset;
             for (const record of importedData) {
-                const { B2_QATU, B2_COD, B2_LOCAL, B2_FILIAL } = record;
+                const { B2_QATU, B2_COD, B2_LOCAL } = record;
 
                 const product = await prismaClient.product.findFirst({
                     where: {
@@ -63,11 +63,8 @@ export class ImportStockService {
                         total_quantity: B2_QATU,
                         branch_code: branch.code,
                         product_code: product.code,
-                        storage_code: storage.code,
+                        storage_code: B2_LOCAL,
                         product_desc: product.description,
-                        product: { connect: { id: product.id } },
-                        storage: { connect: { id: B2_LOCAL } },
-                        branch: { connect: { id: branch.code } },
                     },
                 });
 
