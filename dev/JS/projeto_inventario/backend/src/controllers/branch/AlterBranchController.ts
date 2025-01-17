@@ -13,7 +13,7 @@ class AlterBranchController {
                 name,
                 code,
                 status,
-                address
+                address,
             })
 
             res.json(branch)
@@ -23,3 +23,5 @@ class AlterBranchController {
         }
     }
 }
+
+export { AlterBranchController }

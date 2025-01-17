@@ -48,67 +48,67 @@ model Access {
 }
 
 model Branch {
-  id              String            @id @default(uuid())
-  name            String
-  code            String
-  status          Boolean           @default(true)
-  address         Boolean           @default(true)
-  created_at      DateTime?         @default(now())
-  updated_at      DateTime?         @default(now())
+  id         String    @id @default(uuid())
+  name       String
+  code       String
+  status     Boolean   @default(true)
+  address    Boolean   @default(true)
+  created_at DateTime? @default(now())
+  updated_at DateTime? @default(now())
 
   @@map("branches")
 }
 
 model Storage {
-  id              String            @id @default(uuid())
-  code            String
-  name            String
+  id   String @id @default(uuid())
+  code String
+  name String
 
   @@map("storages")
 }
 
 model Address {
-  id              String            @id @default(uuid())
-  address         String
-  description     String
-  status          Int
-  storage_code    String
+  id           String @id @default(uuid())
+  address      String
+  description  String
+  status       Int
+  storage_code String
 
   @@map("addresses")
 }
 
 model VirtualLocation {
-  id         String  @id @default(uuid())
-  name       String
-  code       Int
+  id   String @id @default(uuid())
+  name String
+  code Int
 
   @@map("virtual_locations")
 }
 
 model Product {
-  id              String            @id @default(uuid())
-  name            String
-  code            String
-  codBar          String
-  cost            String
-  description     String
+  id          String @id @default(uuid())
+  name        String
+  code        String
+  codBar      String
+  cost        String
+  description String
 
   @@map("products")
 }
 
 model stock {
-  id                 String   @id @default(uuid())
-  total_quantity     Int
-  product_code       String
-  product_desc       String
-  storage_code       String
-  branch_code        String
+  id             String @id @default(uuid())
+  total_quantity Int
+  product_code   String
+  product_desc   String
+  storage_code   String
+  branch_code    String
 
   @@map("stocks")
 }
 
 model addressed_stock {
-  id                 String   @id @default(uuid())
+  id                 String @id @default(uuid())
   addressed_quantity Int
   product_code       String
   product_desc       String
@@ -120,7 +120,7 @@ model addressed_stock {
 }
 
 model count {
-  id             String  @id @default(uuid())
+  id             String @id @default(uuid())
   count_quantity Int
   difference     Int
   status         String
@@ -131,6 +131,26 @@ model count {
   branch_code    String
   address_code   String
 
-
   @@map("counts")
+}
+
+model info_invent {
+  id                     String   @id @default(uuid())
+  tp_material            String
+  document               Int
+  date_count             DateTime
+  data_valid             DateTime
+  origin                 String
+  accuracy_quanty        Float
+  accuracy_value         Float
+  accuracy_percent       Float
+  accuracy_total         Float
+  total_stock_value      Float
+  total_inventory_value  Float
+  total_stock_quanty     Int
+  total_inventory_quanty Int
+  difference_value       Float
+  difference_quanty      Int
+
+  @@map("info_invents")
 }

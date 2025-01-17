@@ -19,3 +19,5 @@ class DeleteBranchController {
         }
     }
 }
+
+export { DeleteBranchController }
