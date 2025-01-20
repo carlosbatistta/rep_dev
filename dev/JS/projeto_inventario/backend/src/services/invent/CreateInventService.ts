@@ -3,17 +3,18 @@ import prismaClient from "../../prisma";
 interface InventRequest {
     tp_material: string;
     document: number;
-    date_count: Date;
-    date_valid: Date;
+    date_count: string;
+    date_valid: string;
     origin: string;
     filial: string;
 }
 
 export class CreateInventService {
     async execute({ tp_material, document, date_count, date_valid, origin, filial }: InventRequest) {
-        if (!tp_material && !document && !date_count && !date_valid && !origin) {
+        if (!tp_material && !document && !origin) {
             throw new Error("Todos os campos são obrigatórios");
         }
+
 
         const newInvent = await prismaClient.invent.create({
             data: {

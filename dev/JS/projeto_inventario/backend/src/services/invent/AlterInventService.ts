@@ -3,7 +3,7 @@ import prismaClient from "../../prisma";
 interface InventRequest {
     document: number;
     filial: string;
-    date_count: Date;
+    date_count: string;
     accuracy_quanty: number,
     accuracy_value: number,
     accuracy_percent: number,

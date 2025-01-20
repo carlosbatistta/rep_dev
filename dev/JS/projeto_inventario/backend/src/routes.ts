@@ -1,5 +1,6 @@
 import { Router } from 'express';
 import multer from 'multer';
+import uploadConfig from './config/multer'
 
 import { CreateUserController } from './controllers/user/CreateUserController'
 import { AuthUserController } from './controllers/user/AuthUserController'
@@ -10,11 +11,13 @@ import { CreateBranchController } from './controllers/branch/CreateBranchControl
 import { isAuthenticated } from './middlewares/isAuthenticated'
 import { CreateStorageController } from './controllers/storage/CreateStorageController'
 import { ImportAddressController } from './controllers/address/ImportAddressController';
-import uploadConfig from './config/multer'
 import { DeleteProfileController } from './controllers/profile/DeleteProfileController';
 import { AlterProfileController } from './controllers/profile/AlterProfileController';
 import { ImportStockController } from './controllers/stock/ImportStockController';
 import { ImportAddressedStockController } from './controllers/addressed_stock/ImportAddressedStockController';
+import { CreateInventController } from './controllers/invent/CreateInventController';
+import { AlterInventController } from './controllers/invent/AlterInventControllrer';
+import { DeleteInventController } from './controllers/invent/DeleteInventController';
 
 const router = Router();
 
@@ -27,7 +30,7 @@ router.get('/me', isAuthenticated, new DetailuserController().handle)
 
 //-- ROTAS PROFILE
 router.post('/profile/add', new CreateProfileController().handle)
-router.post('/profile/remove', isAuthenticated, new DeleteProfileController().handle)
+router.delete('/profile/remove', isAuthenticated, new DeleteProfileController().handle)
 router.post('/profile/alter', isAuthenticated, new AlterProfileController().handle)
 
 //-- ROTAS ACCESS
@@ -47,6 +50,11 @@ router.post('/stock/import', isAuthenticated, new ImportStockController().handle
 
 //-- ROTAS ADDRESSED STOCK
 router.post('/addressed_stock/import', isAuthenticated, new ImportAddressedStockController().handle)
+
+//-- ROTAS INVENT
+router.post('/invent/add', isAuthenticated, new CreateInventController().handle)
+router.post('/invent/alter', isAuthenticated, new AlterInventController().handle)
+router.delete('/invent/delete', isAuthenticated, new DeleteInventController().handle)
 /*
 router.get('/category', isAuthenticated, new ListCategoryController().handle)
 
