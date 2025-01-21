@@ -9,7 +9,8 @@ class ImportProductController {
             const deleteProductService = new DeleteProductService();
 
             const product_del = await deleteProductService.execute();
-            const product_imp = await importProductService.execute();
+            const { branch_code } = req.body;
+            const product_imp = await importProductService.execute({ branch_code });
 
             res.json({ product_imp, product_del });
         } catch (error: any) {

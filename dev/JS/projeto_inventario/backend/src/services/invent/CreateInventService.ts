@@ -6,11 +6,11 @@ interface InventRequest {
     date_count: string;
     date_valid: string;
     origin: string;
-    filial: string;
+    branch_code: string;
 }
 
 export class CreateInventService {
-    async execute({ tp_material, document, date_count, date_valid, origin, filial }: InventRequest) {
+    async execute({ tp_material, document, date_count, date_valid, origin, branch_code }: InventRequest) {
         if (!tp_material && !document && !origin) {
             throw new Error("Todos os campos são obrigatórios");
         }
@@ -23,7 +23,7 @@ export class CreateInventService {
                 date_count,
                 date_valid,
                 origin,
-                filial,
+                branch_code,
             },
             select: {
                 id: true,
@@ -32,7 +32,7 @@ export class CreateInventService {
                 date_count: true,
                 date_valid: true,
                 origin: true,
-                filial: true
+                branch_code: true
             },
         });
 

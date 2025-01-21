@@ -4,7 +4,7 @@ import { CreateInventService } from '../../services/invent/CreateInventService'
 class CreateInventController {
     handle: RequestHandler = async (req: Request, res: Response) => {
         try {
-            const { tp_material, document, date_count, date_valid, origin, filial } = req.body;
+            const { tp_material, document, date_count, date_valid, origin, branch_code } = req.body;
 
             const createInventService = new CreateInventService();
 
@@ -14,7 +14,7 @@ class CreateInventController {
                 date_count,
                 date_valid,
                 origin,
-                filial
+                branch_code
             });
             res.json(invent);
         } catch (error: any) {

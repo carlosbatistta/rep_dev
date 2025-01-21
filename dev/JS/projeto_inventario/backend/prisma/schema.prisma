@@ -86,12 +86,15 @@ model VirtualLocation {
 }
 
 model Product {
-  id          String @id @default(uuid())
-  name        String
-  code        String
-  codBar      String
-  cost        String
-  description String
+  id            String  @id @default(uuid())
+  branch_code   String
+  name          String
+  code          String
+  codBar        String
+  cost          String
+  description   String
+  zero_cost     Boolean
+  negative_cost Boolean
 
   @@map("products")
 }
@@ -108,13 +111,17 @@ model stock {
 }
 
 model addressed_stock {
-  id                 String @id @default(uuid())
+  id                 String  @id @default(uuid())
   addressed_quantity Int
   product_code       String
   product_desc       String
   storage_code       String
   branch_code        String
   address_code       String
+  reservation        Boolean
+  reserve_quanty     Int
+  transfer           Boolean
+  transfer_quanty    Int
 
   @@map("addressed_stocks")
 }
@@ -135,13 +142,13 @@ model count {
 }
 
 model invent {
-  id                     String   @id @default(uuid())
+  id                     String @id @default(uuid())
   tp_material            String
   document               Int
   date_count             String
   date_valid             String
   origin                 String
-  filial                 String
+  branch_code            String
   accuracy_quanty        Float?
   accuracy_value         Float?
   accuracy_percent       Float?
