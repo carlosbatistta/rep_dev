@@ -24,7 +24,7 @@ export class AlterInventService {
         const invent = await prismaClient.invent.findFirst({
             where: {
                 document: document,
-                filial: filial,
+                branch_code: filial,
                 date_count: date_count
             }
         });

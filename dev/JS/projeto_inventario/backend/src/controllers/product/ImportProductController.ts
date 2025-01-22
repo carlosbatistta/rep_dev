@@ -19,3 +19,5 @@ class ImportProductController {
         }
     }
 }
+
+export {ImportProductController}

@@ -18,6 +18,9 @@ import { ImportAddressedStockController } from './controllers/addressed_stock/Im
 import { CreateInventController } from './controllers/invent/CreateInventController';
 import { AlterInventController } from './controllers/invent/AlterInventControllrer';
 import { DeleteInventController } from './controllers/invent/DeleteInventController';
+import { ImportProductController } from './controllers/product/ImportProductController';
+import { ListProductController } from './controllers/product/ListProductController';
+import { DetailProductController } from './controllers/product/DetailProductController';
 
 const router = Router();
 
@@ -55,6 +58,11 @@ router.post('/addressed_stock/import', isAuthenticated, new ImportAddressedStock
 router.post('/invent/add', isAuthenticated, new CreateInventController().handle)
 router.post('/invent/alter', isAuthenticated, new AlterInventController().handle)
 router.delete('/invent/delete', isAuthenticated, new DeleteInventController().handle)
+
+//-- ROTAS PRODUTO
+router.post('/product/import', isAuthenticated, new ImportProductController().handle)
+router.get('/product/list', isAuthenticated, new ListProductController().handle)
+router.get('/product/detail', isAuthenticated, new DetailProductController().handle)
 /*
 router.get('/category', isAuthenticated, new ListCategoryController().handle)
 

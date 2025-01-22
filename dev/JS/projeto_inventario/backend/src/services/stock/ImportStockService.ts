@@ -27,7 +27,9 @@ export class ImportStockService {
                 `;
 
             // Executar a query no SQL Server
-            const result = await pool.request().query(query);
+            const result = await pool.request()
+                .input("branch_code", branch_code) // Insere o valor de `branch_code`
+                .query(query);
 
             // Verificar se há dados retornados
             if (result.recordset.length === 0) {

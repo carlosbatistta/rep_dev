@@ -1,4 +1,4 @@
-import prismaClient from "../../prisma";
+/*import prismaClient from "../../prisma";
 
 interface OrderRequest{
   table: number;
@@ -21,4 +21,4 @@ class CreateOrderService{
   }
 }
 
-export { CreateOrderService }
+export { CreateOrderService }*/

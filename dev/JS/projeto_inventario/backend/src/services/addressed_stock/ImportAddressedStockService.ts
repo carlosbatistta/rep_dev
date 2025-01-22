@@ -66,6 +66,7 @@ export class ImportAddressedStockService {
                         storage_code: storage.code,
                         product_desc: product.description,
                         address_code: D14_ENDER, // Assuming D14_ENDER is the address code
+
                     },
                 });
             }

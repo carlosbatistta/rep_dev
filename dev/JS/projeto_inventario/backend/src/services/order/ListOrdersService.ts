@@ -1,4 +1,4 @@
-import prismaClient from "../../prisma";
+/*import prismaClient from "../../prisma";
 
 class ListOrdersService{
   async execute(){
@@ -18,4 +18,4 @@ class ListOrdersService{
   }
 }
 
-export { ListOrdersService }
+export { ListOrdersService }*/
