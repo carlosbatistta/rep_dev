@@ -19,7 +19,7 @@ export class ImportStockService {
                 select B2_QATU, B2_COD, B2_LOCAL, B2_FILIAL from [dbo].[SB2010]
                 where SB2010.D_E_L_E_T_ <> '*'
                 and B2_FILIAL = @branch_code
-                `;
+                `
 
             // Executar a query no SQL Server
             const result_geral = await pool.request()
@@ -33,11 +33,11 @@ export class ImportStockService {
             `
             const result_cost = await pool.request()
                 .input("branch_code", branch_code) // Insere o valor de `branch_code`
-                .query(query_cost);
+                .query(query_cost)
 
             // Verificar se há dados retornados
             if (result_geral.recordset.length === 0) {
-                throw new Error("Não há dados na B2.");
+                throw new Error("Não há dados na B2.")
             }
 
             if (result_cost.recordset.length === 0) {
