@@ -1,20 +1,20 @@
 import { Request, Response, RequestHandler } from 'express'
 import { ListProductService } from '../../services/product/ListProductService'
 
-class ListProductController{
+class ListProductController {
     handle: RequestHandler = async (req: Request, res: Response) => {
-        try{
-            const {cost, storage_code} = req.body
+        try {
+            const { storage_code } = req.body
             const listProductService = new ListProductService();
             const products = await listProductService.execute({
-                cost, storage_code
+                storage_code
             });
             res.json(products)
-        }catch(error: any){
+        } catch (error: any) {
             console.error(error.message);
-            res.status(400).json({ error: error.message }) 
+            res.status(400).json({ error: error.message })
         }
     }
 }
 
-export {ListProductController}
+export { ListProductController }

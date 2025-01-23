@@ -86,14 +86,11 @@ model VirtualLocation {
 }
 
 model Product {
-  id           String  @id @default(uuid())
-  branch_code  String?
-  storage_code String?
-  name         String
-  code         String
-  codBar       String
-  cost         Float?
-  description  String
+  id          String @id @default(uuid())
+  name        String
+  code        String
+  codBar      String
+  description String
 
   @@map("products")
 }
