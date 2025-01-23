@@ -103,6 +103,7 @@ model stock {
   total_quantity Int
   product_code   String
   product_desc   String
+  cost           Float?
   storage_code   String
   branch_code    String
 
