@@ -12,8 +12,6 @@ export class ImportProductService {
             const query_geral = `
                 SELECT DISTINCT B1_DESC, B1_COD, B1_CODBAR, B1_TIPO, B1_ESPECIF FROM [dbo].[SB1010]
                 WHERE SB1010.D_E_L_E_T_ <> '*'
-                AND B1_TIPO = 'ME'
-                AND B1_CODBAR != ''
             `;
 
             const result_geral = await pool.request().query(query_geral);

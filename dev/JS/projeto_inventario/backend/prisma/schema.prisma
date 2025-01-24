@@ -96,15 +96,28 @@ model Product {
 }
 
 model stock {
-  id             String @id @default(uuid())
-  total_quantity Int
-  product_code   String
-  product_desc   String
-  cost           Float?
-  storage_code   String
-  branch_code    String
+  id              String  @id @default(uuid())
+  total_quantity  Int
+  product_code    String
+  product_desc    String
+  cost            Float
+  storage_code    String
+  branch_code     String
+  address_control String?
+  localiz_control String?
+  reservation     Int
 
   @@map("stocks")
+}
+
+model info_stock {
+  id                 String @id @default(uuid())
+  branch_code        String
+  storage_code       String
+  total_stock_value  Float
+  total_stock_quanty Int
+
+  @@map("info_stoacks")
 }
 
 model addressed_stock {

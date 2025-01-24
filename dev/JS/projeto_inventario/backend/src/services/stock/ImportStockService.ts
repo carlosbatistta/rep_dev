@@ -16,9 +16,10 @@ export class ImportStockService {
 
             // Query para buscar os dados da tabela no SQL Server
             const query_geral = `
-                select B2_QATU, B2_COD, B2_LOCAL, B2_FILIAL from [dbo].[SB2010]
+                select B2_QATU, B2_COD, B2_LOCAL, B2_FILIAL, B2_CM1, B2_RESERVA from [dbo].[SB2010]
                 where SB2010.D_E_L_E_T_ <> '*'
                 and B2_FILIAL = @branch_code
+				and B2_COD != ''
                 `
 
             // Executar a query no SQL Server
@@ -27,7 +28,7 @@ export class ImportStockService {
                 .query(query_geral);
 
             const query_cost = `
-                SELECT BZ_COD, BZ_LOCPAD, BZ_CUSTD FROM [dbo].[SBZ010]
+                SELECT BZ_COD, BZ_LOCPAD, BZ_CTRWMS, BZ_LOCALIZ FROM [dbo].[SBZ010]
                 WHERE SBZ010.D_E_L_E_T_ <> '*'
 				AND BZ_FILIAL = @branch_code
             `
@@ -48,11 +49,11 @@ export class ImportStockService {
             const imported_data = result_geral.recordset;
             const imported_data_cost = result_cost.recordset;
             for (const record of imported_data) {
-                const { B2_QATU, B2_COD, B2_LOCAL, B2_FILIAL } = record;
+                const { B2_QATU, B2_COD, B2_LOCAL, B2_FILIAL, B2_CM1, B2_RESERVA } = record;
 
                 const product = await prismaClient.product.findFirst({
                     where: {
-                        code: B2_COD,
+                        code: B2_COD.trim(),
                     },
                 });
 
@@ -68,14 +69,17 @@ export class ImportStockService {
                         product_code: product.code,
                         storage_code: B2_LOCAL.trim(),
                         product_desc: product.description,
-                        cost: 0
+                        cost: B2_CM1 ?? 0,
+                        address_control: "2",
+                        localiz_control: "N",
+                        reservation: B2_RESERVA
                     },
                 });
 
             }
 
             for (const record of imported_data_cost) {
-                const { BZ_COD, BZ_LOCPAD, BZ_CUSTD } = record;
+                const { BZ_COD, BZ_CTRWMS, BZ_LOCALIZ, BZ_LOCPAD } = record;
 
                 const stock = await prismaClient.stock.findFirst({
                     where: {
@@ -89,7 +93,8 @@ export class ImportStockService {
                             id: stock.id,
                         },
                         data: {
-                            cost: BZ_CUSTD
+                            address_control: BZ_CTRWMS,
+                            localiz_control: BZ_LOCALIZ
                         }
                     })
                 }
