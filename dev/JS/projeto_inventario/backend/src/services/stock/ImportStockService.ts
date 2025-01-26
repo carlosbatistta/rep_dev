@@ -28,9 +28,7 @@ export class ImportStockService {
                 .query(query_geral);
 
             const query_cost = `
-                SELECT BZ_COD, BZ_LOCPAD, BZ_CTRWMS, BZ_LOCALIZ FROM [dbo].[SBZ010]
-                WHERE SBZ010.D_E_L_E_T_ <> '*'
-				AND BZ_FILIAL = @branch_code
+
             `
             const result_cost = await pool.request()
                 .input("branch_code", branch_code) // Insere o valor de `branch_code`
@@ -70,35 +68,12 @@ export class ImportStockService {
                         storage_code: B2_LOCAL.trim(),
                         product_desc: product.description,
                         cost: B2_CM1 ?? 0,
-                        address_control: "2",
-                        localiz_control: "N",
                         reservation: B2_RESERVA
                     },
                 });
 
             }
 
-            for (const record of imported_data_cost) {
-                const { BZ_COD, BZ_CTRWMS, BZ_LOCALIZ, BZ_LOCPAD } = record;
-
-                const stock = await prismaClient.stock.findFirst({
-                    where: {
-                        product_code: BZ_COD.toString().trim(),
-                        storage_code: BZ_LOCPAD.toString().trim()
-                    },
-                });
-                if (stock) {
-                    await prismaClient.stock.update({
-                        where: {
-                            id: stock.id,
-                        },
-                        data: {
-                            address_control: BZ_CTRWMS,
-                            localiz_control: BZ_LOCALIZ
-                        }
-                    })
-                }
-            }
             console.log("Dados importados com sucesso.");
             return imported_data; // Retornar os dados importados, se necessário
         } catch (error) {

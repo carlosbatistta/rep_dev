@@ -96,16 +96,14 @@ model Product {
 }
 
 model stock {
-  id              String  @id @default(uuid())
-  total_quantity  Int
-  product_code    String
-  product_desc    String
-  cost            Float
-  storage_code    String
-  branch_code     String
-  address_control String?
-  localiz_control String?
-  reservation     Int
+  id             String @id @default(uuid())
+  total_quantity Int
+  product_code   String
+  product_desc   String
+  cost           Float
+  storage_code   String
+  branch_code    String
+  reservation    Int
 
   @@map("stocks")
 }
@@ -128,10 +126,10 @@ model addressed_stock {
   storage_code       String
   branch_code        String
   address_code       String
-  reservation        Boolean?
-  reserve_quanty     Int?
-  transfer           Boolean?
-  transfer_quanty    Int?
+  reserve_quanty     Int
+  transfer_quanty    Int
+  address_control    String
+  localiz_control    String
 
   @@map("addressed_stocks")
 }
