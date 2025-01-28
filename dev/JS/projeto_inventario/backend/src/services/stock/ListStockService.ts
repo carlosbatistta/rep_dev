@@ -1,11 +1,11 @@
 import prismaClient from "../../prisma";
 
 interface ListStockRequest {
-    cost?: number; // Filtro por custo
-    storage_code?: string; // Filtro por código de armazenamento
-    wms_control?: boolean; // Filtro baseado em controle WMS
-    total_quantity?: number; // Filtro por quantidade total
-    reservation?: number; // Filtro por reserva
+    cost?: number // Filtro por custo
+    storage_code?: string // Filtro por código de armazenamento
+    wms_control?: boolean // Filtro baseado em controle WMS
+    total_quantity?: number // Filtro por quantidade total
+    reservation?: number // Filtro por reserva
 }
 
 export class ListStockService {
@@ -31,6 +31,7 @@ export class ListStockService {
         if (wms_control === true) {
             whereClause.address_control = "1"; // Controle ativo
             whereClause.localiz_control = "S"; // Localização ativa
+            
         } else if (wms_control === false) {
 
             whereClause.address_control = { not: "1" }
