@@ -116,10 +116,11 @@ model info_stock {
   id                   String @id @default(uuid())
   branch_code          String
   storage_code         String
-  total_stock_value    Float
-  total_stock_quantity Int
+  document             Int
+  total_stock_value    Float?
+  total_stock_quantity Int?
 
-  @@map("info_stoacks")
+  @@map("info_stocks")
 }
 
 model addressed_stock {
@@ -152,13 +153,26 @@ model count {
 }
 
 model invent {
-  id                     String @id @default(uuid())
-  tp_material            String
+  id                String @id @default(uuid())
+  tp_material       String
+  document          Int?
+  date_count        String
+  date_valid        String
+  origin            String
+  branch_code       String
+  storage_code      String
+  difference_value  Float?
+  difference_quanty Int?
+
+  @@map("invents")
+}
+
+model info_invent {
+  id                     Int    @id @default(autoincrement())
   document               Int
   date_count             String
-  date_valid             String
-  origin                 String
   branch_code            String
+  storage_code           String
   accuracy_quanty        Float?
   accuracy_value         Float?
   accuracy_percent       Float?
@@ -167,8 +181,16 @@ model invent {
   total_inventory_value  Float?
   total_stock_quanty     Int?
   total_inventory_quanty Int?
-  difference_value       Float?
-  difference_quanty      Int?
 
-  @@map("invents")
+  @@map("info_invents")
+}
+
+model number_control {
+  id           Int    @id @default(autoincrement())
+  number       Int
+  service      String
+  storage_code String
+  branch_code  String
+
+  @@map("number_controls")
 }
