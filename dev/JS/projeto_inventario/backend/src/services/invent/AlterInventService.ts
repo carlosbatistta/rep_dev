@@ -16,7 +16,7 @@ interface InventRequest {
 }
 
 export class AlterInventService {
-    async execute({ document, filial, date_count, accuracy_percent, accuracy_quanty, accuracy_value, total_inventory_quanty, total_inventory_value, total_stock_quanty, total_stock_value, difference_quanty, difference_value }: InventRequest) {
+    async execute({ document, filial, date_count, difference_quanty, difference_value }: InventRequest) {
         if (!document && !filial) {
             throw new Error("Todos so campos são obrigatórios")
         }
@@ -34,24 +34,10 @@ export class AlterInventService {
                 id: invent.id,
             },
             data: {
-                accuracy_quanty,
-                accuracy_value,
-                accuracy_percent,
-                total_stock_value,
-                total_inventory_value,
-                total_stock_quanty,
-                total_inventory_quanty,
                 difference_value,
                 difference_quanty,
             },
             select: {
-                accuracy_quanty: true,
-                accuracy_value: true,
-                accuracy_percent: true,
-                total_stock_value: true,
-                total_inventory_value: true,
-                total_stock_quanty: true,
-                total_inventory_quanty: true,
                 difference_value: true,
                 difference_quanty: true,
             }
