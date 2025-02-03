@@ -97,6 +97,7 @@ export class ImportAddressedStockService {
 
                     },
                 });
+                
             }
             for (const record of imported_data_quantity) {
                 const { D14_PRODUT, D14_LOCAL, total_quantity } = record;

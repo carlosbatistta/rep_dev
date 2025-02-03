@@ -21,25 +21,11 @@ export class AlterInventService {
             throw new Error("Todos so campos são obrigatórios")
         }
 
-        const invent = await prismaClient.invent.findFirst({
+        const invent = await prismaClient.info_invent.findFirst({
             where: {
                 document: document,
                 branch_code: filial,
                 date_count: date_count
-            }
-        });
-
-        await prismaClient.invent.update({
-            where: {
-                id: invent.id,
-            },
-            data: {
-                difference_value,
-                difference_quanty,
-            },
-            select: {
-                difference_value: true,
-                difference_quanty: true,
             }
         });
 

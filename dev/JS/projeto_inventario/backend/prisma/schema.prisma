@@ -116,7 +116,7 @@ model info_stock {
   id                   String @id @default(uuid())
   branch_code          String
   storage_code         String
-  document             Int
+  document             Int?
   total_stock_value    Float?
   total_stock_quantity Int?
 
@@ -138,33 +138,54 @@ model addressed_stock {
 }
 
 model count {
-  id             String @id @default(uuid())
+  id             String  @id @default(uuid())
   count_quantity Int
-  difference     Int
+  date_count     String
+  document       Int
   status         String
+  address_code   String?
   user_name      String
   product_code   String
   product_desc   String
   storage_code   String
   branch_code    String
-  address_code   String
 
   @@map("counts")
 }
 
-model invent {
-  id                String @id @default(uuid())
-  tp_material       String
-  document          Int?
-  date_count        String
-  date_valid        String
-  origin            String
-  branch_code       String
-  storage_code      String
-  difference_value  Float?
-  difference_quanty Int?
+model invent_address {
+  id                  String  @id @default(uuid())
+  document            Int
+  date_count          String
+  branch_code         String
+  storage_code        String
+  status              String
+  difference_quantity Int?
+  original_quantity   Int?
+  count_quantity      Int?
+  value_diferece      Float?
+  address_code        String?
+  product_code        String?
+  product_desc        String?
 
-  @@map("invents")
+  @@map("invent_addresses")
+}
+
+model invent_product {
+  id                  String  @id @default(uuid())
+  document            Int
+  date_count          String
+  branch_code         String
+  storage_code        String
+  difference_quantity Int?
+  original_quantity   Int?
+  count_quantity      Int?
+  value_diferece      Float?
+  product_code        String?
+  product_desc        String?
+  address_code        String?
+
+  @@map("invent_products")
 }
 
 model info_invent {
@@ -173,6 +194,9 @@ model info_invent {
   date_count             String
   branch_code            String
   storage_code           String
+  date_valid             String
+  origin                 String
+  tp_material            String
   accuracy_quanty        Float?
   accuracy_value         Float?
   accuracy_percent       Float?

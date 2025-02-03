@@ -1,9 +1,9 @@
 import prismaClient from "../../prisma";
 
 interface CountRequest {
-    count_quantity: number;
-    difference: number;
-    status: string;
+    count_quantity?: number;
+    difference?: number;
+    status?: string;
     user_name: string;
     product_code: string;
     product_desc: string;

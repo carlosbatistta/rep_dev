@@ -3,11 +3,12 @@ import prismaClient from "../../prisma";
 
 interface StockRequest {
     branch_code: string;
+    document: number;
 }
 
 export class ImportStockService {
 
-    async execute({ branch_code }: StockRequest): Promise<any> {
+    async execute({ branch_code, document }: StockRequest): Promise<any> {
 
         try {
 
@@ -125,11 +126,37 @@ export class ImportStockService {
             }
             for (const record of imported_data_total) {
                 const { B2_LOCAL, B2_FILIAL, total_stock_quantity, total_stock_value } = record;
-
-                await prismaClient.info_stock.create({
-                    data: {
+                const info_stock = await prismaClient.info_stock.findFirst({
+                    where: {
                         branch_code: B2_FILIAL.trim(),
                         storage_code: B2_LOCAL.trim(),
+                        document: document
+                    },
+                })
+                await prismaClient.info_stock.update({
+                    where: {
+                        id: info_stock.id,
+                    },
+                    data: {
+                        total_stock_quantity: total_stock_quantity,
+                        total_stock_value: total_stock_value
+                    }
+                })
+            }
+            for(const record of imported_data_total){
+                const {B2_LOCAL, B2_FILIAL, total_stock_quantity, total_stock_value} = record;
+                const info_stock = await prismaClient.info_stock.findFirst({
+                    where: {
+                        branch_code: B2_FILIAL.trim(),
+                        storage_code: B2_LOCAL.trim(),
+                        document: document
+                    },
+                })
+                await prismaClient.info_stock.update({
+                    where: {
+                        id: info_stock.id,
+                    },
+                    data: {
                         total_stock_quantity: total_stock_quantity,
                         total_stock_value: total_stock_value
                     }

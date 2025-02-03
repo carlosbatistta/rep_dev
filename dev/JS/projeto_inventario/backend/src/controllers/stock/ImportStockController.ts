@@ -19,7 +19,7 @@ class ImportStockController {
             const info_stock_del = await deleteInfoSotckService.execute({ branch_code, document });
             
             // Passando um objeto com branch_code para o service
-            const stock_imp = await importStockService.execute({ branch_code });
+            const stock_imp = await importStockService.execute({ branch_code, document });
 
             res.json({ stock_imp, stock_del, info_stock_del });
         } catch (error: any) {

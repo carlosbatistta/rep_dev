@@ -21,10 +21,10 @@ export class CreateInventService {
                 storage_code: storage_code,
                 service: 'document'
             }
-        }) 
+        })
 
 
-        const newInvent = await prismaClient.invent.create({
+        const newInvent = await prismaClient.info_invent.create({
             data: {
                 tp_material,
                 document: is_document.number,
@@ -54,24 +54,16 @@ export class CreateInventService {
             }
         })
 
-        const info_invent = await prismaClient.info_invent.create({
-            data:{
-                branch_code: branch_code,
-                storage_code: storage_code,
-                document: is_document.number,
-                date_count: date_count,
-            }
-        })
 
         await prismaClient.number_control.update({
             where: {
                 id: is_document.id
-                },
+            },
             data: {
                 number: is_document.number + 1
             }
         })
 
-        return { newInvent, info_stock, info_invent };
+        return { newInvent, info_stock };
     }
 }

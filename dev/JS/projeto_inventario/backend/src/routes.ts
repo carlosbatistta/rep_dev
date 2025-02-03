@@ -29,8 +29,6 @@ import { DetailInventController } from './controllers/invent/DetailInventControl
 
 const router = Router();
 
-const upload = multer(uploadConfig.upload("./tmp"));
-
 //-- ROTAS USER --
 router.post('/users', new CreateUserController().handle)
 router.post('/session', new AuthUserController().handle)
