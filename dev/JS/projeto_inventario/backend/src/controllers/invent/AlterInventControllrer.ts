@@ -4,14 +4,15 @@ import { AlterInventService } from '../../services/invent/AlterInventService'
 class AlterInventController {
     handle: RequestHandler = async (req: Request, res: Response) => {
         try {
-            const { document, filial, date_count, accuracy_percent, accuracy_quanty, accuracy_value, total_inventory_quanty, total_inventory_value, total_stock_quanty, total_stock_value, difference_quanty, difference_value } = req.body;
+            const { document, filial, date_count, storage_code, accuracy_percent, accuracy_quanty, accuracy_value, total_inventory_quanty, total_inventory_value, total_stock_quanty, total_stock_value, difference_quanty, difference_value } = req.body;
 
             const alterInventService = new AlterInventService();
 
             const invent = await alterInventService.execute({
                 document,
-                filial,
+                branch_code: filial,
                 date_count,
+                storage_code,
                 accuracy_percent,
                 accuracy_quanty,
                 accuracy_value,
@@ -30,4 +31,4 @@ class AlterInventController {
     }
 }
 
-export{AlterInventController}
+export { AlterInventController }

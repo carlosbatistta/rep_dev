@@ -1,3 +1,0 @@
--- AlterTable
-ALTER TABLE "products" ALTER COLUMN "code" SET DATA TYPE TEXT,
-ALTER COLUMN "codBar" SET DATA TYPE TEXT;

@@ -3,12 +3,25 @@ import prismaClient from "../../prisma";
 
 interface AddressedStockRequest {
     branch_code: string;
+    storage_code: string;
+    date_count: string;
+    document: number;
 }
 
 export class ImportAddressedStockService {
 
-    async execute({ branch_code }: AddressedStockRequest): Promise<any> {
+    async execute({ branch_code, document, storage_code, date_count }: AddressedStockRequest): Promise<any> {
+        const stock_document = await prismaClient.info_stock.findFirst({
+            where: {
+                branch_code: branch_code,
+                storage_code: storage_code,
+                date_count: date_count
+            }
+        })
 
+        if (document !== stock_document.document) {
+            throw new Error("Documentos não correspondem");
+        }
 
         try {
 
@@ -97,7 +110,20 @@ export class ImportAddressedStockService {
 
                     },
                 });
-                
+
+                await prismaClient.invent_address.create({
+                    data: {
+                        branch_code: D14_FILIAL.trim(),
+                        product_code: product.code,
+                        storage_code: D14_LOCAL.trim(),
+                        product_desc: product.description,
+                        address_code: D14_ENDER.trim(),
+                        document: document,
+                        date_count: date_count,
+                        status: 'NOVO'
+                    }
+                })
+
             }
             for (const record of imported_data_quantity) {
                 const { D14_PRODUT, D14_LOCAL, total_quantity } = record;

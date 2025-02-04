@@ -117,6 +117,7 @@ model info_stock {
   branch_code          String
   storage_code         String
   document             Int?
+  date_count           String
   total_stock_value    Float?
   total_stock_quantity Int?
 
@@ -154,36 +155,36 @@ model count {
 }
 
 model invent_address {
-  id                  String  @id @default(uuid())
+  id                  String @id @default(uuid())
   document            Int
   date_count          String
   branch_code         String
   storage_code        String
+  address_code        String
+  product_code        String
+  product_desc        String
   status              String
   difference_quantity Int?
   original_quantity   Int?
   count_quantity      Int?
   value_diferece      Float?
-  address_code        String?
-  product_code        String?
-  product_desc        String?
 
   @@map("invent_addresses")
 }
 
 model invent_product {
-  id                  String  @id @default(uuid())
+  id                  String @id @default(uuid())
   document            Int
   date_count          String
   branch_code         String
   storage_code        String
+  product_code        String
+  product_desc        String
+  status              String
   difference_quantity Int?
   original_quantity   Int?
   count_quantity      Int?
   value_diferece      Float?
-  product_code        String?
-  product_desc        String?
-  address_code        String?
 
   @@map("invent_products")
 }
@@ -205,6 +206,8 @@ model info_invent {
   total_inventory_value  Float?
   total_stock_quanty     Int?
   total_inventory_quanty Int?
+  difference_quanty      Int?
+  diference_value        Float?
 
   @@map("info_invents")
 }

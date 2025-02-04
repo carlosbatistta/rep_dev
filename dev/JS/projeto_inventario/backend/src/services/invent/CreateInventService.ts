@@ -23,7 +23,6 @@ export class CreateInventService {
             }
         })
 
-
         const newInvent = await prismaClient.info_invent.create({
             data: {
                 tp_material,
@@ -46,14 +45,16 @@ export class CreateInventService {
             },
         });
 
+        console.log(newInvent)
+
         const info_stock = await prismaClient.info_stock.create({
             data: {
                 branch_code: branch_code,
                 storage_code: storage_code,
+                date_count: date_count,
                 document: is_document.number
             }
         })
-
 
         await prismaClient.number_control.update({
             where: {
@@ -63,6 +64,8 @@ export class CreateInventService {
                 number: is_document.number + 1
             }
         })
+
+        console.log(info_stock)
 
         return { newInvent, info_stock };
     }

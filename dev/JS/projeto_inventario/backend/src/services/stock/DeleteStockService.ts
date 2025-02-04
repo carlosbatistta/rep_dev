@@ -5,7 +5,7 @@ export class DeleteStockService {
         // Deleta todos os registros da tabela 'stock'
         const deletedStock = await prismaClient.stock.deleteMany({});
 
-        console.log("Dados apagados com sucesso.");
+        console.log("Delete Stock efetuado.");
 
         return {deletedStock};
     }

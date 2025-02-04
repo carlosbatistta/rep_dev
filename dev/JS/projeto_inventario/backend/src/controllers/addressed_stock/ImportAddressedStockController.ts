@@ -9,8 +9,8 @@ class ImportAddressedStockController {
             const deleteAddressedStockService = new DeleteAddressedStockService();
 
             const addressed_stock_del = await deleteAddressedStockService.execute()
-            const { branch_code } = req.body;
-            const addressed_stock_imp = await importAddressedStockService.execute({ branch_code });
+            const { branch_code, document, storage_code, date_count } = req.body;
+            const addressed_stock_imp = await importAddressedStockService.execute({ branch_code, document, storage_code, date_count });
 
             res.json({ addressed_stock_imp, addressed_stock_del });
         } catch (error: any) {

@@ -10,7 +10,6 @@ class CreateInventController {
 
             const invent = await createInventService.execute({
                 tp_material,
-                document,
                 date_count,
                 date_valid,
                 origin,

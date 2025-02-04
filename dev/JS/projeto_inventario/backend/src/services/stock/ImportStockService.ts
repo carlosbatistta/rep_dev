@@ -3,12 +3,26 @@ import prismaClient from "../../prisma";
 
 interface StockRequest {
     branch_code: string;
+    storage_code: string;
+    date_count: string;
     document: number;
 }
 
 export class ImportStockService {
 
-    async execute({ branch_code, document }: StockRequest): Promise<any> {
+    async execute({ branch_code, document, storage_code, date_count }: StockRequest): Promise<any> {
+
+        const stock_document = await prismaClient.info_stock.findFirst({
+            where: {
+                branch_code: branch_code,
+                storage_code: storage_code,
+                date_count: date_count
+            }
+        })
+
+        if (document !== stock_document.document) {
+            throw new Error("Documentos não correspondem");
+        }
 
         try {
 
@@ -21,6 +35,7 @@ export class ImportStockService {
                 where SB2010.D_E_L_E_T_ <> '*'
                 and B2_FILIAL = @branch_code
 				and B2_COD != ''
+                AND B2_LOCAL = '01'
                 `
 
             // Executar a query no SQL Server
@@ -38,6 +53,7 @@ export class ImportStockService {
                     SB2010.D_E_L_E_T_ <> '*'
                     AND B2_FILIAL = '01020101000'
                     AND B2_COD != ''
+                    AND B2_LOCAL = '01'
                 GROUP BY 
                     B2_LOCAL, 
                     B2_FILIAL
@@ -45,6 +61,7 @@ export class ImportStockService {
             const result_total = await pool.request()
                 .input("branch_code", branch_code) // Insere o valor de `branch_code`
                 .query(query_total);
+
             const query_indicadores = `
                 SELECT 
                     BZ_COD, BZ_LOCPAD, BZ_CTRWMS, BZ_LOCALIZ, BZ_FILIAL
@@ -52,6 +69,7 @@ export class ImportStockService {
                 WHERE 
                     SBZ010.D_E_L_E_T_ <> '*'
                     AND BZ_FILIAL = @branch_code
+                    AND BZ_LOCPAD = '01'
             `
             const result_indicadores = await pool.request()
                 .input("branch_code", branch_code) // Insere o valor de `branch_code`
@@ -80,7 +98,7 @@ export class ImportStockService {
                 });
 
                 if (!product) {
-                    throw new Error(`Produto ${B2_COD} não encontrado.`);
+                    throw new Error(`Produto ${B2_COD.trim()} não encontrado.`);
                 }
 
                 //inserir no banco usando Prisma
@@ -100,6 +118,17 @@ export class ImportStockService {
                     },
                 });
 
+                await prismaClient.invent_product.create({
+                    data: {
+                        branch_code: B2_FILIAL.trim(),
+                        product_code: product.code,
+                        storage_code: B2_LOCAL.trim(),
+                        product_desc: product.description,
+                        document: document,
+                        date_count: date_count,
+                        status: "NOVO" // replace with actual value
+                    }
+                })
             }
 
             for (const record of imported_data_indicadores) {
@@ -133,6 +162,7 @@ export class ImportStockService {
                         document: document
                     },
                 })
+
                 await prismaClient.info_stock.update({
                     where: {
                         id: info_stock.id,
@@ -142,28 +172,10 @@ export class ImportStockService {
                         total_stock_value: total_stock_value
                     }
                 })
-            }
-            for(const record of imported_data_total){
-                const {B2_LOCAL, B2_FILIAL, total_stock_quantity, total_stock_value} = record;
-                const info_stock = await prismaClient.info_stock.findFirst({
-                    where: {
-                        branch_code: B2_FILIAL.trim(),
-                        storage_code: B2_LOCAL.trim(),
-                        document: document
-                    },
-                })
-                await prismaClient.info_stock.update({
-                    where: {
-                        id: info_stock.id,
-                    },
-                    data: {
-                        total_stock_quantity: total_stock_quantity,
-                        total_stock_value: total_stock_value
-                    }
-                })
+                console.log("Info_stock atualizado")
             }
 
-            console.log("Dados importados com sucesso.");
+            console.log("Import Stock (B2, BZ) e invent_stock Efetuado.");
             return imported_data; // Retornar os dados importados, se necessário
         } catch (error) {
             console.error("Erro ao importar dados do SQL Server:", error);
