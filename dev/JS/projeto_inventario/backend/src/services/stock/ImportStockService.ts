@@ -24,6 +24,12 @@ export class ImportStockService {
             throw new Error("Documentos não correspondem");
         }
 
+        const branch = await prismaClient.branch.findFirst({
+            where: {
+                code: branch_code,
+            }
+        })
+
         try {
 
             // Conectar ao SQL Server
@@ -35,12 +41,12 @@ export class ImportStockService {
                 where SB2010.D_E_L_E_T_ <> '*'
                 and B2_FILIAL = @branch_code
 				and B2_COD != ''
-                AND B2_LOCAL = '01'
+                AND B2_LOCAL = @storage_code
                 `
 
             // Executar a query no SQL Server
             const result_geral = await pool.request()
-                .input("branch_code", branch_code) // Insere o valor de `branch_code`
+                .input("branch_code", branch_code).input("storage_code", storage_code) // Insere o valor de `branch_code`
                 .query(query_geral);
 
             const query_total = `
@@ -51,15 +57,15 @@ export class ImportStockService {
                     [dbo].[SB2010]
                 WHERE 
                     SB2010.D_E_L_E_T_ <> '*'
-                    AND B2_FILIAL = '01020101000'
+                    AND B2_FILIAL = @branch_code
                     AND B2_COD != ''
-                    AND B2_LOCAL = '01'
+                    AND B2_LOCAL = @storage_code
                 GROUP BY 
                     B2_LOCAL, 
                     B2_FILIAL
             `
             const result_total = await pool.request()
-                .input("branch_code", branch_code) // Insere o valor de `branch_code`
+                .input("branch_code", branch_code).input("storage_code", storage_code) // Insere o valor de `branch_code`
                 .query(query_total);
 
             const query_indicadores = `
@@ -69,10 +75,10 @@ export class ImportStockService {
                 WHERE 
                     SBZ010.D_E_L_E_T_ <> '*'
                     AND BZ_FILIAL = @branch_code
-                    AND BZ_LOCPAD = '01'
+                    AND BZ_LOCPAD = @storage_code
             `
             const result_indicadores = await pool.request()
-                .input("branch_code", branch_code) // Insere o valor de `branch_code`
+                .input("branch_code", branch_code).input("storage_code", storage_code) // Insere o valor de `branch_code`
                 .query(query_indicadores)
 
             // Verificar se há dados retornados
@@ -115,9 +121,10 @@ export class ImportStockService {
                         localiz_control: "N",
                         addresed_quantity: 0,
                         unbalanced: false,
+                        access_nivel: 0
                     },
                 });
-
+                if(branch.address === false){
                 await prismaClient.invent_product.create({
                     data: {
                         branch_code: B2_FILIAL.trim(),
@@ -126,9 +133,13 @@ export class ImportStockService {
                         product_desc: product.description,
                         document: document,
                         date_count: date_count,
-                        status: "NOVO" // replace with actual value
+                        counted: false,
+                        access_nivel: 0,
+                        status: "NOVO", // replace with actual value
+                        situation: "" // replace with actual value
                     }
                 })
+            }
             }
 
             for (const record of imported_data_indicadores) {

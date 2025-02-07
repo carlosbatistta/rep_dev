@@ -33,25 +33,11 @@ export class AlterCountService {
             },
             data: {
                 count_quantity,
-                difference,
                 status,
-                user_name,
-                product_code,
-                product_desc,
-                storage_code,
-                branch_code,
-                address_code,
             },
             select: {
                 count_quantity: true,
-                difference: true,
                 status: true,
-                user_name: true,
-                product_code: true,
-                product_desc: true,
-                storage_code: true,
-                branch_code: true,
-                address_code: true,
             },
         });
 

@@ -15,9 +15,6 @@ export class AlterVirtualLocation {
             data: {
                 code,
                 name,
-                storage: {
-                    connect: { id: "some-storage-id" } // replace with actual storage id or logic to get it
-                }
             },
             select: {
                 code: true,

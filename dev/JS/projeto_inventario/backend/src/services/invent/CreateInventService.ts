@@ -23,6 +23,17 @@ export class CreateInventService {
             }
         })
 
+        const is_invent = await prismaClient.info_invent.findFirst({
+            where: {
+                branch_code: branch_code,
+                storage_code: storage_code,
+            }
+        })
+
+        if (is_invent) {
+            throw new Error(`Inventário já cadastrado: ${is_invent.document} está Ativo.`);
+        }
+
         const newInvent = await prismaClient.info_invent.create({
             data: {
                 tp_material,
@@ -32,6 +43,7 @@ export class CreateInventService {
                 origin,
                 branch_code,
                 storage_code,
+                access_nivel: 0,
             },
             select: {
                 id: true,
@@ -52,7 +64,8 @@ export class CreateInventService {
                 branch_code: branch_code,
                 storage_code: storage_code,
                 date_count: date_count,
-                document: is_document.number
+                document: is_document.number,
+                access_nivel: 0,
             }
         })
 

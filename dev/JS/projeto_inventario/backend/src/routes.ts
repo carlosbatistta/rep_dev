@@ -9,6 +9,7 @@ import { CreateProfileController } from './controllers/profile/CreateProfileCont
 import { CreateAccessController } from './controllers/access/CreateAccessController'
 import { CreateBranchController } from './controllers/branch/CreateBranchController';
 import { isAuthenticated } from './middlewares/isAuthenticated'
+import { isAuthenticatedV2 } from './middlewares/isAuthenticatedV2';
 import { CreateStorageController } from './controllers/storage/CreateStorageController'
 import { ImportAddressController } from './controllers/address/ImportAddressController';
 import { DeleteProfileController } from './controllers/profile/DeleteProfileController';
@@ -26,6 +27,8 @@ import { DetailStockController } from './controllers/stock/DetailStockController
 import { DetailAddressedStockController } from './controllers/addressed_stock/DetailAddressedStockController';
 import { ListAddressedStockController } from './controllers/addressed_stock/ListAddressedStockController';
 import { DetailInventController } from './controllers/invent/DetailInventController';
+import { OpenAddressController } from './controllers/invent_address/OpenAddressController';
+import { CloseInventAddressController } from './controllers/invent_address/CloseInventAddressController';
 
 const router = Router();
 
@@ -40,7 +43,8 @@ router.delete('/profile/remove', isAuthenticated, new DeleteProfileController().
 router.post('/profile/alter', isAuthenticated, new AlterProfileController().handle)
 
 //-- ROTAS ACCESS
-router.post('/access/add', isAuthenticated, new CreateAccessController().handle)
+router.post('/access/add', (req, res, next) => isAuthenticatedV2(req, res, next, 0), new CreateAccessController().handle);
+
 
 //-- ROTAS BRANCH
 router.post('/branch/add', isAuthenticated, new CreateBranchController().handle)
@@ -60,6 +64,8 @@ router.get('/stock/detail', isAuthenticated, new DetailStockController().handle)
 router.post('/addressed_stock/import', isAuthenticated, new ImportAddressedStockController().handle)
 router.get('/addressed_stock/detail', isAuthenticated, new DetailAddressedStockController().handle)
 router.get('/addressed_stock/list', isAuthenticated, new ListAddressedStockController().handle)
+router.post('/addressed_stock/open', isAuthenticated, new OpenAddressController().handle)
+router.post('/addressed_stock/close', isAuthenticated, new CloseInventAddressController().handle)
 
 //-- ROTAS INVENT
 router.post('/invent/add', isAuthenticated, new CreateInventController().handle)
@@ -71,6 +77,9 @@ router.get('/invent/detail', isAuthenticated, new DetailInventController().handl
 router.post('/product/import', isAuthenticated, new ImportProductController().handle)
 router.get('/product/list', isAuthenticated, new ListProductController().handle)
 router.get('/product/detail', isAuthenticated, new DetailProductController().handle)
+
+//-- ROTAS COUNT
+
 /*
 router.get('/category', isAuthenticated, new ListCategoryController().handle)
 

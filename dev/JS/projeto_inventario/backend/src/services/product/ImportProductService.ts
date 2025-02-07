@@ -34,6 +34,7 @@ export class ImportProductService {
                         code: B1_COD.trim(),
                         codBar: B1_CODBAR.trim(),
                         description: B1_ESPECIF.trim(),
+                        access_nivel: 0,
 
                     },
                 });

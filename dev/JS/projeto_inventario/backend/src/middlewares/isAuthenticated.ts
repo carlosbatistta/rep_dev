@@ -1,5 +1,6 @@
 import { NextFunction, Request, Response } from 'express'
 import { verify } from 'jsonwebtoken'
+import prismaClient from '../prisma';
 
 interface Payload {
   sub: string;
@@ -29,6 +30,7 @@ export function isAuthenticated(
     const { sub } = verify(
       token,
       process.env.JWT_SECRET
+
     ) as Payload;
 
     //Recuperar o id do token e colocar dentro de uma variavel user_id dentro do req.

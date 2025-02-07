@@ -1,4 +1,5 @@
 import { connectToSqlServer } from "../../database/sqlServer";
+import { isAuthenticated } from "../../middlewares/isAuthenticated";
 import prismaClient from "../../prisma";
 
 interface AddressedStockRequest {
@@ -9,7 +10,6 @@ interface AddressedStockRequest {
 }
 
 export class ImportAddressedStockService {
-
     async execute({ branch_code, document, storage_code, date_count }: AddressedStockRequest): Promise<any> {
         const stock_document = await prismaClient.info_stock.findFirst({
             where: {
@@ -22,7 +22,7 @@ export class ImportAddressedStockService {
         if (document !== stock_document.document) {
             throw new Error("Documentos não correspondem");
         }
-
+        
         try {
 
             // Conectar ao SQL Server
@@ -38,6 +38,7 @@ export class ImportAddressedStockService {
             WHERE 
                 D14010.D_E_L_E_T_ <> '*'
                 AND D14_FILIAL = @branch_code
+                AND D14_LOCAL = @storage_code
             GROUP BY 
                 D14_PRODUT,
 				D14_QTDEST,
@@ -50,7 +51,7 @@ export class ImportAddressedStockService {
 
             // Executar a query no SQL Server
             const result_geral = await pool.request()
-                .input("branch_code", branch_code) // Insere o valor de `branch_code`
+                .input("branch_code", branch_code).input("storage_code", storage_code) // Insere o valor de `branch_code`
                 .query(query_geral);
 
             const query_quantity = `
@@ -62,6 +63,7 @@ export class ImportAddressedStockService {
             WHERE 
                 D14010.D_E_L_E_T_ <> '*'
                 AND D14_FILIAL = @branch_code
+                AND D14_LOCAL = @storage_code
             GROUP BY 
                 D14_PRODUT, 
                 D14_LOCAL, 
@@ -70,7 +72,7 @@ export class ImportAddressedStockService {
                 D14_PRODUT;
             `
             const result_quantity = await pool.request()
-                .input("branch_code", branch_code) // Insere o valor de `branch_code`
+                .input("branch_code", branch_code).input("storage_code", storage_code) // Insere o valor de `branch_code`
                 .query(query_quantity);
 
 
@@ -106,21 +108,49 @@ export class ImportAddressedStockService {
                         product_desc: product.description,
                         address_code: D14_ENDER.trim(),
                         transfer_quantity: transf_quantity,
-                        reserve_quantity: reserve_quantity
+                        reserve_quantity: reserve_quantity,
+                        access_nivel: 0,
 
                     },
                 });
 
-                await prismaClient.invent_address.create({
-                    data: {
+                const address = prismaClient.invent_address.findFirst({
+                    where: {
                         branch_code: D14_FILIAL.trim(),
-                        product_code: product.code,
                         storage_code: D14_LOCAL.trim(),
-                        product_desc: product.description,
                         address_code: D14_ENDER.trim(),
                         document: document,
+                        date_count: date_count
+                    }
+                })
+                if (!address) {
+                    await prismaClient.invent_address.create({
+                        data: {
+                            branch_code: D14_FILIAL.trim(),
+                            storage_code: D14_LOCAL.trim(),
+                            address_code: D14_ENDER.trim(),
+                            document: document,
+                            date_count: date_count,
+                            status: 'NOVO',
+                            access_nivel: 0,
+                            situation: '' // Add the appropriate value for 'situation'
+                        }
+                    })
+                }
+
+                await prismaClient.invent_product.create({
+                    data: {
+                        branch_code: D14_FILIAL.trim(),
+                        storage_code: D14_LOCAL.trim(),
+                        product_code: D14_PRODUT.trim(),
+                        product_desc: product.description, // Add the product description
+                        document: document,
                         date_count: date_count,
-                        status: 'NOVO'
+                        status: 'NOVO',
+                        counted: false,
+                        situation: '', // Add the appropriate value for 'situation'
+                        original_quantity: D14_QTDEST,
+                        access_nivel: 0,
                     }
                 })
 
