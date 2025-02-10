@@ -51,6 +51,7 @@ model Branch {
   id         String    @id @default(uuid())
   name       String
   code       String
+  company    String
   status     Boolean   @default(true)
   address    Boolean   @default(true)
   created_at DateTime? @default(now())
@@ -206,6 +207,7 @@ model info_invent {
   date_valid             String
   origin                 String
   tp_material            String
+  status                 String
   accuracy_quanty        Float?
   accuracy_value         Float?
   accuracy_percent       Float?

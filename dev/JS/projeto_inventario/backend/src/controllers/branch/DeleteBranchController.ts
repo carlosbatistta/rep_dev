@@ -4,13 +4,10 @@ import { DeleteBranchService } from '../../services/branch/DeleteBranchService'
 class DeleteBranchController {
     handle: RequestHandler = async (req: Request, res: Response) => {
         try {
-            const { id } = req.body
 
             const deleteBranchService = new DeleteBranchService()
 
-            const branch = await deleteBranchService.execute({
-                id
-            })
+            const branch = await deleteBranchService.execute()
 
             res.json(branch)
         } catch (error: any) {

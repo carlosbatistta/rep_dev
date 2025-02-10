@@ -1,16 +1,8 @@
 import prismaClient from "../../prisma";
 
-interface BranchRequest {
-    id: string;
-}
-
 export class DeleteBranchService {
-    async execute({ id }: BranchRequest) {
-        const branch = await prismaClient.branch.delete({
-            where: {
-                id: id,
-            },
-        });
+    async execute() {
+        const branch = await prismaClient.branch.deleteMany({})
 
         return branch;
     }

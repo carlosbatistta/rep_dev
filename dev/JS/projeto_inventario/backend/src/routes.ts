@@ -7,11 +7,7 @@ import { AuthUserController } from './controllers/user/AuthUserController'
 import { DetailuserController } from './controllers/user/DetailUserController'
 import { CreateProfileController } from './controllers/profile/CreateProfileController'
 import { CreateAccessController } from './controllers/access/CreateAccessController'
-import { CreateBranchController } from './controllers/branch/CreateBranchController';
-import { isAuthenticated } from './middlewares/isAuthenticated'
 import { isAuthenticatedV2 } from './middlewares/isAuthenticatedV2';
-import { CreateStorageController } from './controllers/storage/CreateStorageController'
-import { ImportAddressController } from './controllers/address/ImportAddressController';
 import { DeleteProfileController } from './controllers/profile/DeleteProfileController';
 import { AlterProfileController } from './controllers/profile/AlterProfileController';
 import { ImportStockController } from './controllers/stock/ImportStockController';
@@ -29,54 +25,51 @@ import { ListAddressedStockController } from './controllers/addressed_stock/List
 import { DetailInventController } from './controllers/invent/DetailInventController';
 import { OpenAddressController } from './controllers/invent_address/OpenAddressController';
 import { CloseInventAddressController } from './controllers/invent_address/CloseInventAddressController';
+import { ImportBranchController } from './controllers/branch/ImportBranchController';
+import { ListInventController } from './controllers/invent/ListInventController';
 
 const router = Router();
 
 //-- ROTAS USER --
 router.post('/users', new CreateUserController().handle)
 router.post('/session', new AuthUserController().handle)
-router.get('/me', isAuthenticated, new DetailuserController().handle)
+router.get('/me', (req, res, next) => isAuthenticatedV2(req, res, next, 0), new DetailuserController().handle)
 
 //-- ROTAS PROFILE
 router.post('/profile/add', new CreateProfileController().handle)
-router.delete('/profile/remove', isAuthenticated, new DeleteProfileController().handle)
-router.post('/profile/alter', isAuthenticated, new AlterProfileController().handle)
+router.delete('/profile/remove', (req, res, next) => isAuthenticatedV2(req, res, next, 0), new DeleteProfileController().handle)
+router.post('/profile/alter', (req, res, next) => isAuthenticatedV2(req, res, next, 0), new AlterProfileController().handle)
 
 //-- ROTAS ACCESS
 router.post('/access/add', (req, res, next) => isAuthenticatedV2(req, res, next, 0), new CreateAccessController().handle);
 
-
 //-- ROTAS BRANCH
-router.post('/branch/add', isAuthenticated, new CreateBranchController().handle)
-
-//-- ROTAS STORAGE
-router.post('/storage/add', isAuthenticated, new CreateStorageController().handle)
-
-//-- ROTAS ADDRESS
-router.post('/address/import', isAuthenticated, new ImportAddressController().handle)
+router.post('/branch/import', (req, res, next) => isAuthenticatedV2(req, res, next, 0), new ImportBranchController().handle)
 
 //-- ROTAS STOCK
-router.post('/stock/import', isAuthenticated, new ImportStockController().handle)
-router.get('/stock/list', isAuthenticated, new ListStockController().handle)
-router.get('/stock/detail', isAuthenticated, new DetailStockController().handle)
+router.post('/stock/import', (req, res, next) => isAuthenticatedV2(req, res, next, 0), new ImportStockController().handle)
+router.get('/stock/list', (req, res, next) => isAuthenticatedV2(req, res, next, 0), new ListStockController().handle)
+router.get('/stock/detail', (req, res, next) => isAuthenticatedV2(req, res, next, 0), new DetailStockController().handle)
 
 //-- ROTAS ADDRESSED STOCK
-router.post('/addressed_stock/import', isAuthenticated, new ImportAddressedStockController().handle)
-router.get('/addressed_stock/detail', isAuthenticated, new DetailAddressedStockController().handle)
-router.get('/addressed_stock/list', isAuthenticated, new ListAddressedStockController().handle)
-router.post('/addressed_stock/open', isAuthenticated, new OpenAddressController().handle)
-router.post('/addressed_stock/close', isAuthenticated, new CloseInventAddressController().handle)
+router.post('/addressed_stock/import', (req, res, next) => isAuthenticatedV2(req, res, next, 0), new ImportAddressedStockController().handle)
+router.get('/addressed_stock/detail', (req, res, next) => isAuthenticatedV2(req, res, next, 0), new DetailAddressedStockController().handle)
+router.get('/addressed_stock/list', (req, res, next) => isAuthenticatedV2(req, res, next, 0), new ListAddressedStockController().handle)
+router.post('/addressed_stock/open', (req, res, next) => isAuthenticatedV2(req, res, next, 0), new OpenAddressController().handle)
+router.post('/addressed_stock/close', (req, res, next) => isAuthenticatedV2(req, res, next, 0), new CloseInventAddressController().handle)
 
 //-- ROTAS INVENT
-router.post('/invent/add', isAuthenticated, new CreateInventController().handle)
-router.post('/invent/alter', isAuthenticated, new AlterInventController().handle)
-router.delete('/invent/delete', isAuthenticated, new DeleteInventController().handle)
-router.get('/invent/detail', isAuthenticated, new DetailInventController().handle)
+router.post('/invent/add', (req, res, next) => isAuthenticatedV2(req, res, next, 0), new CreateInventController().handle)
+router.post('/invent/alter', (req, res, next) => isAuthenticatedV2(req, res, next, 0), new AlterInventController().handle)
+router.post('invent/list', (req, res, next) => isAuthenticatedV2(req, res, next, 0), new ListInventController().handle)
+router.delete('/invent/delete', (req, res, next) => isAuthenticatedV2(req, res, next, 0), new DeleteInventController().handle)
+router.get('/invent/detail', (req, res, next) => isAuthenticatedV2(req, res, next, 0), new DetailInventController().handle)
+//criar uma listagem de inventários e validar o armazém, criar status, no list apresentar o documento
 
 //-- ROTAS PRODUTO
-router.post('/product/import', isAuthenticated, new ImportProductController().handle)
-router.get('/product/list', isAuthenticated, new ListProductController().handle)
-router.get('/product/detail', isAuthenticated, new DetailProductController().handle)
+router.post('/product/import', (req, res, next) => isAuthenticatedV2(req, res, next, 0), new ImportProductController().handle)
+router.get('/product/list', (req, res, next) => isAuthenticatedV2(req, res, next, 0), new ListProductController().handle)
+router.get('/product/detail', (req, res, next) => isAuthenticatedV2(req, res, next, 0), new DetailProductController().handle)
 
 //-- ROTAS COUNT
 

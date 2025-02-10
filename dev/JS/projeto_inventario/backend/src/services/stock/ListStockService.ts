@@ -54,7 +54,6 @@ export class ListStockService {
 
         // Depuração para verificar os filtros antes de aplicar
         console.log(wms_control)
-        console.log("Filtros aplicados:", JSON.stringify(whereClause, null, 2));
 
         // Executar a consulta com filtros combinados
         const stock = await prismaClient.stock.findMany({

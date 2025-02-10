@@ -1,19 +1,14 @@
 import prismaClient from "../../prisma";
 
 interface InventRequest {
-    tp_material: string;
     date_count: string;
     date_valid: string;
-    origin: string;
     branch_code: string;
     storage_code: string;
 }
 
 export class CreateInventService {
-    async execute({ tp_material, date_count, date_valid, origin, branch_code, storage_code }: InventRequest) {
-        if (!tp_material && !document && !origin) {
-            throw new Error("Todos os campos são obrigatórios");
-        }
+    async execute({ date_count, date_valid, branch_code, storage_code }: InventRequest) {
 
         const is_document = await prismaClient.number_control.findFirst({
             where: {
@@ -27,8 +22,10 @@ export class CreateInventService {
             where: {
                 branch_code: branch_code,
                 storage_code: storage_code,
+                status: { in: ["ABERTO", "EM ANDAMENTO"] }
             }
-        })
+        });
+        
 
         if (is_invent) {
             throw new Error(`Inventário já cadastrado: ${is_invent.document} está Ativo.`);
@@ -36,17 +33,17 @@ export class CreateInventService {
 
         const newInvent = await prismaClient.info_invent.create({
             data: {
-                tp_material,
+                tp_material: 'ME',
                 document: is_document.number,
                 date_count,
                 date_valid,
-                origin,
+                origin: 'SIA',
                 branch_code,
                 storage_code,
                 access_nivel: 0,
+                status: 'ABERTO'
             },
             select: {
-                id: true,
                 tp_material: true,
                 document: true,
                 date_count: true,

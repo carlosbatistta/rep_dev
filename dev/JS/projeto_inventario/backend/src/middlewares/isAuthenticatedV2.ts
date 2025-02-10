@@ -34,7 +34,7 @@ export async function isAuthenticatedV2(
 
     const profile = await prismaClient.profile.findFirst({ where: { id: user.profile_id } });
 
-    if (!profile || profile.nivel !== access_nivel) {
+    if (profile.nivel <= access_nivel) {
       res.status(401).end();
       return Promise.resolve();
     }
