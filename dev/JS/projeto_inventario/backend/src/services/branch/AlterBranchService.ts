@@ -1,28 +1,25 @@
 import prismaClient from "../../prisma";
 
 interface BranchRequest {
-    id: string;
-    name: string;
-    code: string;
-    status: boolean;
+    branch_code: string;
     address: boolean;
 }
 
 export class AlterBranchService {
-    async execute({ id, name, code, status, address }: BranchRequest) {
-        if (!name && !code) { 
-            throw new Error("Name and code is required");
-        }
+    async execute({ branch_code, address }: BranchRequest) {
+
+        const get_branch = await prismaClient.branch.findFirst({
+            where: {
+                code: branch_code
+            }
+        })
 
         const branch = await prismaClient.branch.update({
             where: {
-                id: id,
+                id: get_branch.id, // Assuming 'code' is the unique identifier
             },
             data: {
-                name,
-                code,
-                status,
-                address,
+                address: address,
             },
             select: {
                 name: true,

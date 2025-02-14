@@ -50,10 +50,10 @@ model Access {
 model Branch {
   id         String    @id @default(uuid())
   name       String
-  code       String
+  code       String    @unique
   company    String
   status     Boolean   @default(true)
-  address    Boolean   @default(true)
+  address    Boolean   @default(false)
   created_at DateTime? @default(now())
   updated_at DateTime? @default(now())
 
@@ -147,6 +147,7 @@ model count {
   id             String  @id @default(uuid())
   count_quantity Int
   status         String
+  code_count     Int
   address_code   String?
   user_name      String
   product_code   String
@@ -171,7 +172,6 @@ model invent_address {
   difference_quantity Int?
   original_quantity   Int?
   count_quantity      Int?
-  value_difference    Float?
   access_nivel        Int
 
   @@map("invent_addresses")
@@ -199,7 +199,7 @@ model invent_product {
 }
 
 model info_invent {
-  id                     Int    @id @default(autoincrement())
+  id                     String @id @default(uuid())
   document               Int
   date_count             String
   branch_code            String
@@ -224,7 +224,7 @@ model info_invent {
 }
 
 model number_control {
-  id           Int    @id @default(autoincrement())
+  id           String @id @default(uuid())
   number       Int
   service      String
   storage_code String
@@ -232,4 +232,12 @@ model number_control {
   access_nivel Int
 
   @@map("number_controls")
+}
+
+model count_control {
+  id         String @id @default(uuid())
+  code_count Int
+  desc_count String
+
+  @@map("count_controls")
 }

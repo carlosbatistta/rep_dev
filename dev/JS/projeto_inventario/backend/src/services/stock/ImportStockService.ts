@@ -29,6 +29,9 @@ export class ImportStockService {
                 code: branch_code,
             }
         })
+        if (!branch) {
+            throw new Error("Filial não encontrada");
+        }
 
         try {
 
@@ -52,7 +55,7 @@ export class ImportStockService {
             const query_total = `
                 SELECT B2_LOCAL, B2_FILIAL,
                     SUM(B2_QATU) AS total_stock_quantity,
-                    ROUND(SUM(B2_QATU * B2_CM1), 2) AS total_stock_value
+                    ROUND(SUM(B2_QATU * B2_CM1), 4) AS total_stock_value
                 FROM 
                     [dbo].[SB2010]
                 WHERE 
@@ -135,8 +138,9 @@ export class ImportStockService {
                         date_count: date_count,
                         counted: false,
                         access_nivel: 0,
-                        status: "NOVO", // replace with actual value
-                        situation: "" // replace with actual value
+                        status: "NOVO", 
+                        situation: "", 
+                        original_quantity: B2_QATU
                     }
                 })
             }

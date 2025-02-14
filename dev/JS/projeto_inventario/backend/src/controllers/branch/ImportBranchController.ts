@@ -14,10 +14,14 @@ class ImportBranchController {
             const importStorageService = new ImportStorageService()
             const deleteStorageService = new DeleteStorageService()
 
+            const {branch_code, address} = req.body
+
             await deleteStorageService.execute()
             await deleteBranchService.execute()
             const storage_imp = await importStorageService.execute()
-            const branch_imp = await importBranchService.execute()
+            const branch_imp = await importBranchService.execute({
+                branch_code, address
+            })
 
             res.json({ storage_imp, branch_imp });
 

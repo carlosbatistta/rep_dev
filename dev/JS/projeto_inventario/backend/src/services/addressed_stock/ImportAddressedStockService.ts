@@ -156,11 +156,12 @@ export class ImportAddressedStockService {
 
             }
             for (const record of imported_data_quantity) {
-                const { D14_PRODUT, D14_LOCAL, total_quantity } = record;
+                const { D14_PRODUT, D14_LOCAL, D14_FILIAL, total_quantity } = record;
                 const stock = await prismaClient.stock.findFirst({
                     where: {
                         product_code: D14_PRODUT.trim(),
                         storage_code: D14_LOCAL.trim(),
+                        branch_code: D14_FILIAL.trim()
                     }
                 });
                 if (stock) {

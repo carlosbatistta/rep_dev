@@ -27,6 +27,7 @@ import { OpenAddressController } from './controllers/invent_address/OpenAddressC
 import { CloseInventAddressController } from './controllers/invent_address/CloseInventAddressController';
 import { ImportBranchController } from './controllers/branch/ImportBranchController';
 import { ListInventController } from './controllers/invent/ListInventController';
+import { ListBranchController } from './controllers/branch/ListBranchConrtoller';
 
 const router = Router();
 
@@ -45,16 +46,29 @@ router.post('/access/add', (req, res, next) => isAuthenticatedV2(req, res, next,
 
 //-- ROTAS BRANCH
 router.post('/branch/import', (req, res, next) => isAuthenticatedV2(req, res, next, 0), new ImportBranchController().handle)
+/*
+o branch/import pode receber como parametro o branch_code e o address, afim de alterar e listar as filiais atualizadas, 
+se passar sem parametros ele importa incrementando do Protheus.
+*/
+router.get('branch/list',  (req, res, next) => isAuthenticatedV2(req, res, next, 0), new ListBranchController().handle)
 
 //-- ROTAS STOCK
 router.post('/stock/import', (req, res, next) => isAuthenticatedV2(req, res, next, 0), new ImportStockController().handle)
 router.get('/stock/list', (req, res, next) => isAuthenticatedV2(req, res, next, 0), new ListStockController().handle)
+/*
+No list realizar as rotinas de verificação: Custo zerado e reserva. Criar uma tela que mostre isso após as importações, o mesmo é impeditivo para
+iniciar o inventário.
+*/
 router.get('/stock/detail', (req, res, next) => isAuthenticatedV2(req, res, next, 0), new DetailStockController().handle)
 
 //-- ROTAS ADDRESSED STOCK
 router.post('/addressed_stock/import', (req, res, next) => isAuthenticatedV2(req, res, next, 0), new ImportAddressedStockController().handle)
 router.get('/addressed_stock/detail', (req, res, next) => isAuthenticatedV2(req, res, next, 0), new DetailAddressedStockController().handle)
 router.get('/addressed_stock/list', (req, res, next) => isAuthenticatedV2(req, res, next, 0), new ListAddressedStockController().handle)
+/*
+No list realizar as rotinas de verificação: Movimentação WMS e Desbalanceamento. Criar uma tela que mostre isso após as importações, o mesmo é impeditivo para
+iniciar o inventário.
+*/
 router.post('/addressed_stock/open', (req, res, next) => isAuthenticatedV2(req, res, next, 0), new OpenAddressController().handle)
 router.post('/addressed_stock/close', (req, res, next) => isAuthenticatedV2(req, res, next, 0), new CloseInventAddressController().handle)
 
