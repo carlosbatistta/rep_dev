@@ -1,116 +1,122 @@
 import { connectToSqlServer } from "../../database/sqlServer";
 import prismaClient from "../../prisma";
+import { ValidadeService } from "../util/ValidateService";
 
 interface StockRequest {
-    branch_code: string;
-    storage_code: string;
-    date_count: string;
-    document: number;
+    branch_code: string
+    storage_code: string
+    date_count: string
+    document: number
+    departament?: string
+    line?: string
+    group?: string
+    subgroup?: string
+    feature?: string
 }
 
 export class ImportStockService {
+    async execute({ branch_code, document, storage_code, date_count, departament, line, group, subgroup, feature }: StockRequest): Promise<any> {
 
-    async execute({ branch_code, document, storage_code, date_count }: StockRequest): Promise<any> {
-
-        const stock_document = await prismaClient.info_stock.findFirst({
-            where: {
-                branch_code: branch_code,
-                storage_code: storage_code,
-                date_count: date_count
-            }
-        })
-
-        if (document !== stock_document.document) {
-            throw new Error("Documentos não correspondem");
-        }
-
-        const branch = await prismaClient.branch.findFirst({
-            where: {
-                code: branch_code,
-            }
-        })
-        if (!branch) {
-            throw new Error("Filial não encontrada");
-        }
+        await ValidadeService.validateStockDocument(branch_code, storage_code, date_count, document)
 
         try {
 
-            // Conectar ao SQL Server
             const pool = await connectToSqlServer();
 
-            // Query para buscar os dados da tabela no SQL Server
-            const query_geral = `
-                select B2_QATU, B2_COD, B2_LOCAL, B2_FILIAL, B2_CM1, B2_RESERVA from [dbo].[SB2010]
-                where SB2010.D_E_L_E_T_ <> '*'
-                and B2_FILIAL = @branch_code
-				and B2_COD != ''
-                AND B2_LOCAL = @storage_code
-                `
+            let filters: string[] = [];
 
-            // Executar a query no SQL Server
-            const result_geral = await pool.request()
-                .input("branch_code", branch_code).input("storage_code", storage_code) // Insere o valor de `branch_code`
-                .query(query_geral);
+            if (departament) filters.push("AND B1_V18 = @departament")
+            if (line) filters.push("AND B1_V19 = @line")
+            if (group) filters.push("AND B1_V30 = @group")
+            if (subgroup) filters.push("AND B1_V33 = @subgroup")
+            if (feature) filters.push("AND B1_V34 = @feature")
+
+            const where_clause = `
+                WHERE 
+                    SB2010.D_E_L_E_T_ <> '*'
+                    AND SB1010.D_E_L_E_T_ <> '*'
+                    AND B2_FILIAL = @branch_code
+                    AND B2_COD != ''
+                    AND B2_LOCAL = @storage_code
+                    ${filters.join(" ")}
+            `
+
+            const query_geral = `
+                SELECT 
+                    B2_COD,
+                    B1_ESPECIF,
+                    B2_LOCAL, 
+                    B2_FILIAL,
+                    B2_QATU,
+                    B2_CM1, 
+                    B2_RESERVA
+                FROM 
+                    [dbo].[SB2010]
+                INNER JOIN SB1010 ON B1_COD = B2_COD
+                ${where_clause}
+            `
 
             const query_total = `
-                SELECT B2_LOCAL, B2_FILIAL,
+                SELECT 
+                    B2_LOCAL, 
+                    B2_FILIAL,
                     SUM(B2_QATU) AS total_stock_quantity,
                     ROUND(SUM(B2_QATU * B2_CM1), 4) AS total_stock_value
                 FROM 
                     [dbo].[SB2010]
-                WHERE 
-                    SB2010.D_E_L_E_T_ <> '*'
-                    AND B2_FILIAL = @branch_code
-                    AND B2_COD != ''
-                    AND B2_LOCAL = @storage_code
-                GROUP BY 
-                    B2_LOCAL, 
-                    B2_FILIAL
+                INNER JOIN SB1010 ON B1_COD = B2_COD
+                ${where_clause}
+                GROUP BY B2_LOCAL, B2_FILIAL
             `
-            const result_total = await pool.request()
-                .input("branch_code", branch_code).input("storage_code", storage_code) // Insere o valor de `branch_code`
-                .query(query_total);
 
             const query_indicadores = `
                 SELECT 
                     BZ_COD, BZ_LOCPAD, BZ_CTRWMS, BZ_LOCALIZ, BZ_FILIAL
                 FROM [dbo].[SBZ010]
+                INNER JOIN SB1010 ON B1_COD = BZ_COD
                 WHERE 
                     SBZ010.D_E_L_E_T_ <> '*'
                     AND BZ_FILIAL = @branch_code
                     AND BZ_LOCPAD = @storage_code
-            `
-            const result_indicadores = await pool.request()
-                .input("branch_code", branch_code).input("storage_code", storage_code) // Insere o valor de `branch_code`
-                .query(query_indicadores)
+            `;
 
-            // Verificar se há dados retornados
+            let request = pool.request()
+                .input("branch_code", branch_code)
+                .input("storage_code", storage_code)
+
+            if (departament) request.input("departament", departament)
+            if (line) request.input("line", line)
+            if (group) request.input("group", group)
+            if (subgroup) request.input("subgroup", subgroup)
+            if (feature) request.input("feature", feature)
+
+            const result_geral = await request.query(query_geral)
+            const result_total = await request.query(query_total)
+            const result_indicadores = await request.query(query_indicadores)
+
             if (result_geral.recordset.length === 0) {
                 throw new Error("Não há dados na B2.")
             }
 
             if (result_indicadores.recordset.length === 0) {
-                throw new Error("Não há dados na BZ")
+                throw new Error("Não há dados na BZ.")
             }
 
-            // Iterar pelos resultados e inserir no Prisma
-            const imported_data = result_geral.recordset;
-            const imported_data_indicadores = result_indicadores.recordset;
-            const imported_data_total = result_total.recordset;
+            const imported_data = result_geral.recordset
+            const imported_data_indicadores = result_indicadores.recordset
+            const imported_data_total = result_total.recordset
+
             for (const record of imported_data) {
-                const { B2_QATU, B2_COD, B2_LOCAL, B2_FILIAL, B2_CM1, B2_RESERVA } = record;
+                const { B2_QATU, B2_COD, B2_LOCAL, B2_FILIAL, B2_CM1, B2_RESERVA } = record
 
                 const product = await prismaClient.product.findFirst({
-                    where: {
-                        code: B2_COD.trim(),
-                    },
+                    where: { code: B2_COD.trim() },
                 });
 
                 if (!product) {
                     throw new Error(`Produto ${B2_COD.trim()} não encontrado.`);
                 }
 
-                //inserir no banco usando Prisma
                 await prismaClient.stock.create({
                     data: {
                         total_quantity: B2_QATU,
@@ -127,23 +133,28 @@ export class ImportStockService {
                         access_nivel: 0
                     },
                 });
-                if(branch.address === false){
-                await prismaClient.invent_product.create({
-                    data: {
-                        branch_code: B2_FILIAL.trim(),
-                        product_code: product.code,
-                        storage_code: B2_LOCAL.trim(),
-                        product_desc: product.description,
-                        document: document,
-                        date_count: date_count,
-                        counted: false,
-                        access_nivel: 0,
-                        status: "NOVO", 
-                        situation: "", 
-                        original_quantity: B2_QATU
-                    }
-                })
-            }
+
+                const branch = await prismaClient.branch.findFirst({
+                    where: { code: branch_code },
+                });
+
+                if (branch && !branch.address) {
+                    await prismaClient.invent_product.create({
+                        data: {
+                            branch_code: B2_FILIAL.trim(),
+                            product_code: product.code,
+                            storage_code: B2_LOCAL.trim(),
+                            product_desc: product.description,
+                            document: document,
+                            date_count: date_count,
+                            counted: false,
+                            access_nivel: 0,
+                            status: "NOVO",
+                            situation: "",
+                            original_quantity: B2_QATU
+                        }
+                    });
+                }
             }
 
             for (const record of imported_data_indicadores) {
@@ -156,11 +167,10 @@ export class ImportStockService {
                         storage_code: BZ_LOCPAD.toString().trim(),
                     },
                 });
+
                 if (stock) {
                     await prismaClient.stock.update({
-                        where: {
-                            id: stock.id,
-                        },
+                        where: { id: stock.id },
                         data: {
                             address_control: BZ_CTRWMS.trim(),
                             localiz_control: BZ_LOCALIZ.trim()
@@ -168,33 +178,36 @@ export class ImportStockService {
                     });
                 }
             }
+
             for (const record of imported_data_total) {
                 const { B2_LOCAL, B2_FILIAL, total_stock_quantity, total_stock_value } = record;
+
                 const info_stock = await prismaClient.info_stock.findFirst({
                     where: {
                         branch_code: B2_FILIAL.trim(),
                         storage_code: B2_LOCAL.trim(),
                         document: document
                     },
-                })
+                });
 
-                await prismaClient.info_stock.update({
-                    where: {
-                        id: info_stock.id,
-                    },
-                    data: {
-                        total_stock_quantity: total_stock_quantity,
-                        total_stock_value: total_stock_value
-                    }
-                })
-                console.log("Info_stock atualizado")
+                if (info_stock) {
+                    await prismaClient.info_stock.update({
+                        where: { id: info_stock.id },
+                        data: {
+                            total_stock_quantity: total_stock_quantity,
+                            total_stock_value: total_stock_value
+                        }
+                    });
+                    console.log("Info_stock atualizado");
+                }
             }
 
             console.log("Import Stock (B2, BZ) e invent_stock Efetuado.");
-            return imported_data; // Retornar os dados importados, se necessário
+            return imported_data;
         } catch (error) {
-            console.error("Erro ao importar dados do SQL Server:", error);
-            throw new Error("Failed to import data from SQL Server.");
+
         }
+
+
     }
 }

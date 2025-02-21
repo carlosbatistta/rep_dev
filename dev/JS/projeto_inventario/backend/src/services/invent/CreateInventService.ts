@@ -5,10 +5,12 @@ interface InventRequest {
     date_valid: string;
     branch_code: string;
     storage_code: string;
+    invent_type: string;
+    offline: boolean;
 }
 
 export class CreateInventService {
-    async execute({ date_count, date_valid, branch_code, storage_code }: InventRequest) {
+    async execute({ date_count, date_valid, branch_code, storage_code, invent_type, offline }: InventRequest) {
 
         const is_document = await prismaClient.number_control.findFirst({
             where: {
@@ -41,7 +43,9 @@ export class CreateInventService {
                 branch_code,
                 storage_code,
                 access_nivel: 0,
-                status: 'ABERTO'
+                status: 'ABERTO',
+                invent_type,
+                offline
             },
             select: {
                 tp_material: true,
@@ -51,6 +55,8 @@ export class CreateInventService {
                 origin: true,
                 branch_code: true,
                 storage_code: true,
+                invent_type: true,
+                offline: true
             },
         });
 

@@ -70,10 +70,11 @@ model Storage {
 
 model Address {
   id           String @id @default(uuid())
+  branch_code  String
+  storage_code String
   address      String
   description  String
   status       Int
-  storage_code String
 
   @@map("addresses")
 }
@@ -86,12 +87,57 @@ model VirtualLocation {
   @@map("virtual_locations")
 }
 
+model Departament {
+  id          String @id @default(uuid())
+  code        String
+  description String
+
+  @@map("departaments")
+}
+
+model Line {
+  id          String @id @default(uuid())
+  code        String
+  description String
+
+  @@map("lines")
+}
+
+model feature {
+  id          String @id @default(uuid())
+  code        String
+  description String
+
+  @@map("features")
+}
+
+model Group {
+  id          String @id @default(uuid())
+  code        String
+  description String
+
+  @@map("groups")
+}
+
+model subgroup {
+  id          String @id @default(uuid())
+  code        String
+  description String
+
+  @@map("subgroups")
+}
+
 model Product {
   id           String @id @default(uuid())
   name         String
   code         String
   codBar       String
   description  String
+  departament  String
+  line         String
+  group        String
+  subgroup     String
+  feature      String
   access_nivel Int
 
   @@map("products")
@@ -199,7 +245,7 @@ model invent_product {
 }
 
 model info_invent {
-  id                     String @id @default(uuid())
+  id                     String   @id @default(uuid())
   document               Int
   date_count             String
   branch_code            String
@@ -208,6 +254,9 @@ model info_invent {
   origin                 String
   tp_material            String
   status                 String
+  invent_type            String
+  offline                Boolean
+  restriction            Boolean?
   accuracy_quanty        Float?
   accuracy_value         Float?
   accuracy_percent       Float?

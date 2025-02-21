@@ -28,6 +28,7 @@ import { CloseInventAddressController } from './controllers/invent_address/Close
 import { ImportBranchController } from './controllers/branch/ImportBranchController';
 import { ListInventController } from './controllers/invent/ListInventController';
 import { ListBranchController } from './controllers/branch/ListBranchConrtoller';
+import { ImportAddressController } from './controllers/address/ImportAddressController';
 
 const router = Router();
 
@@ -41,8 +42,8 @@ router.post('/profile/add', new CreateProfileController().handle)
 router.delete('/profile/remove', (req, res, next) => isAuthenticatedV2(req, res, next, 0), new DeleteProfileController().handle)
 router.post('/profile/alter', (req, res, next) => isAuthenticatedV2(req, res, next, 0), new AlterProfileController().handle)
 
-//-- ROTAS ACCESS
-router.post('/access/add', (req, res, next) => isAuthenticatedV2(req, res, next, 0), new CreateAccessController().handle);
+//-- ROTAS ADDRESS
+router.post('/address/add', (req, res, next) => isAuthenticatedV2(req, res, next, 0), new ImportAddressController().handle);
 
 //-- ROTAS BRANCH
 router.post('/branch/import', (req, res, next) => isAuthenticatedV2(req, res, next, 0), new ImportBranchController().handle)

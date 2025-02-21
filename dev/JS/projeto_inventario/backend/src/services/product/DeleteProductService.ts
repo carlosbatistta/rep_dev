@@ -2,11 +2,11 @@ import prismaClient from "../../prisma";
 
 export class DeleteProductService {
     async execute() {
-        // Deleta todos os registros da tabela 'product'
-        const deletedProducts = await prismaClient.product.deleteMany({});
+        
+        const deleted_products = await prismaClient.product.deleteMany({})
 
-        console.log("Dados apagados com sucesso.");
+        console.log("Dados apagados com sucesso.")
 
-        return deletedProducts
+        return deleted_products
     }
 }

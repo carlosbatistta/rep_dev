@@ -1,44 +1,44 @@
 import { connectToSqlServer } from "../../database/sqlServer";
 import { isAuthenticated } from "../../middlewares/isAuthenticated";
 import prismaClient from "../../prisma";
+import { ValidadeService } from "../util/ValidateService";
 
 interface AddressedStockRequest {
-    branch_code: string;
-    storage_code: string;
-    date_count: string;
-    document: number;
+    branch_code: string
+    storage_code: string
+    date_count: string
+    document: number
+    address_code?: string
 }
 
 export class ImportAddressedStockService {
-    async execute({ branch_code, document, storage_code, date_count }: AddressedStockRequest): Promise<any> {
-        const stock_document = await prismaClient.info_stock.findFirst({
-            where: {
-                branch_code: branch_code,
-                storage_code: storage_code,
-                date_count: date_count
-            }
-        })
+    async execute({ branch_code, document, storage_code, date_count, address_code }: AddressedStockRequest): Promise<any> {
 
-        if (document !== stock_document.document) {
-            throw new Error("Documentos não correspondem");
-        }
+        await ValidadeService.validateStockDocument(branch_code, storage_code, date_count, document)
         
-        try {
+        try {  
 
-            // Conectar ao SQL Server
-            const pool = await connectToSqlServer();
+            const pool = await connectToSqlServer()
 
-            // Query para buscar os dados da tabela no SQL Server
+            let filters: string[] = []
+
+            if (address_code) filters.push("AND D14_ENDER = @address_code")
+
+            const where_clause = `
+            WHERE 
+                D14010.D_E_L_E_T_ <> '*'
+                AND D14_FILIAL = @branch_code
+                AND D14_LOCAL = @storage_code
+                ${filters.join(" ")} 
+            `
+
             const query_geral = `
             SELECT 
                 D14_QTDEST, D14_PRODUT, D14_LOCAL, D14_ENDER, D14_FILIAL,
                 SUM(D14_QTDEPR + D14_QTDSPR) AS transf_quantity,
                 SUM(D14_QTDPEM + D14_QTDEMP) AS reserve_quantity
             FROM [dbo].[D14010]
-            WHERE 
-                D14010.D_E_L_E_T_ <> '*'
-                AND D14_FILIAL = @branch_code
-                AND D14_LOCAL = @storage_code
+            ${where_clause}
             GROUP BY 
                 D14_PRODUT,
 				D14_QTDEST,
@@ -49,21 +49,13 @@ export class ImportAddressedStockService {
                 D14_PRODUT;
             `;
 
-            // Executar a query no SQL Server
-            const result_geral = await pool.request()
-                .input("branch_code", branch_code).input("storage_code", storage_code) // Insere o valor de `branch_code`
-                .query(query_geral);
-
             const query_quantity = `
             SELECT 
                 D14_PRODUT, D14_LOCAL, D14_FILIAL,
                 SUM(D14_QTDEST) AS total_quantity
             FROM 
                 [dbo].[D14010]
-            WHERE 
-                D14010.D_E_L_E_T_ <> '*'
-                AND D14_FILIAL = @branch_code
-                AND D14_LOCAL = @storage_code
+            ${where_clause}
             GROUP BY 
                 D14_PRODUT, 
                 D14_LOCAL, 
@@ -71,21 +63,22 @@ export class ImportAddressedStockService {
             ORDER BY 
                 D14_PRODUT;
             `
-            const result_quantity = await pool.request()
-                .input("branch_code", branch_code).input("storage_code", storage_code) // Insere o valor de `branch_code`
-                .query(query_quantity);
+            let request = pool.request()
+            .input("branch_code", branch_code)
+            .input("storage_code", storage_code)
 
 
             // Verificar se há dados retornados
-            if (result_geral.recordset.length === 0) {
-                throw new Error("Não há dados.");
-            }
+            if (address_code) request.input("address_code", address_code)
 
             // Iterar pelos resultados e inserir no Prisma
-            const imported_data_geral = result_geral.recordset;
-            const imported_data_quantity = result_quantity.recordset;
+            const result_geral = await request.query(query_geral)
+            const result_quantity = await request.query(query_quantity)
 
-            for (const record of imported_data_geral) {
+            const imported_data = result_geral.recordset
+            const imported_data_quantity = result_quantity.recordset
+
+            for (const record of imported_data) {
                 const { D14_QTDEST, D14_PRODUT, D14_LOCAL, D14_ENDER, D14_FILIAL, reserve_quantity, transf_quantity } = record;
 
                 const product = await prismaClient.product.findFirst({
@@ -156,7 +149,7 @@ export class ImportAddressedStockService {
 
             }
             for (const record of imported_data_quantity) {
-                const { D14_PRODUT, D14_LOCAL, D14_FILIAL, total_quantity } = record;
+                const { D14_PRODUT, D14_LOCAL, D14_FILIAL, total_quantity } = record
                 const stock = await prismaClient.stock.findFirst({
                     where: {
                         product_code: D14_PRODUT.trim(),
@@ -188,11 +181,11 @@ export class ImportAddressedStockService {
                 }
             }
 
-            console.log("Dados importados com sucesso.");
-            return { imported_data_geral, imported_data_quantity };
+            console.log("Dados importados com sucesso.")
+            return { imported_data_geral: imported_data, imported_data_quantity: imported_data_quantity };
         } catch (error) {
-            console.error("Erro ao importar dados do SQL Server:", error);
-            throw new Error("Failed to import data from SQL Server.");
+            console.error("Erro ao importar dados do SQL Server:", error)
+            throw new Error("Failed to import data from SQL Server.")
         }
     }
 }
