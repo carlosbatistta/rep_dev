@@ -6,7 +6,6 @@ import { CreateUserController } from './controllers/user/CreateUserController'
 import { AuthUserController } from './controllers/user/AuthUserController'
 import { DetailuserController } from './controllers/user/DetailUserController'
 import { CreateProfileController } from './controllers/profile/CreateProfileController'
-import { CreateAccessController } from './controllers/access/CreateAccessController'
 import { isAuthenticatedV2 } from './middlewares/isAuthenticatedV2';
 import { DeleteProfileController } from './controllers/profile/DeleteProfileController';
 import { AlterProfileController } from './controllers/profile/AlterProfileController';
@@ -29,6 +28,7 @@ import { ImportBranchController } from './controllers/branch/ImportBranchControl
 import { ListInventController } from './controllers/invent/ListInventController';
 import { ListBranchController } from './controllers/branch/ListBranchConrtoller';
 import { ImportAddressController } from './controllers/address/ImportAddressController';
+import { ImportMarketingClassController } from './controllers/marketing_class/ImportMarketingClassController';
 
 const router = Router();
 
@@ -43,7 +43,7 @@ router.delete('/profile/remove', (req, res, next) => isAuthenticatedV2(req, res,
 router.post('/profile/alter', (req, res, next) => isAuthenticatedV2(req, res, next, 0), new AlterProfileController().handle)
 
 //-- ROTAS ADDRESS
-router.post('/address/add', (req, res, next) => isAuthenticatedV2(req, res, next, 0), new ImportAddressController().handle);
+router.post('/address/import', (req, res, next) => isAuthenticatedV2(req, res, next, 0), new ImportAddressController().handle);
 
 //-- ROTAS BRANCH
 router.post('/branch/import', (req, res, next) => isAuthenticatedV2(req, res, next, 0), new ImportBranchController().handle)
@@ -51,7 +51,7 @@ router.post('/branch/import', (req, res, next) => isAuthenticatedV2(req, res, ne
 o branch/import pode receber como parametro o branch_code e o address, afim de alterar e listar as filiais atualizadas, 
 se passar sem parametros ele importa incrementando do Protheus.
 */
-router.get('branch/list',  (req, res, next) => isAuthenticatedV2(req, res, next, 0), new ListBranchController().handle)
+router.get('/branch/list',  (req, res, next) => isAuthenticatedV2(req, res, next, 0), new ListBranchController().handle)
 
 //-- ROTAS STOCK
 router.post('/stock/import', (req, res, next) => isAuthenticatedV2(req, res, next, 0), new ImportStockController().handle)
@@ -61,6 +61,9 @@ No list realizar as rotinas de verificação: Custo zerado e reserva. Criar uma 
 iniciar o inventário.
 */
 router.get('/stock/detail', (req, res, next) => isAuthenticatedV2(req, res, next, 0), new DetailStockController().handle)
+
+//-- ROTAS MARKETING CLASS
+router.post('/marketing_class/import', (req, res, next) => isAuthenticatedV2(req, res, next, 0),new ImportMarketingClassController().handle)
 
 //-- ROTAS ADDRESSED STOCK
 router.post('/addressed_stock/import', (req, res, next) => isAuthenticatedV2(req, res, next, 0), new ImportAddressedStockController().handle)
@@ -87,29 +90,6 @@ router.get('/product/list', (req, res, next) => isAuthenticatedV2(req, res, next
 router.get('/product/detail', (req, res, next) => isAuthenticatedV2(req, res, next, 0), new DetailProductController().handle)
 
 //-- ROTAS COUNT
-
-/*
-router.get('/category', isAuthenticated, new ListCategoryController().handle)
-
-//-- ROTAS PRODUCT
-router.post('/product', isAuthenticated, upload.single('file'), new CreateProductController().handle)
-
-router.get('/category/product', isAuthenticated, new ListByCategoryController().handle)
-
-//-- ROTAS ORDER
-router.post('/order', isAuthenticated, new CreateOrderController().handle)
-router.delete('/order', isAuthenticated, new RemoveOrderController().handle)
-
-router.post('/order/add', isAuthenticated, new AddItemController().handle)
-router.delete('/order/remove', isAuthenticated, new RemoveItemController().handle)
-
-router.put('/order/send', isAuthenticated, new SendOrderController().handle)
-
-router.get('/orders', isAuthenticated, new ListOrdersController().handle)
-router.get('/order/detail', isAuthenticated, new DetailOrderController().handle)
-
-router.put('/order/finish', isAuthenticated, new FinishOrderController().handle)
-*/
 
 
 export { router }; 
