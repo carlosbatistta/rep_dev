@@ -1,25 +1,31 @@
 import prismaClient from "../../prisma";
 
 interface ListStockRequest {
-    cost?: number // Filtro por custo
-    storage_code?: string // Filtro por código de armazenamento
-    wms_control?: boolean // Filtro baseado em controle WMS
-    total_quantity?: number // Filtro por quantidade total
-    reservation?: number // Filtro por reserva
+    cost?: number
+    storage_code?: string
+    wms_control?: boolean
+    total_quantity?: number
+    reservation?: number
+    unbalanced?: boolean
 }
 
 export class ListStockService {
     async execute(filters: ListStockRequest = {}) {
-        const { cost, storage_code, wms_control, total_quantity, reservation } = filters;
+        const { cost, storage_code, wms_control, total_quantity, reservation, unbalanced } = filters;
 
         // Construir os filtros dinamicamente
-        const whereClause: any = {};
+        const whereClause: any = {}
 
         // Filtro por custo
         if (cost !== undefined) {
             whereClause.cost = {
                 lte: cost, // Custo menor ou igual ao valor
             };
+        }
+
+        //Filtro por desbalanceamento
+        if (unbalanced !== undefined) {
+            whereClause.unbalanced = true
         }
 
         // Filtro por código de armazenamento
@@ -31,7 +37,7 @@ export class ListStockService {
         if (wms_control === true) {
             whereClause.address_control = "1"; // Controle ativo
             whereClause.localiz_control = "S"; // Localização ativa
-            
+
         } else if (wms_control === false) {
 
             whereClause.address_control = { not: "1" }
@@ -41,7 +47,7 @@ export class ListStockService {
         // Filtro por quantidade total
         if (total_quantity !== undefined) {
             whereClause.total_quantity = {
-                gt: total_quantity, // Quantidade maior ou igual ao valor
+                gt: total_quantity, // Quantidade maior 
             };
         }
 
