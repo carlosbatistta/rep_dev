@@ -256,7 +256,13 @@ model info_invent {
   status                 String
   invent_type            String
   offline                Boolean
-  restriction            Boolean?
+  is_transfer            Boolean?
+  is_reserved_wms        Boolean?
+  is_zero_cost           Boolean?
+  is_unbalanced          Boolean?
+  is_wms_control         Boolean?
+  is_reserved_b2         Boolean?
+  order_quantity         Int?
   accuracy_quanty        Float?
   accuracy_value         Float?
   accuracy_percent       Float?

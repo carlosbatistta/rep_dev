@@ -24,6 +24,7 @@ export class ImportStockService {
             const pool = await connectToSqlServer();
 
             let filters: string[] = [];
+            
 
             if (departament) filters.push("AND B1_V18 = @departament")
             if (line) filters.push("AND B1_V19 = @line")
@@ -80,6 +81,17 @@ export class ImportStockService {
                     AND BZ_LOCPAD = @storage_code
             `;
 
+            const query_order = `
+                SELECT  
+                    COUNT(C9_PEDIDO) AS PEDIDOS
+                FROM [dbo].[SC9010]
+                WHERE 
+                    SC9010.D_E_L_E_T_ <> '*'
+                    AND C9_FILIAL = @branch_code
+                    AND C9_LOCAL = @storage_code
+					AND C9_NFISCAL = ''
+            `
+
             let request = pool.request()
                 .input("branch_code", branch_code)
                 .input("storage_code", storage_code)
@@ -93,6 +105,7 @@ export class ImportStockService {
             const result_geral = await request.query(query_geral)
             const result_total = await request.query(query_total)
             const result_indicadores = await request.query(query_indicadores)
+            const result_order = await request.query(query_order)
 
             if (result_geral.recordset.length === 0) {
                 throw new Error("Não há dados na B2.")
@@ -105,6 +118,7 @@ export class ImportStockService {
             const imported_data = result_geral.recordset
             const imported_data_indicadores = result_indicadores.recordset
             const imported_data_total = result_total.recordset
+            const imported_data_order = result_order.recordset
 
             for (const record of imported_data) {
                 const { B2_QATU, B2_COD, B2_LOCAL, B2_FILIAL, B2_CM1, B2_RESERVA } = record
@@ -200,6 +214,23 @@ export class ImportStockService {
                     });
                     console.log("Info_stock atualizado");
                 }
+            }
+
+            if (imported_data_order[0].PEDIDOS > 0) {
+                const invent = await prismaClient.info_invent.findFirst({
+                    where: {
+                        branch_code: branch_code,
+                        storage_code: storage_code,
+                        document: document
+                    },
+                })
+
+                await prismaClient.info_invent.update({
+                    where:{id: invent.id},
+                    data: {
+                        order_quantity: imported_data_order[0].PEDIDOS
+                    }
+                })
             }
 
             console.log("Import Stock (B2, BZ) e invent_stock Efetuado.");

@@ -4,10 +4,10 @@ import { ListStockService } from '../../services/stock/ListStockService';
 class ListStockController {
     handle: RequestHandler = async (req: Request, res: Response) => {
         try {
-            const { storage_code, cost, wms_control, total_quantity, reservation } = req.body;
+            const { storage_code, branch_code, cost, wms_control, unbalanced, reservation } = req.body;
             const listStockService = new ListStockService();
             const stock = await listStockService.execute({
-                storage_code, cost, wms_control, total_quantity, reservation
+                storage_code, cost, wms_control, branch_code, reservation, unbalanced
             });
             res.json(stock)
         } catch (error: any) {
