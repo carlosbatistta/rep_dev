@@ -142,7 +142,6 @@ export class ImportAddressedStockService {
                         status: 'NOVO',
                         counted: false,
                         situation: '', // Add the appropriate value for 'situation'
-                        original_quantity: D14_QTDEST,
                         access_nivel: 0,
                     }
                 })
@@ -154,9 +153,17 @@ export class ImportAddressedStockService {
                     where: {
                         product_code: D14_PRODUT.trim(),
                         storage_code: D14_LOCAL.trim(),
-                        branch_code: D14_FILIAL.trim()
+                        branch_code: D14_FILIAL.trim(),
                     }
-                });
+                })
+                const invent_product = await prismaClient.invent_product.findFirst({
+                    where: {
+                        product_code: D14_PRODUT.trim(),
+                        storage_code: D14_LOCAL.trim(),
+                        branch_code: D14_FILIAL.trim(),
+                        document: document,
+                    }
+                })
                 if (stock) {
                     let unbalanced
                     if (stock.total_quantity !== total_quantity) {
@@ -176,6 +183,16 @@ export class ImportAddressedStockService {
                         data: {
                             addresed_quantity: total_quantity,
                             unbalanced: unbalanced
+                        }
+                    })
+                }
+                if (invent_product){
+                    await prismaClient.invent_product.update({
+                        where: {
+                            id: invent_product.id
+                        },
+                        data: {
+                            original_quantity: total_quantity
                         }
                     })
                 }

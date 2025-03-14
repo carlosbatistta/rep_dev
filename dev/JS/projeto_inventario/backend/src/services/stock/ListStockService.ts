@@ -1,11 +1,11 @@
 import prismaClient from "../../prisma";
 
 interface ListStockRequest {
-    cost?: number
+    cost?: boolean
     storage_code?: string
     branch_code?: string
     wms_control?: boolean
-    reservation?: number
+    reservation?: boolean
     unbalanced?: boolean
 }
 
@@ -18,7 +18,7 @@ export class ListStockService {
         const updateFields: any = {}
 
         if (cost !== undefined) {
-            whereClause.cost = { lte: cost }
+            whereClause.cost = { lte: 0 }
             updateFields.is_zero_cost = true
         }
 
@@ -42,7 +42,7 @@ export class ListStockService {
         }
 
         if (reservation !== undefined) {
-            whereClause.reservation = { gt: reservation };
+            whereClause.reservation = { gt: 0 };
             updateFields.is_reservation = true
         }
 
