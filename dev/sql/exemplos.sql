@@ -60,3 +60,8 @@ SELECT cliente_id, COUNT(*) AS qtde_pedidos
 FROM pedidos_valiosos
 GROUP BY cliente_id;
 
+--Retornar os ultimos 30 dias de cadastro
+SELECT nome, cidade 
+FROM clientes 
+WHERE data_cadastro >= current_date - INTERVAL '30 days'
+ORDER BY data_cadastro DESC;
