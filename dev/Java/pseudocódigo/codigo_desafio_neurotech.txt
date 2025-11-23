@@ -1,0 +1,87 @@
+FUNÇÃO AvaliarRegrasDeCredito (DadosSolicitante)
+
+    // 1. INICIALIZAÇÃO: Lista de resultados a ser retornada pela API.
+    ListaDeResultados = []
+    
+    // Variáveis para armazenar as consultas (necessárias para regras dependentes)
+    RetornoFonteX = CONSULTAR_API("FonteX", DadosSolicitante.CPF)
+    RetornoFonteY = CONSULTAR_API("FonteY", DadosSolicitante.CPF)
+    ConstaBlocklist = CONSULTAR_BASE_INTERNA("Blocklist", DadosSolicitante.CPF)
+
+
+    // ===================================================
+    // 2. AVALIAÇÃO E REGISTRO DE CADA REGRA
+    // As regras são avaliadas sequencialmente, sem interrupção.
+    // ===================================================
+
+    // RF001: SITUAÇÃO CADASTRAL (FONTE X)
+    ResultadoRegra = NOVO Objeto(Regra = "Situação Cadastral")
+    ResultadoRegra.ValorConsultado = RetornoFonteX.Situacao
+    SE RetornoFonteX.Situacao É IGUAL A "Regular" ENTÃO
+        ResultadoRegra.Aprovado = VERDADEIRO
+    SENÃO
+        ResultadoRegra.Aprovado = FALSO
+    FIM SE
+    ADICIONAR_ITEM(ListaDeResultados, ResultadoRegra)
+
+
+    // RF006: CONSULTA BLOCKLIST (INTERNA)
+    ResultadoRegra = NOVO Objeto(Regra = "Consulta Blocklist")
+    ResultadoRegra.ValorConsultado = ConstaBlocklist // Pode ser TRUE/FALSE ou "Sim/Não"
+    SE ConstaBlocklist É FALSO ENTÃO
+        ResultadoRegra.Aprovado = VERDADEIRO
+    SENÃO
+        ResultadoRegra.Aprovado = FALSO
+    FIM SE
+    ADICIONAR_ITEM(ListaDeResultados, ResultadoRegra)
+
+
+    // RF005: SCORE DE CRÉDITO (FONTE Y)
+    ResultadoRegra = NOVO Objeto(Regra = "Score de Crédito")
+    ResultadoRegra.ValorConsultado = RetornoFonteY.Score
+    SE RetornoFonteY.Score > 700 ENTÃO
+        ResultadoRegra.Aprovado = VERDADEIRO
+    SENÃO
+        ResultadoRegra.Aprovado = FALSO
+    FIM SE
+    ADICIONAR_ITEM(ListaDeResultados, ResultadoRegra)
+
+
+    // RF002: CORRESPONDÊNCIA DE NOME
+    ResultadoRegra = NOVO Objeto(Regra = "Correspondência de Nome")
+    SimilaridadeNome = CALCULAR_SIMILARIDADE(DadosSolicitante.Nome, RetornoFonteX.Nome)
+    ResultadoRegra.ValorConsultado = SimilaridadeNome
+    SE SimilaridadeNome >= 70% ENTÃO
+        ResultadoRegra.Aprovado = VERDADEIRO
+    SENÃO
+        ResultadoRegra.Aprovado = FALSO
+    FIM SE
+    ADICIONAR_ITEM(ListaDeResultados, ResultadoRegra)
+
+
+    // RF003: VERIFICAÇÃO DE IDADE
+    ResultadoRegra = NOVO Objeto(Regra = "Verificação de Idade")
+    IdadeCalculada = CALCULAR_IDADE(RetornoFonteX.DataNascimento)
+    ResultadoRegra.ValorConsultado = IdadeCalculada
+    SE IdadeCalculada É IGUAL A DadosSolicitante.Idade ENVIADA ENTÃO
+        ResultadoRegra.Aprovado = VERDADEIRO
+    SENÃO
+        ResultadoRegra.Aprovado = FALSO
+    FIM SE
+    ADICIONAR_ITEM(ListaDeResultados, ResultadoRegra)
+
+
+    // RF004: CORRESPONDÊNCIA DE ENDEREÇO
+    ResultadoRegra = NOVO Objeto(Regra = "Correspondência de Endereço")
+    SimilaridadeEndereco = CALCULAR_SIMILARIDADE(DadosSolicitante.Endereco, RetornoFonteX.Endereco)
+    ResultadoRegra.ValorConsultado = SimilaridadeEndereco
+    SE SimilaridadeEndereco >= 70% ENTÃO
+        ResultadoRegra.Aprovado = VERDADEIRO
+    SENÃO
+        ResultadoRegra.Aprovado = FALSO
+    FIM SE
+    ADICIONAR_ITEM(ListaDeResultados, ResultadoRegra)
+
+
+    // 3. RETORNO DA LISTA DE RESULTADOS
+    RETORNAR ListaDeResultados

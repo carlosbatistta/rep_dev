@@ -1,7 +1,7 @@
 import sql from 'mssql';
-import dotenv from 'dotenv';
+//import dotenv from 'dotenv';
 
-dotenv.config();
+//dotenv.config();
 
 const sqlServerConfig = {
     user: process.env.SQLSERVER_USER,
