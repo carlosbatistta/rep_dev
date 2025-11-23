@@ -11,8 +11,10 @@ FUNÇÃO AvaliarRegrasDeCredito (DadosSolicitante)
 
     // ===================================================
     // 2. AVALIAÇÃO E REGISTRO DE CADA REGRA
-    // As regras são avaliadas sequencialmente, sem interrupção.
     // ===================================================
+
+    // O modelo ResultadoRegra é composto por três campos essenciais para a auditoria 
+    // e a tomada de decisão: Regra, ValorConsultado e Aprovado.
 
     // RF001: SITUAÇÃO CADASTRAL (FONTE X)
     ResultadoRegra = NOVO Objeto(Regra = "Situação Cadastral")
