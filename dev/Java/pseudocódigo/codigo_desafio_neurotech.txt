@@ -1,89 +1,106 @@
 FUNÇÃO AvaliarRegrasDeCredito (DadosSolicitante)
 
-    // 1. INICIALIZAÇÃO: Lista de resultados a ser retornada pela API.
-    ListaDeResultados = []
-    
-    // Variáveis para armazenar as consultas (necessárias para regras dependentes)
+    // 1. INICIALIZAÇÃO E CONSULTAS
+    ListaDeResultados = [] // Lista onde os arrays de resultado serão adicionados
+    DecisaoFinal = "APROVADO" // Assume aprovação inicial
+
+    // Variáveis para armazenar as consultas
     RetornoFonteX = CONSULTAR_API("FonteX", DadosSolicitante.CPF)
     RetornoFonteY = CONSULTAR_API("FonteY", DadosSolicitante.CPF)
     ConstaBlocklist = CONSULTAR_BASE_INTERNA("Blocklist", DadosSolicitante.CPF)
-
+    
+    // Variáveis temporárias para armazenar o resultado da regra ANTES de ser adicionado à lista.
+    ResultadoRegra_Regra = ""
+    ResultadoRegra_Valor = ""
+    ResultadoRegra_Aprovado = FALSO
 
     // ===================================================
     // 2. AVALIAÇÃO E REGISTRO DE CADA REGRA
     // ===================================================
 
-    // O modelo ResultadoRegra é composto por três campos essenciais para a auditoria 
-    // e a tomada de decisão: Regra, ValorConsultado e Aprovado.
-
-    // RF001: SITUAÇÃO CADASTRAL (FONTE X)
-    ResultadoRegra = NOVO Objeto(Regra = "Situação Cadastral")
-    ResultadoRegra.ValorConsultado = RetornoFonteX.Situacao
+    // --- RF001: SITUAÇÃO CADASTRAL (FONTE X)
+    ResultadoRegra_Regra = "Situação Cadastral"
+    ResultadoRegra_Valor = RetornoFonteX.Situacao
     SE RetornoFonteX.Situacao É IGUAL A "Regular" ENTÃO
-        ResultadoRegra.Aprovado = VERDADEIRO
+        ResultadoRegra_Aprovado = VERDADEIRO
     SENÃO
-        ResultadoRegra.Aprovado = FALSO
+        ResultadoRegra_Aprovado = FALSO
+        DecisaoFinal = "REPROVADO"
     FIM SE
-    ADICIONAR_ITEM(ListaDeResultados, ResultadoRegra)
+    ADICIONAR_ITEM(ListaDeResultados, (ResultadoRegra_Regra, ResultadoRegra_Valor, ResultadoRegra_Aprovado))
 
-
-    // RF006: CONSULTA BLOCKLIST (INTERNA)
-    ResultadoRegra = NOVO Objeto(Regra = "Consulta Blocklist")
-    ResultadoRegra.ValorConsultado = ConstaBlocklist // Pode ser TRUE/FALSE ou "Sim/Não"
-    SE ConstaBlocklist É FALSO ENTÃO
-        ResultadoRegra.Aprovado = VERDADEIRO
-    SENÃO
-        ResultadoRegra.Aprovado = FALSO
-    FIM SE
-    ADICIONAR_ITEM(ListaDeResultados, ResultadoRegra)
-
-
-    // RF005: SCORE DE CRÉDITO (FONTE Y)
-    ResultadoRegra = NOVO Objeto(Regra = "Score de Crédito")
-    ResultadoRegra.ValorConsultado = RetornoFonteY.Score
-    SE RetornoFonteY.Score > 700 ENTÃO
-        ResultadoRegra.Aprovado = VERDADEIRO
-    SENÃO
-        ResultadoRegra.Aprovado = FALSO
-    FIM SE
-    ADICIONAR_ITEM(ListaDeResultados, ResultadoRegra)
-
-
-    // RF002: CORRESPONDÊNCIA DE NOME
-    ResultadoRegra = NOVO Objeto(Regra = "Correspondência de Nome")
-    SimilaridadeNome = CALCULAR_SIMILARIDADE(DadosSolicitante.Nome, RetornoFonteX.Nome)
-    ResultadoRegra.ValorConsultado = SimilaridadeNome
+    // --- RF002: CORRESPONDÊNCIA DE NOME
+    ResultadoRegra_Regra = "Correspondência de Nome"
+    SimilaridadeNome = CALCULAR_SIMILARIDADE(DadosSolicitante.Nome, RetornoFonteX.Nome) //Aplicar a normalização (remoção de caracteres especiais)
+    ResultadoRegra_Valor = SimilaridadeNome
     SE SimilaridadeNome >= 70% ENTÃO
-        ResultadoRegra.Aprovado = VERDADEIRO
+        ResultadoRegra_Aprovado = VERDADEIRO
     SENÃO
-        ResultadoRegra.Aprovado = FALSO
+        ResultadoRegra_Aprovado = FALSO
+        SE DecisaoFinal É IGUAL A "APROVADO" ENTÃO
+            DecisaoFinal = "REPROVADO"
+        FIM SE
     FIM SE
-    ADICIONAR_ITEM(ListaDeResultados, ResultadoRegra)
+    ADICIONAR_ITEM(ListaDeResultados, (ResultadoRegra_Regra, ResultadoRegra_Valor, ResultadoRegra_Aprovado))
 
-
-    // RF003: VERIFICAÇÃO DE IDADE
-    ResultadoRegra = NOVO Objeto(Regra = "Verificação de Idade")
+    // --- RF003: VERIFICAÇÃO DE IDADE
+    ResultadoRegra_Regra = "Verificação de Idade"
     IdadeCalculada = CALCULAR_IDADE(RetornoFonteX.DataNascimento)
-    ResultadoRegra.ValorConsultado = IdadeCalculada
-    SE IdadeCalculada É IGUAL A DadosSolicitante.Idade ENVIADA ENTÃO
-        ResultadoRegra.Aprovado = VERDADEIRO
+    ResultadoRegra_Valor = IdadeCalculada
+    SE IdadeCalculada É IGUAL A DadosSolicitante.Idade ENTÃO
+        ResultadoRegra_Aprovado = VERDADEIRO
     SENÃO
-        ResultadoRegra.Aprovado = FALSO
+        ResultadoRegra_Aprovado = FALSO
+        SE DecisaoFinal É IGUAL A "APROVADO" ENTÃO
+            DecisaoFinal = "REPROVADO"
+        FIM SE
     FIM SE
-    ADICIONAR_ITEM(ListaDeResultados, ResultadoRegra)
+    ADICIONAR_ITEM(ListaDeResultados, (ResultadoRegra_Regra, ResultadoRegra_Valor, ResultadoRegra_Aprovado))
 
 
-    // RF004: CORRESPONDÊNCIA DE ENDEREÇO
-    ResultadoRegra = NOVO Objeto(Regra = "Correspondência de Endereço")
-    SimilaridadeEndereco = CALCULAR_SIMILARIDADE(DadosSolicitante.Endereco, RetornoFonteX.Endereco)
-    ResultadoRegra.ValorConsultado = SimilaridadeEndereco
+    // --- RF004: CORRESPONDÊNCIA DE ENDEREÇO
+    ResultadoRegra_Regra = "Correspondência de Endereço"
+    SimilaridadeEndereco = CALCULAR_SIMILARIDADE(DadosSolicitante.Endereco, RetornoFonteX.Endereco) //Aplicar a normalização (remoção de caracteres especiais)
+    ResultadoRegra_Valor = SimilaridadeEndereco
     SE SimilaridadeEndereco >= 70% ENTÃO
-        ResultadoRegra.Aprovado = VERDADEIRO
+        ResultadoRegra_Aprovado = VERDADEIRO
     SENÃO
-        ResultadoRegra.Aprovado = FALSO
+        ResultadoRegra_Aprovado = FALSO
+        SE DecisaoFinal É IGUAL A "APROVADO" ENTÃO
+            DecisaoFinal = "REPROVADO"
+        FIM SE
     FIM SE
-    ADICIONAR_ITEM(ListaDeResultados, ResultadoRegra)
+    ADICIONAR_ITEM(ListaDeResultados, (ResultadoRegra_Regra, ResultadoRegra_Valor, ResultadoRegra_Aprovado))
+
+    // --- RF005: SCORE DE CRÉDITO (FONTE Y)
+    ResultadoRegra_Regra = "Score de Crédito"
+    ResultadoRegra_Valor = RetornoFonteY.Score
+    SE RetornoFonteY.Score > 700 ENTÃO
+        ResultadoRegra_Aprovado = VERDADEIRO
+    SENÃO
+        ResultadoRegra_Aprovado = FALSO
+        SE DecisaoFinal É IGUAL A "APROVADO" ENTÃO
+            DecisaoFinal = "REPROVADO"
+        FIM SE
+    FIM SE
+    ADICIONAR_ITEM(ListaDeResultados, (ResultadoRegra_Regra, ResultadoRegra_Valor, ResultadoRegra_Aprovado))
+
+    // --- RF006: CONSULTA BLOCKLIST (INTERNA)
+    ResultadoRegra_Regra = "Consulta Blocklist"
+    ResultadoRegra_Valor = ConstaBlocklist
+    SE ConstaBlocklist É FALSO ENTÃO
+        ResultadoRegra_Aprovado = VERDADEIRO
+    SENÃO
+        ResultadoRegra_Aprovado = FALSO
+        SE DecisaoFinal É IGUAL A "APROVADO"
+            DecisaoFinal = "REPROVADO"
+        FIM SE
+    FIM SE
+    ADICIONAR_ITEM(ListaDeResultados, (ResultadoRegra_Regra, ResultadoRegra_Valor, ResultadoRegra_Aprovado))
 
 
-    // 3. RETORNO DA LISTA DE RESULTADOS
-    RETORNAR ListaDeResultados
+    // 3. RETORNO DA LISTA DE RESULTADOS E DECISÃO FINAL
+    // O sistema deve retornar um JSON com o código identificador da consulta, Nome, CPF, 
+    // lista de resultados (que é o nome da regra, o resultado da consulta e a avaliação) e a decisão final.
+    ESTRUTURAR_RETORNO (id_consulta, DadosSolicitante.Nome, DadosSolicitante.CPF, ListaDeResultados, DecisaoFinal)
+FIM FUNÇÃO
