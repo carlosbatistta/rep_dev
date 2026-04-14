@@ -1,0 +1,86 @@
+#INCLUDE "PROTHEUS.CH"
+#INCLUDE "FWMVCDEF.CH"
+
+/*/{Protheus.doc} NB00003
+	TELA CRUD COM A TABELA NB0 RESPONSAVEL PELO CADASTRO DE OCORRÊNCIAS DE CLIENTES DE ACORDO COM A CARGA
+@type function
+@author Carlos Batista
+@since 27/08/2025
+@version 1.0
+/*/
+USER FUNCTION NB00001()
+
+ 
+    Local oBrowse //VARIAVEL OBJETO QUE RECEBERA O INSTANCIAMENTO DA CLASE FWMBROSE
+
+    oBrowse := FWMBROWSE():New()
+
+    oBrowse:SetAlias("NB0") //PASSO A TABELA QUE EU QUERO MOSTAR NO BROWSE
+
+    oBrowse:SetDescription("Registro de Ocorrências") //CABECALHO DA TELA 
+
+    oBrowse:ACTIVATE()
+
+
+
+RETURN
+
+// -------------------- CRIANDO O MENU --------------------------
+
+Static Function MENUDEF()
+
+    LOCAL aRotina := {}
+
+    ADD OPTION aRotina TITLE 'Vizualizar' ACTION 'VIEWDEF.NB00001' OPERATION 2 ACCESS 0
+    ADD OPTION aRotina TITLE 'Incluir'    ACTION 'VIEWDEF.NB00001' OPERATION 3 ACCESS 0
+    ADD OPTION aRotina TITLE 'Alterar'    ACTION 'VIEWDEF.NB00001' OPERATION 4 ACCESS 0
+    ADD OPTION aRotina TITLE 'Excluir'    ACTION 'VIEWDEF.NB00001' OPERATION 5 ACCESS 0
+
+
+RETURN aRotina
+
+// -------------------- CRIANDO O MODEL --------------------------
+
+Static Function MODELDEF()
+
+    LOCAL oModel := NIL //OBJETO MODELO
+
+    LOCAL oStructV02 := FwFormStruct(1, "NB0") //TRAZ A ESTRUTURA DA NB0
+
+    oModel := MPFormModel():NEW("NB00001M",,,,)
+
+    oModel:AddFields("FORMNB0",,oStructV02) //PERMITIR EDITAR SOMENTE 1 REGISTRO POR VEZ
+
+    oModel:SetPrimaryKey({'NB0_FILIAL','NB0_CODIGO'}) //SETANDO A PRIMARY KEY
+
+    oModel:SetDescription("OCORRÊNCIAS") //ADICIONANDO DESCRICAO AO MODELO 
+
+    oModel:GetModel("FORMNB0"):SetDescription("OCORRENCIAS")
+
+
+Return oModel
+
+// -------------------- CRIANDO A VIEW --------------------------
+
+Static Function VIEWDEF()
+    
+    LOCAL oView := NIL
+    LOCAL oModel := FwLoadModel("NB00001")
+
+    LOCAL oStructV02 := FwFormStruct(2, "NB0") //TRAZ A ESTRUTURA DA NB0
+
+    oView := FWFormView():New()
+    oView:SetModel(oModel)
+
+    oView:AddField("VIEW_NB0", oStructV02, "FORMNB0")
+
+    oView:CreateHorizontalBox("TELA",100)    
+
+    oView:EnableTitleView('VIEW_NB0', 'DADOS DA NB0') 
+
+    oView:SetCloseOnOk({||.T.})
+
+    oView:SetOwnerView("VIEW_NB0","TELA")
+    
+    
+Return oView

@@ -1,0 +1,99 @@
+#Include "PROTHEUS.CH"
+#Include "RWMAKE.CH"
+#Include "TOPCONN.CH"
+
+/*
+ÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜ
+ฑฑฑฑฑฑฑฑฑฑฑฑฑฑฑฑฑฑฑฑฑฑฑฑฑฑฑฑฑฑฑฑฑฑฑฑฑฑฑฑฑฑฑฑฑฑฑฑฑฑฑฑฑฑฑฑฑฑฑฑฑฑฑฑฑฑฑฑฑฑฑฑฑฑฑฑฑ
+ฑฑษออออออออออัออออออออออหอออออออัออออออออออออออออออออหออออออัอออออออออออออปฑฑ
+ฑฑบPrograma  ณ BLOQ_FAT บAutor  ณ Luciano            บ Data ณ  08/04/2025  ฑฑ
+ฑฑฬออออออออออุออออออออออสอออออออฯออออออออออออออออออออสออออออฯอออออออออออออนฑฑ
+ฑฑบ  Uso     ณ Bloquear o faturamento se qualquer item do kit nใo estiver  ฑฑ
+ฑฑศ            liberado. 	              								   ฑฑ
+ฑฑฑฑฑฑฑฑฑฑฑฑฑฑฑฑฑฑฑฑฑฑฑฑฑฑฑฑฑฑฑฑฑฑฑฑฑฑฑฑฑฑฑฑฑฑฑฑฑฑฑฑฑฑฑฑฑฑฑฑฑฑฑฑฑฑฑฑฑฑฑฑฑฑฑฑฑ
+฿฿฿฿฿฿฿฿฿฿฿฿฿฿฿฿฿฿฿฿฿฿฿฿฿฿฿฿฿฿฿฿฿฿฿฿฿฿฿฿฿฿฿฿฿฿฿฿฿฿฿฿฿฿฿฿฿฿฿฿฿฿฿฿฿฿฿฿฿฿฿฿฿฿฿฿฿
+*/
+
+User Function BLOQ_FAT(cPedido)
+
+Local lRet := .T.
+Local cQuery := ""
+
+//ApMsgInfo("passou aqui BLOQ_FAT pedido " + cPedido ,"M410PVNF()")
+
+cQuery    := "SELECT C6_FILIAL,C6_NUM,C6_ITEM,RTRIM(C6_PRODUTO)C6_PRODUTO,B1_TIPO "
+cQuery    += "FROM "+RetSqlName("SC6")+" SC6 ,"+RetSqlName("SB1")+" SB1 "
+cQuery    += "WHERE C6_FILIAL = '"+xFilial("SC6")+"' AND C6_NUM = '"+cPedido+"' "
+cQuery    += "AND B1_COD = C6_PRODUTO  "
+cQuery    += "AND SC6.D_E_L_E_T_ <> '*' AND SB1.D_E_L_E_T_ <> '*'   "
+cQuery    += "ORDER BY C6_FILIAL,C6_NUM,C6_ITEM "
+
+TcQuery cQuery Alias "TSC6" NEW
+
+DbSelectArea("TSC6")
+TSC6->(DbGoTop())
+While TSC6->(!EOF())
+
+		//se for um kit 
+		If TSC6->B1_TIPO == 'KT'
+			// BUSCA NA SC9
+			cSqlSC9 := ""
+			cSqlSC9 += CHR(13) + "SELECT * FROM "+RetSQLName("SC9")+"  " 
+			cSqlSC9 += CHR(13) + "WHERE C9_FILIAL = '"+xFilial("SC9")+"' "
+			cSqlSC9 += CHR(13) + "AND C9_PEDIDO = '"+TSC6->C6_NUM+"' "
+			cSqlSC9 += CHR(13) + "AND C9_ITEM = '"+TSC6->C6_ITEM+"' "
+			cSqlSC9 += CHR(13) + "AND C9_PRODUTO = '"+TSC6->C6_PRODUTO+"' "
+			cSqlSC9 += CHR(13) + "AND C9_QTDLIB > 0 "
+			cSqlSC9 += CHR(13) + "AND C9_BLEST = ' ' "
+			cSqlSC9 += CHR(13) + "AND C9_BLCRED = ' ' "
+			cSqlSC9 += CHR(13) + "AND D_E_L_E_T_ <> '*' "
+			
+			TcQuery cSqlSC9 Alias "TSC9" NEW
+			
+			DbSelectArea("TSC9")
+			TSC9->(DbGoTop())
+			If Empty(TSC9->C9_PRODUTO)	//se nao encontrar liberacao na SC9 (tem que existir na C9 sem bloqueio)
+				ApMsgInfo("O c๓digo "+TSC6->C6_PRODUTO+" nใo possui libera็ใo. o Pedido nใo serแ faturado.","M410PVNF()")
+				lRet := .F.
+			EndIf
+			TSC9->(dbCloseArea())
+		EndIf 
+
+		//se for um kit -> tabela de Kit - MEU e MEV
+		If TSC6->B1_TIPO == 'KT'
+			// BUSCA O KIT NA SC9
+			cSqlKit := ""
+			cSqlKit += CHR(13) + "SELECT * FROM "+RetSQLName("MEV")+" MEV  " 
+			cSqlKit += CHR(13) + "LEFT JOIN "+RetSQLName("SC9")+" SC9 ON C9_FILIAL = '"+xFilial("SC9")+"'  
+			cSqlKit += CHR(13) + "		AND C9_PRODUTO = MEV_CODKIT "
+			cSqlKit += CHR(13) + "		AND C9_PEDIDO = '"+TSC6->C6_NUM+"' "
+			cSqlKit += CHR(13) + "		AND C9_ITEM = '"+TSC6->C6_ITEM+"' "
+		//	cSqlKit += CHR(13) + "		AND C9_PRODUTO = '"+TSC6->C6_PRODUTO+"' "
+			cSqlKit += CHR(13) + "		AND C9_QTDLIB > 0 "
+			cSqlKit += CHR(13) + "		AND C9_BLEST = ' ' "
+			cSqlKit += CHR(13) + "		AND C9_BLCRED = ' ' "
+			cSqlKit += CHR(13) + "		AND SC9.D_E_L_E_T_ <> '*' "
+			cSqlKit += CHR(13) + "WHERE MEV_CODKIT = '"+TSC6->C6_PRODUTO+"' "
+			//cSqlKit += CHR(13) + "AND MEV_PRODUT = '"+TSC6->C6_PRODUTO+"' "
+			cSqlKit += CHR(13) + "AND MEV.D_E_L_E_T_ <> '*' "
+
+			TcQuery cSqlKit Alias "TMEV" NEW
+			memowrite("c:\query\BLOQ_FAT.txt",cSqlKit)
+			DbSelectArea("TMEV")
+			TMEV->(DbGoTop())
+			While TMEV->(!EOF())
+				If Empty(TMEV->C9_PRODUTO) ///se nao encontrar liberacao na SC9 (tem que existir na C9 sem bloqueio)
+					ApMsgInfo("O Kit "+TMEV->MEV_CODKIT+" nใo possui libera็ใo no c๓digo "+TMEV->MEV_PRODUT+"o Pedido nใo serแ liberado.","Libera็ใo de Kit")
+					lRet := .F.
+				EndIf
+				TMEV->(dbSkip())
+			EndDo
+			TMEV->(dbCloseArea())
+
+		EndIf
+
+	TSC6->(dbSkip())
+EndDo
+TSC6->(dbCloseArea())
+
+Return(lRet)

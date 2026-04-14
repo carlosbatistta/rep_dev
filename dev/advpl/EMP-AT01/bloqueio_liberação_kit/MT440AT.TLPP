@@ -1,0 +1,59 @@
+#Include "PROTHEUS.CH"
+#Include "TOPCONN.CH"
+
+/*
+ÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜ
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+±±ÉÍÍÍÍÍÍÍÍÍÍÑÍÍÍÍÍÍÍÍÍÍËÍÍÍÍÍÍÍÑÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍËÍÍÍÍÍÍÑÍÍÍÍÍÍÍÍÍÍÍÍÍ»±±
+±±±±ºPrograma  ³ MT440AT ºAutor  Luciano           ±± Data     19/09/2025  ±±
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+±±±±º  Uso     ³ Impedir liberacao do pedido de venda                      ±±
+±±±±º  Uso     ³ Bloquear a liberacao se qualquer item do kit nao estiver ±±
+±±±±ˆ            com saldo na SB2.           							   ±±
+ÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜ
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+±±ÉÍÍÍÍÍÍÍÍÍÍÑÍÍÍÍÍÍÍÍÍÍËÍÍÍÍÍÍÍÑÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍËÍÍÍÍÍÍÑÍÍÍÍÍÍÍÍÍÍÍÍÍ»±±
+*/
+
+User Function MT440AT()
+
+Local lRet := .T.
+Local cTexto := ""
+
+ApMsgInfo("passou aqui MT440AT pedido " + SC5->C5_NUM ,"MT440AT()")
+lRet := BLOQ_LIB(SC5->C5_NUM)
+
+Return(lRet)
+
+
+Static Function BLOQ_LIB(cPedido)
+
+Local lRet
+    // BUSCA O KIT NA SB2 X C6 X MEV
+    cSqlKit := ""
+    cSqlKit += CHR(13) + "SELECT MEV_FILIAL,MEV_CODKIT,MEV_PRODUT,C6_NUM,C6_ITEM,C6_PRODUTO,C6_DESCRI,C6_QTDVEN,C6_QTDLIB,B2_COD,B2_QATU,B2_LOCAL "
+    cSqlKit += CHR(13) + " FROM "+RetSQLName("MEV")+" MEV " 
+    cSqlKit += CHR(13) + "INNER JOIN "+RetSQLName("SC6")+" SC6 ON C6_FILIAL = '"+xFilial("SC6")+"' AND SC6.D_E_L_E_T_ <> '*' AND C6_PRODUTO = MEV.MEV_PRODUT "
+    cSqlKit += CHR(13) + "		AND C6_NUM = '"+cPedido+"' "
+    cSqlKit += CHR(13) + "LEFT JOIN "+RetSQLName("SB2")+" SB2 ON B2_FILIAL = '"+xFilial("SB2")+"' AND SB2.D_E_L_E_T_ <> '*' "
+    cSqlKit += CHR(13) + "		AND B2_COD = C6_PRODUTO "
+//	cSqlKit += CHR(13) + "		AND C9_PRODUTO = '"+TSC6->C6_PRODUTO+"' "
+    cSqlKit += CHR(13) + "WHERE MEV_FILIAL = '"+xFilial("MEV")+"' "
+    cSqlKit += CHR(13) + "AND MEV.D_E_L_E_T_ <> '*' "
+    cSqlKit += CHR(13) + "GROUP BY MEV_FILIAL,MEV_CODKIT,MEV_PRODUT,C6_NUM,C6_ITEM,C6_PRODUTO,C6_DESCRI,C6_QTDVEN,C6_QTDLIB,B2_COD,B2_QATU,B2_LOCAL "
+    cSqlKit += CHR(13) + "ORDER BY C6_ITEM "
+
+    TcQuery cSqlKit Alias "TMEV" NEW
+    memowrite("c:\query\BLOQ_LIB.txt",cSqlKit)
+    DbSelectArea("TMEV")
+    TMEV->(DbGoTop())
+    While TMEV->(!EOF()) .and. Empty(TMEV->B2_COD) .and. TMEV->C6_QTDVEN > TMEV->B2_QATU
+        
+            ApMsgInfo("O Kit "+TMEV->MEV_CODKIT+" não possui saldo no código "+TMEV->MEV_PRODUT+"o Pedido não será liberado.","Liberação de Kit")
+            lRet := .F.
+        
+        TMEV->(dbSkip())
+    EndDo
+    TMEV->(dbCloseArea())
+
+Return(lRet)

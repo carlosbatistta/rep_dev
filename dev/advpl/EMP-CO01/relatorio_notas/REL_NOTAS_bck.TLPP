@@ -1,0 +1,243 @@
+#INCLUDE "RWMAKE.CH"
+#include "TbiConn.ch"
+#include "TbiCode.ch"
+#INCLUDE "PROTHEUS.CH"
+#include "topconn.ch"
+
+#Define STR_PULA    Chr(13)+Chr(10)
+
+
+/*
++----------+-----------+----------+-------------------------+------+------------+
+|Programa  | REL_NOTAS  | Autor | Luciano junior   		      |Data  |23/09/2024|
++----------+-----------+----------+-------------------------+------+------------+
+| USO      | Especifico 													   	|
++-------------------------------------------------------------------------------+
+|                  Documentacao Eletronica Totvs - Protheus Doc   			   	|
++-------------------------------------------------------------------------------+
+|{Protheus.doc}	Relatorio de notas .	 	|
+| @author	Luciano 			                                               	|
+| @since	23/09/2024	                                                       	|
+| @return                                                                      	|
++----------+--------------------------------------------------------------------+
+|           		ALTERACOES FEITAS DESDE A CRIACAO          					|
++----------+-----------+--------------------------------------------------------+
+|Autor              | Data     | Descricao                                      |
++----------+-----------+--------------------------------------------------------+
+| Matheus D. Santos | 06/06/25 | Alterando SC5 para SC6                         |
++----------+-----------+--------------------------------------------------------+
+*/
+
+User Function REL_NOTAS()
+Local oSay1
+Local oSay2
+Local oSay3
+Local oSButton1
+Local oSButton2
+Local cDetalhe := "Texto detalhando a rotina"
+Local oGet1
+Local dDatade 	:= Date()
+Local oGet2
+Local dDataAte 	:= Date()
+Local cOpcao := "T" // "A=Abertos"(sem data de entrega)		 ;"F=Fechados" (com data de entrega)
+Static oDlg
+
+cDetalhe := "Relatorio das notas emitidas com suas respectivas rotas. " + CRLF
+cDetalhe += " " + CRLF
+cDetalhe += " " + CRLF
+
+  DEFINE MSDIALOG oDlg TITLE "Notas x Rota" FROM 000, 000  TO 250, 400 COLORS 0, 16777215 PIXEL
+
+    @ 004, 007 SAY oSay1 PROMPT cDetalhe SIZE 173, 042 OF oDlg COLORS 0, 16777215 PIXEL
+
+    @ 030, 007 SAY oSay2 PROMPT "Data De" SIZE 025, 007 OF oDlg COLORS 0, 16777215 PIXEL
+	@ 030, 045 MSGET oGet1 VAR dDatade SIZE 060, 010 OF oDlg COLORS 0, 16777215 PIXEL
+    @ 045, 007 SAY oSay3 PROMPT "Data Ate" SIZE 025, 007 OF oDlg COLORS 0, 16777215 PIXEL
+	@ 045, 045 MSGET oGet2 VAR dDataAte SIZE 060, 010 OF oDlg COLORS 0, 16777215 PIXEL
+ 
+    @ 060, 007 SAY oSay3 PROMPT "Entrega" SIZE 032, 007 OF oDlg COLORS 0, 16777215 PIXEL
+	@ 060, 045 MSCOMBOBOX oGet2 VAR cOpcao ITEMS {"T=Todos","A=Abertos","F=Fechados"} SIZE 060, 010 OF oDlg COLORS 0, 16777215 PIXEL
+
+
+    DEFINE SBUTTON oSButton1 FROM 110, 068 TYPE 01 OF oDlg ENABLE ACTION (LJMsgRun(OemToAnsi('Aguarde... Processando...'),,{ || OK_NOTAS(dDatade,dDataAte,cOpcao) }),oDlg:End())
+    DEFINE SBUTTON oSButton2 FROM 110, 114 TYPE 02 OF oDlg ENABLE ACTION oDlg:End()
+
+  ACTIVATE MSDIALOG oDlg CENTERED
+
+Return
+
+
+Static Function OK_NOTAS(dDatade,dDataAte,cOpcao)
+Local aArea 	:= GetArea()
+Local cQuery 	:= ""
+Local oFWMsExcel
+Local oExcel
+Local cArquivo    := ""
+
+Local cDataEmissao := ""
+Local cDataTransp  := ""
+Local cDataPrev := ""
+Local cDataEntreg := ""
+Local cValNota := 0
+
+//Criando o objeto que irá gerar o conteúdo do Excel
+oFWMsExcel := FWMSExcel():New()
+
+//Criando a Aba
+cAba := "REL_NOTAS"
+cTitulo := "Notas emitidas de " + DtoC(dDatade) + " a " + DtoC(dDataAte)
+oFWMsExcel:AddworkSheet(cAba) //Não utilizar número junto com sinal de menos. Ex.: 1-
+
+//Criando a Tabela
+oFWMsExcel:AddTable(cAba,cTitulo)
+
+//Criando cabeçalho das Colunas
+// oFWMsExcel:AddColumn(cAba,cTitulo,"CD CLIENTE",1,1) //F2_CLIENTE
+// oFWMsExcel:AddColumn(cAba,cTitulo,"LOJA",1,1) 		//F2_LOJA
+oFWMsExcel:AddColumn(cAba,cTitulo,"CLIENTE",1,1) 	//A1_NOME - C6_CLI - C5_CLIENTE
+oFWMsExcel:AddColumn(cAba,cTitulo,"NFE",1,1) 		//F2_DOC
+oFWMsExcel:AddColumn(cAba,cTitulo,"VAL. BRUTO",1,1) 		//F2_VALFAT
+// oFWMsExcel:AddColumn(cAba,cTitulo,"PEDIDO",1,1) 	//C5_NUM
+// oFWMsExcel:AddColumn(cAba,cTitulo,"N.CARGA",1,1)	//F2_NUMMDF
+oFWMsExcel:AddColumn(cAba,cTitulo,"DESCRICAO DO ESTADO",1,1)	//X5_DESCRI -TABELA 12
+// oFWMsExcel:AddColumn(cAba,cTitulo,"CD.MUNICIPIO",1,1)	//A1_COD_MUN
+oFWMsExcel:AddColumn(cAba,cTitulo,"MUNICIPIO ",1,1)		//A1_MUN
+oFWMsExcel:AddColumn(cAba,cTitulo,"BAIRRO ",1,1)		//A1_BAIRRO
+oFWMsExcel:AddColumn(cAba,cTitulo,"ESTADO",1,1)		//F2_EST
+oFWMsExcel:AddColumn(cAba,cTitulo,"T.PESO",1,1)		//F2_PBRUTO
+oFWMsExcel:AddColumn(cAba,cTitulo,"T.VOLUME",1,1)	//F2_VOLUME1
+oFWMsExcel:AddColumn(cAba,cTitulo,"DT FATURAMENTO",1,1)	//F2_EMISSAO
+oFWMsExcel:AddColumn(cAba,cTitulo,"SAIDA TRANSP.",1,1)	//F2_DTTRANS 
+oFWMsExcel:AddColumn(cAba,cTitulo,"PREV ENTREGA",1,1)	//F2_XSUGENT  
+oFWMsExcel:AddColumn(cAba,cTitulo,"DT  ENTREGA",1,1) //C5_FECENT F2_DTENTR -> C6_ENTREG
+
+cQuery := ""
+
+cQuery += CHR(13) + "SELECT DISTINCT "
+cQuery += CHR(13) + " F2_CLIENTE, F2_LOJA, A1_NOME, F2_DOC, F2_NUMMDF, F2_EMISSAO, "
+cQuery += CHR(13) + " F2_XDTENTR, F2_DTENTR, F2_EST, A1_END, A1_COD_MUN, A1_MUN, A1_BAIRRO, "
+cQuery += CHR(13) + " F2_DTTRANS, F2_XSUGENT, "
+cQuery += CHR(13) + " F2_PBRUTO, F2_VOLUME1, X5_DESCRI, F2_VALFAT, F2_VALBRUT "
+
+cQuery += CHR(13) + "FROM " + RetSqlName("SF2") + " SF2 (NOLOCK) "
+
+cQuery += CHR(13) + "INNER JOIN " + RetSqlName("SA1") + " SA1 (NOLOCK) "
+cQuery += CHR(13) + " ON SA1.A1_COD  = SF2.F2_CLIENTE "
+cQuery += CHR(13) + "AND SA1.A1_LOJA = SF2.F2_LOJA "
+cQuery += CHR(13) + "AND SA1.D_E_L_E_T_ <> '*' "
+
+cQuery += CHR(13) + "LEFT JOIN " + RetSqlName("SX5") + " SX5 (NOLOCK) "
+cQuery += CHR(13) + " ON SX5.X5_TABELA = '12' "
+cQuery += CHR(13) + "AND SX5.X5_CHAVE  = SF2.F2_EST "
+cQuery += CHR(13) + "AND SX5.D_E_L_E_T_ = '' "
+
+cQuery += CHR(13) + "WHERE SF2.F2_FILIAL = '" + xFilial("SF2") + "' "
+cQuery += CHR(13) + "AND SF2.F2_EMISSAO BETWEEN '" + Dtos(dDatade) + "' AND '" + Dtos(dDataAte) + "' "
+cQuery += CHR(13) + "AND SF2.F2_CLIENTE <> '32780025' "
+cQuery += CHR(13) + "AND SF2.D_E_L_E_T_ <> '*' "
+
+/* === FILTRO NA SC6 SEM GERAR DUPLICIDADE === */
+cQuery += CHR(13) + "AND EXISTS ( "
+cQuery += CHR(13) + "    SELECT 1 "
+cQuery += CHR(13) + "    FROM " + RetSqlName("SC6") + " SC6 (NOLOCK) "
+cQuery += CHR(13) + "    WHERE SC6.C6_FILIAL = SF2.F2_FILIAL "
+cQuery += CHR(13) + "      AND SC6.C6_NOTA   = SF2.F2_DOC "
+cQuery += CHR(13) + "      AND SC6.C6_SERIE  = SF2.F2_SERIE "
+cQuery += CHR(13) + "      AND SC6.C6_PRODUTO NOT IN ('228') "
+cQuery += CHR(13) + "      AND SC6.D_E_L_E_T_ <> '*' "
+
+If cOpcao == "A" // Abertos
+    cQuery += CHR(13) + "      AND SC6.C6_ENTREG = ' ' "
+ElseIf cOpcao == "F" // Fechados
+    cQuery += CHR(13) + "      AND SC6.C6_ENTREG <> ' ' "
+EndIf
+
+cQuery += CHR(13) + ") "
+
+cQuery += CHR(13) + "ORDER BY SF2.F2_EMISSAO, SF2.F2_CLIENTE "
+
+
+MEMOWRITE( "c:\query\REL_NOTAS.txt",cQuery)
+TcQuery cQuery Alias "TMP" NEW
+
+
+
+
+//###########################################
+//Criando as Linhas com o conteúdo das colunas
+DbSelectArea("TMP")
+TMP->(DbGoTop())
+While TMP->(!EOF())
+	// Verificando se os campos de data estão nullos
+	cDataEmissao := If(Empty(TMP->F2_EMISSAO) .Or. TMP->F2_EMISSAO == "  /  /  ", "", DtoC(StoD(TMP->F2_EMISSAO)))
+	cDataTransp  := If(Empty(TMP->F2_DTTRANS) .Or. TMP->F2_DTTRANS == "  /  /  ", "", DtoC(StoD(TMP->F2_DTTRANS)))
+	cDataPrev := If(Empty(TMP->F2_XSUGENT) .Or. TMP->F2_XSUGENT == "  /  /  ", "", DtoC(StoD(TMP->F2_XSUGENT)))
+	cDataEntreg  := If(Empty(TMP->F2_XDTENTR) .Or. TMP->F2_XDTENTR == "  /  /  ", "", DtoC(StoD(TMP->F2_XDTENTR)))
+	//cDataEntreg := If( TMP->F2_DTENTR < StoD("20260101"), DtoC(TMP->F2_DTENTR), ;
+	/*
+	If !Empty(TMP->F2_DTENTR) .And. ;
+		TMP->F2_DTENTR <> "  /  /  " .And. ;
+		StoD(TMP->F2_DTENTR) < StoD("20260101")
+			cDataEntreg := DtoC(StoD(TMP->F2_DTENTR))
+	ElseIf !Empty(TMP->F2_XDTENTR) .And. ;
+		TMP->F2_XDTENTR <> "  /  /  " .And. ;
+		StoD(TMP->F2_DTENTR) >= StoD("20260101")
+		cDataEntreg := DtoC(StoD(TMP->F2_XDTENTR))
+	Else
+		cDataEntreg := ""
+	EndIf
+	*/
+	cValNota := If(Empty(TMP->F2_VALFAT) .Or. TMP->F2_VALFAT == 0, TMP->F2_VALBRUT, TMP->F2_VALFAT)
+	cValNota := Transform(cValNota, "@E 999,999,999.99")
+
+
+	
+	oFWMsExcel:AddRow(cAba,cTitulo,{;
+		Alltrim(TMP->A1_NOME),;
+		Alltrim(TMP->F2_DOC),;
+		cValNota,;
+		Alltrim(TMP->X5_DESCRI),;
+		Alltrim(TMP->A1_MUN),;
+		Alltrim(TMP->A1_BAIRRO),;
+		Alltrim(TMP->F2_EST),;
+		Alltrim(Str(TMP->F2_PBRUTO)),;
+		Alltrim(Str(TMP->F2_VOLUME1)),;
+		cDataEmissao,;
+		cDataTransp,;
+		cDataPrev,;
+		cDataEntreg})
+
+	TMP->(dbSkip())
+EndDo
+
+cQuery := ""
+TMP->(dbCloseArea())
+
+
+//###########################################
+//salva na parta de arquivo temporário do smart.
+// uso data e segundos para nao repetir o nome do arquivo
+cData := Alltrim(DtoS(Date()))
+cSegundos := Alltrim(STR(Seconds()))
+cArquivo    := GetTempPath()+cData+cSegundos+'-REL_NOTAS.xml' 
+
+//###########################################
+//Ativando o arquivo e gerando o xml
+oFWMsExcel:Activate()
+oFWMsExcel:GetXMLFile(cArquivo)
+
+	//verifico o sistema operacional
+If GetRemoteType() == 1 // 1=Windows | 2=Linux/MacOS 
+
+	//Abrindo o excel e abrindo o arquivo xml
+	oExcel := MsExcel():New()             //Abre uma nova conexão com Excel
+	oExcel:WorkBooks:Open(cArquivo)     //Abre uma planilha
+	oExcel:SetVisible(.T.)                 //Visualiza a planilha
+	oExcel:Destroy()                        //Encerra o processo do gerenciador de tarefas
+
+Else
+	ApMsgInfo(cArquivo,"Arquivo salvo em: ")
+EndIf
+
+RestArea(aArea)
+Return
