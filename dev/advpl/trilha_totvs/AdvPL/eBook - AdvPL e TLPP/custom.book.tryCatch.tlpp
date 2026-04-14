@@ -7,7 +7,6 @@
 
 
 //Bibliotecas
-#Include "tlpp-core.th"
 
 //Declaração da namespace
 Namespace custom.book
