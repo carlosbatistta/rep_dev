@@ -1,16 +1,22 @@
 {
 	"version": "0.2.0",
 	"configurations": [
-	
 		{
 			"type": "totvs_language_debug",
 			"request": "launch",
 			"name": "TOTVS Language Debug",
 			"program": "${command:AskForProgramName}",
 			"cwb": "${workspaceFolder}",
-			"smartclientBin": "C:/totvs/bin/smartclient/smartclient.exe",
+			"smartclientBin": "https://192.168.2.130:1237/webapp/",
 			"isMultiSession": true,
 			"enableTableSync": true
+		}
+	],
+	"lastProgramExecuted": "SIGAMDI",
+	"lastProgramArguments": [],
+	"lastPrograms": [
+		{
+			"label": "SIGAMDI"
 		}
 	]
 }
