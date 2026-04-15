@@ -7,7 +7,7 @@
     "python.linting.pylintEnabled": true,
     "python.linting.enabled": true,
     "totvsLanguageServer.editor.toggle.autocomplete": "Basic",
-    "totvsLanguageServer.editor.linter.includes": "C:\\Totvs\\INCLUDES",
+    "totvsLanguageServer.editor.linter.includes": "C:\\Totvs\\include",
     "git.ignoreLimitWarning": true,
     "prisma.pinToPrisma6": true
 }
