@@ -1,0 +1,52 @@
+CRUD API de clientes
+
+#1 GET Listar Clientes
+ Listar todos os clientes, retornando os campo aobrigatórios.
+ ENDPOINT: https://erp:2200/api/v2/clientes
+ Sem BODY.
+
+#2 GET Recuperar Cliente
+ Recupera um registro do cliente de acordo com o código e loja passados por parâmetro na rota.
+ ENDPOINT: https://erp:2200/api/v2/cliente/:codigo/:loja
+ Sem BODY.
+
+#3 PUT Alterar Cliente
+ Altera um cliente de acordo com os campo passados no BODY.
+ ENDPOINT: https://erp:2200/api/v2/cliente
+ BODY: 
+ {
+    "codigo": "500020",
+    "loja": "01",
+    "nome": "Alterei nome",
+    "nome_fantasia": "Alterei n_fantasia",
+    "tipo": "F",
+    "endereco": "Alterei endereco",
+    "cidade": "Serra Talhada",
+    "estado": "PE"
+ }
+
+#4 POST Incluir um Cliente
+ Inclui cliente de acordo com os campos passados no BODY.
+ ENDPOINT: https://erp:2200/api/v2/cliente
+ BODY:
+ {
+    "codigo": "500020",
+    "loja": "01",
+    "nome": "Novo nome2",
+    "nome_fantasia": "Nova n_fantasia2",
+    "tipo": "F",
+    "endereco": "Novo endereco2",
+    "estado": "PE",
+    "cidade": "Serra Talhada" 
+ }
+
+#5 DELETE Deleta o Cliente
+ Deleta um cliente de acordo com os campos passados no BODY.
+ ENDPOINT: https://erp:2200/api/v2/cliente
+ BODY:
+ {
+    "codigo": "500020",
+    "loja": "01" 
+ }
+
+ Obs.: Usando como exemplo o cliente 500020, a porta do meu appserver-api é 2200 e possui o host: https://erp:2200/api.
