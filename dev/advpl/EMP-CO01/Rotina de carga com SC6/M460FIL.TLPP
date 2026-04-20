@@ -1,0 +1,28 @@
+#INCLUDE "PROTHEUS.CH"
+#include "rwmake.ch" 
+#include "topconn.ch"
+
+/*/{Protheus.doc} M460FIL
+Incluir filtro de carga para o ponto de entrada M460FIL.
+@author Carlos Batista
+@since 16/12/2024
+@version 1.0
+/*/
+
+User Function M460FIL()
+
+// recebe o MV_ do ponto de entrada M460QRY
+Local _cFiltro := ""
+
+//##############################
+// valida se o campo da carga existe na SX3
+If (SC9->(FieldPos("C9_YCARGA")) > 0 ) //se existir
+    // Criei manualmente as perguntas 19 e 20 no SX1 do "MT461A"
+    _cFiltro  := " C9_YCARGA >= '"+AllTrim(mv_par19)+"' .AND. C9_YCARGA <= '"+AllTrim(mv_par20)+"' "
+Else //se nao existir
+    cTexto := "Ponto de entrada M460FIL " + CHR(13)
+    cTexto += "O campo C9_YCARGA não existe na base. Acionar Suporte." + CHR(13)
+    MsgStop(cTexto)
+EndIf
+
+Return(_cFiltro)

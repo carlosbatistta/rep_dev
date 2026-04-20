@@ -1,0 +1,91 @@
+#INCLUDE "PROTHEUS.CH"
+#include "rwmake.ch" 
+#include "topconn.ch"
+
+/*/{Protheus.doc} F090QFIL()
+ 
+    Complemento do Filtro padrão da rotina Baixa Pagar Automática (FINA090)
+ 
+    @param ParamIxb[1] - cFiltro - Filtro padrão da rotina FIN090A
+    @param Paramixb[2] - nTipoBx - Tipo de Baixa (1=Títulos ou 2=Borderôs)
+ 
+    @return cRetFiltro - Novo Filtro
+
+    @author	Luciano Junior
+    @since	06/11/2024	    
+
+/*/
+User Function F090QFIL()
+
+Local cFiltro    := ParamIXB[1] //Filtro padrão
+Local nTipoBx    := IIF(Type("ParamIXB[2]") <> "U",ParamIXB[2],1) //ParamIXB[2] //Tipo de Baixa 
+//Local nTipoBx    := ParamIXB[2] //Tipo de Baixa 
+Local cRetFiltro := " " 
+cRetFiltro := cFiltro //Novo Filtro
+
+Local oSay1
+Local oSay2
+Local oSay3
+Local oSButton1
+Local oSButton2
+Local cDetalhe := "Texto detalhando a rotina"
+Local oGet1
+Local cNatDe 	:= Space(TamSX3("E2_NATUREZ")[1])
+Local cNatAte 	:= "ZZZZZZZZZZ"
+Local cTipoDe 	:= Space(TamSX3("E2_TIPO")[1])
+Local cTipoAte	:= "ZZZ"
+Local cForncDe	:= Space(TamSX3("E2_FORNECE")[1])
+Local cForncAte:= "ZZZZZZ"
+Local oGet2
+Local cTextoRet := ""
+Static oDlg
+
+
+cDetalhe := "Novas perguntas do Baixa a Pagar Automatica " + CRLF
+cDetalhe += " " + CRLF
+cDetalhe += " " + CRLF
+
+  DEFINE MSDIALOG oDlg TITLE "Baixa Automatica" FROM 000, 000  TO 250, 400 COLORS 0, 16777215 PIXEL
+
+    @ 004, 007 SAY oSay1 PROMPT cDetalhe SIZE 173, 042 OF oDlg COLORS 0, 16777215 PIXEL
+
+     @ 020, 007 SAY oSay2 PROMPT "Natureza De" SIZE 025, 007 OF oDlg COLORS 0, 16777215 PIXEL
+	@ 020, 045 MSGET oGet1 VAR cNatDe F3 "SED" SIZE 060, 010 OF oDlg COLORS 0, 16777215 PIXEL
+     @ 035, 007 SAY oSay3 PROMPT "Natureza Ate" SIZE 025, 007 OF oDlg COLORS 0, 16777215 PIXEL
+	@ 035, 045 MSGET oGet2 VAR cNatAte F3 "SED" SIZE 060, 010 OF oDlg COLORS 0, 16777215 PIXEL
+
+     @ 050, 007 SAY oSay2 PROMPT "Tipo De" SIZE 025, 007 OF oDlg COLORS 0, 16777215 PIXEL
+	@ 050, 045 MSGET oGet1 VAR cTipoDe F3 "05" SIZE 060, 010 OF oDlg COLORS 0, 16777215 PIXEL
+     @ 065, 007 SAY oSay2 PROMPT "Tipo Ate" SIZE 025, 007 OF oDlg COLORS 0, 16777215 PIXEL
+	@ 065, 045 MSGET oGet1 VAR cTipoAte F3 "05" SIZE 060, 010 OF oDlg COLORS 0, 16777215 PIXEL
+
+     @ 080, 007 SAY oSay2 PROMPT "Fornecedor De" SIZE 025, 007 OF oDlg COLORS 0, 16777215 PIXEL
+	@ 080, 045 MSGET oGet1 VAR cForncDe F3 "FOR" SIZE 060, 010 OF oDlg COLORS 0, 16777215 PIXEL
+     @ 095, 007 SAY oSay2 PROMPT "Fornecedor Ate" SIZE 025, 007 OF oDlg COLORS 0, 16777215 PIXEL
+	@ 095, 045 MSGET oGet1 VAR cForncAte F3 "FOR" SIZE 060, 010 OF oDlg COLORS 0, 16777215 PIXEL
+
+
+    DEFINE SBUTTON oSButton1 FROM 110, 090 TYPE 01 OF oDlg ENABLE ACTION OK_FILTRO(cTextoRet,cNatDe,cNatAte,cTipoDe,cTipoAte,cForncDe,cForncAte)
+    //DEFINE SBUTTON oSButton2 FROM 110, 114 TYPE 02 OF oDlg ENABLE ACTION oDlg:End() //CANCELAR
+
+  ACTIVATE MSDIALOG oDlg CENTERED
+
+// o filtro recebe o novo ParamIXB[1] que contem os novos filtros.
+// se precisar do filtro padrao, ainda estah no cFiltro
+cRetFiltro := ParamIXB[1]
+
+Return cRetFiltro
+
+
+Static Function OK_FILTRO(cTextoRet,cNatDe,cNatAte,cTipoDe,cTipoAte,cForncDe,cForncAte)
+
+cTextoRet += " AND E2_NATUREZ BETWEEN '"+Alltrim(cNatDe)+"' AND '"+Alltrim(cNatAte)+"' "
+cTextoRet += " AND E2_TIPO BETWEEN '"+Alltrim(cTipoDe)+"' AND '"+Alltrim(cTipoAte)+"' "
+cTextoRet += " AND E2_FORNECE BETWEEN '"+Alltrim(cForncDe)+"' AND '"+Alltrim(cForncAte)+"' "
+
+//Altero o ParamIXB para concatenar os novos filtos.
+ParamIXB[1] += cTextoRet
+
+oDlg:End()
+
+Return

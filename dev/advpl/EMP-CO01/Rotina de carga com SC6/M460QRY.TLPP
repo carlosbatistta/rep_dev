@@ -1,0 +1,43 @@
+#INCLUDE "PROTHEUS.CH"
+#include "rwmake.ch" 
+#include "topconn.ch"
+
+/*/{Protheus.doc} M460QRY
+Criar novo filtro de carga para os os pedidos a serem faturados.
+Perguntas 19 e 20 MT461A do SX1 - Carga de? & Carga Ate?
+Executado antes da exibicao da tela de selecao de itens para a geracao de Doc. de Saida
+@author Carlos Batista
+@since 06/11/2024
+@version 1.0
+/*/
+
+User Function M460QRY()
+
+//Local _volta  := " and C9_CODISS = ' ' "
+Local cQuery  :=paramixb[1]
+Local cCodQry := paramixb[2]
+
+Local aArea 	:= GetArea()
+
+//If cCodQry == "1"
+If paramixb[2] == 1
+
+   //##############################
+   // valida se o campo da carga existe na SX3
+   If (SC9->(FieldPos("C9_YCARGA")) > 0 ) //se existir
+
+      // deve ser usada a SC9 
+      // Criei manualmente as perguntas 19 e 20 no SX1 do "MT461A"
+      cQuery += " AND C9_YCARGA BETWEEN '"+AllTrim(mv_par19)+"' AND '"+AllTrim(mv_par20)+"' "
+      //cQuery += " AND C9_PEDIDO IN (SELECT C6_NUM FROM " + RetSqlName("SC6") +" WHERE C6_FILIAL = C9_FILIAL AND C6_NUM = C9_PEDIDO AND C6_YCARGA BETWEEN '"+AllTrim(mv_par19)+"' AND '"+AllTrim(mv_par20)+"' GROUP BY C6_NUM) "
+   Else //se nao existir
+      cTexto := "Ponto de entrada M460QRY " + CHR(13)
+      cTexto += "O campo C6_YCARGA não existe na base. Acionar Suporte." + CHR(13)
+      MsgStop(cTexto)
+   EndIf
+
+EndIf
+
+RestArea(aArea)
+Return(cQuery) 
+

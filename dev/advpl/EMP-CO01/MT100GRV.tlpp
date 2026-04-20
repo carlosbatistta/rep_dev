@@ -1,0 +1,32 @@
+#include "protheus.ch"
+#include "topconn.ch"
+
+/*/
+ÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜ
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+±±ÉÍÍÍÍÍÍÍÍÍÍÑÍÍÍÍÍÍÍÍÍÍËÍÍÍÍÍÍÍÑÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍËÍÍÍÍÍÍÑÍÍÍÍÍÍÍÍÍÍÍÍÍ»±±
+±±ºPrograma  ³ MT100GRV º Autor ³ Luciano Júnior        º Data³ 15/02/25   º±±
+±±ÌÍÍÍÍÍÍÍÍÍÍØÍÍÍÍÍÍÍÍÍÍÊÍÍÍÍÍÍÍÏÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÊÍÍÍÍÍÍÏÍÍÍÍÍÍÍÍÍÍÍÍÍ¹±±
+±±ºDescricao ³ Está localizado na função a103Grava responsável pela gravação 
+                da Nota Fiscal.  Executado antes de iniciar o processo de 
+                gravação / exclusão de Nota de Entrada. ±±
+±±º          ³ MATA103 - Usado para mudar o Formulario Proprio pra "S"    º±±
+±±ÈÍÍÍÍÍÍÍÍÍÍÏÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍ¼±±
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+ßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßß
+/*/
+
+
+User Function MT100GRV()
+Local lRet := .T.
+Local lExp01 := PARAMIXB[1] //Informa se eh exclusao
+Local lExp02 := .T. //Informa se a nota pode ou não ser gravada/excluída.
+//Local aArea := GetArea()
+
+//Rotina de Solicitacao de Transf. se for DA filial PARA matriz muda para Formulario Proprio "SIM" 
+If FunName() == "MATA311" .AND. NNS->NNS_FILIAL == '0102' .AND. cFilAnt == "0101" 
+    cFormul := "S"
+    //ApMsgInfo("MT100GRV Mudou para Formulário Próprio") //sendo usado
+EndIf
+
+Return lRet

@@ -2,21 +2,14 @@
 #Include "RWMAKE.CH"
 #Include "TOPCONN.CH"
 
-/*
-ÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜ
-ฑฑฑฑฑฑฑฑฑฑฑฑฑฑฑฑฑฑฑฑฑฑฑฑฑฑฑฑฑฑฑฑฑฑฑฑฑฑฑฑฑฑฑฑฑฑฑฑฑฑฑฑฑฑฑฑฑฑฑฑฑฑฑฑฑฑฑฑฑฑฑฑฑฑฑฑฑ
-ฑฑษออออออออออัออออออออออหอออออออัออออออออออออออออออออหออออออัอออออออออออออปฑฑ
-ฑฑบPrograma  ณ M410PVNF บAutor  ณ Luciano            บ Data ณ  16/12/2024 บฑฑ
-ฑฑฬออออออออออุออออออออออสอออออออฯออออออออออออออออออออสออออออฯอออออออออออออนฑฑ
-ฑฑบDesc.     ณ Executado antes da rotina de gera็ใo de NF's (MA410PVNFS()).ฑฑ
-ฑฑ Ao chamar a rotina Preparar Documento de Saํda "Prep.Doc.Saํda"         ฑฑ
-ฑฑฬออออออออออุออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออนฑฑ
-ฑฑ
-ฑฑบUso       ณ Preenche a carga do pedido na SC9 C9_CARGA para ser usado  ฑฑ
-ฑฑศ            para ser usado do faturamento por Carga. 	              ผฑฑ
-ฑฑฑฑฑฑฑฑฑฑฑฑฑฑฑฑฑฑฑฑฑฑฑฑฑฑฑฑฑฑฑฑฑฑฑฑฑฑฑฑฑฑฑฑฑฑฑฑฑฑฑฑฑฑฑฑฑฑฑฑฑฑฑฑฑฑฑฑฑฑฑฑฑฑฑฑฑ
-฿฿฿฿฿฿฿฿฿฿฿฿฿฿฿฿฿฿฿฿฿฿฿฿฿฿฿฿฿฿฿฿฿฿฿฿฿฿฿฿฿฿฿฿฿฿฿฿฿฿฿฿฿฿฿฿฿฿฿฿฿฿฿฿฿฿฿฿฿฿฿฿฿฿฿฿฿
-*/
+/*/{Protheus.doc} M410PVNF
+Executado antes da rotina de gera็ใo de NF's (MA410PVNFS())
+Ao chamar a rotina Preparar Documento de Saํda "Prep.Doc.Saํda"
+Preenche a carga do pedido na SC9 C9_CARGA para ser usado para ser usado do faturamento por Carga.
+@author Carlos Batista
+@since 16/12/2024
+@version 1.0
+/*/
 
 User Function M410PVNF
 

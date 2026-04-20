@@ -1,5 +1,5 @@
-#include "protheus.ch"
 #include "topconn.ch"
+#include "protheus.ch"
 
 /*/
 ÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜ
@@ -7,8 +7,9 @@
 ±±ÉÍÍÍÍÍÍÍÍÍÍÑÍÍÍÍÍÍÍÍÍÍËÍÍÍÍÍÍÍÑÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍËÍÍÍÍÍÍÑÍÍÍÍÍÍÍÍÍÍÍÍÍ»±±
 ±±ºPrograma  ³ MTA410  º Autor ³ Luciano Júnior        º Data³ 12/02/25   º±±
 ±±ÌÍÍÍÍÍÍÍÍÍÍØÍÍÍÍÍÍÍÍÍÍÊÍÍÍÍÍÍÍÏÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÊÍÍÍÍÍÍÏÍÍÍÍÍÍÍÍÍÍÍÍÍ¹±±
-±±ºDescricao ³ Usado pra alimentar o campo C5_VOLUME1 ao salvar o pedido  ±±
-±±º          ³                                                           º±±
+±±ºDescricao ³ Usado pra alimentar o campo C5_VOLUME1 ao salvar o pedido   ±±
+±± 10.09.2025 adicionado o vendedor ZZZZZZ como identificar de um pedido   ±±
+±± que não deve sofre alteração.                                           ±±
 ±±ÈÍÍÍÍÍÍÍÍÍÍÏÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍ¼±±
 ±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
 ßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßß
@@ -33,11 +34,13 @@ If INCLUI .OR. ALTERA
 
 // Empresa atual
         cEmpresa := FWCodEmp()
+        
+       
       
         // Só processa quando for a empresa '01'
         If cEmpresa == "01"
          
-            If AllTrim(M->C5_TIPO) != "D" .and. (M->C5_VOLUME1) = 0
+            If AllTrim(M->C5_TIPO) != "D" .and. M->C5_VEND1 <> "ZZZZZZ" 
 
                 nPosQtd := aScan(aHeader,{ |x| UPPER(ALLTRIM(x[2])) == "C6_QTDVEN"})
 

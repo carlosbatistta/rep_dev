@@ -1,0 +1,51 @@
+#Include "PROTHEUS.CH"
+#Include "RWMAKE.CH"
+#Include "TOPCONN.CH"
+
+/*/{Protheus.doc} zOCORR
+Função cadastro de cargas de acordo com os pedidos selecionados
+@author Carlos Batista
+@since 16/12/2024
+@version 1.0
+/*/
+
+User Function M410PVNF
+
+lRet := .T.
+nRetSQL := 0
+
+cQuery    := "SELECT C6_FILIAL,C6_NUM,C6_ITEM,RTRIM(C6_PRODUTO)C6_PRODUTO,C6_YCARGA "
+cQuery    += "FROM "+RetSqlName("SC6")+" SC6 "
+cQuery    += "WHERE C6_FILIAL = '"+xFilial("SC6")+"' AND C6_NUM = '"+SC5->C5_NUM+"' "
+cQuery    += "AND SC6.D_E_L_E_T_ <> '*'  "
+cQuery    += "ORDER BY C6_FILIAL,C6_NUM,C6_ITEM,C6_YCARGA "
+
+TcQuery cQuery Alias "TSC6" NEW
+//TCSetField("TD2","D2_DTVALID","D",8,0)
+
+DbSelectArea("TSC6")
+TSC6->(DbGoTop())
+While TSC6->(!EOF())
+
+		// ATUALIZA NA SC9
+		cSqlUpd := ""
+		cSqlUpd += CHR(13) + "UPDATE "+RetSQLName("SC9")+" SET C9_YCARGA = '"+TSC6->C6_YCARGA+"' " 
+		cSqlUpd += CHR(13) + "WHERE C9_FILIAL = '"+xFilial("SC9")+"' "
+		cSqlUpd += CHR(13) + "AND C9_PEDIDO = '"+TSC6->C6_NUM+"' "
+		cSqlUpd += CHR(13) + "AND C9_ITEM = '"+TSC6->C6_ITEM+"' "
+		cSqlUpd += CHR(13) + "AND C9_PRODUTO = '"+TSC6->C6_PRODUTO+"' "
+		cSqlUpd += CHR(13) + "AND C9_YCARGA = ' ' "
+		cSqlUpd += CHR(13) + "AND D_E_L_E_T_ <> '*' "
+
+		nRetSQL := TcSqlExec(cSqlUpd)
+		If nRetSQL < 0  // -1 se erro
+			ApMsgInfo("Erro ao gravar a carga "+TSC6->C6_YCARGA+" na SC9","M410PVNF()")
+			//lRet := .F.
+		EndIf
+		cSqlUpd := ""
+		
+	TSC6->(dbSkip())
+EndDo
+TSC6->(dbCloseArea())
+
+Return(lRet)
