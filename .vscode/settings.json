@@ -9,5 +9,6 @@
     "totvsLanguageServer.editor.toggle.autocomplete": "Basic",
     "totvsLanguageServer.editor.linter.includes": "C:\\Totvs\\include",
     "git.ignoreLimitWarning": true,
-    "prisma.pinToPrisma6": true
+    "prisma.pinToPrisma6": true,
+    "totvsLanguageServer.web.open.external": true
 }

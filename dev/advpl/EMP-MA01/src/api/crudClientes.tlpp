@@ -1,0 +1,462 @@
+#include 'totvs.ch'
+#include 'tlpp-core.th'
+
+/*/{Protheus.doc} 
+    autor: Carlos Batista
+    função: CRUDClientes
+    CRUD para gerenciamento de clientes.
+/*/
+
+class CRUDClientes from fwAdapterBaseV2
+
+	public method new() constructor
+
+    // --- Rotas REST ---
+	@get('/v2/clientes')
+	public method lista_cliente() as logical
+
+    @get('/v2/cliente/:codigo/:loja')
+	public method recupera_cliente() as logical
+
+	@post('/v2/cliente')
+	public method incluir_cliente() as logical
+
+    @put('/v2/cliente')
+    public method update_cliente() as logical
+
+	@delete('/v2/cliente')
+	public method delete_cliente() as logical
+
+end class
+
+method new() class CRUDClientes; return self
+
+method delete_cliente() class CRUDClientes
+    local lRPC       as logical 
+    local jBodyReq   := jsonObject():new()
+    local jResp      := jsonObject():new()
+    local cError     := ""
+    local cCodigo    := ""
+    local cLoja      := ""
+    local aDados     := {}
+    local nOpc       := 5
+    Local aLogAuto   := {}
+    private lMsErroAuto := .F.
+    lRPC := .F.
+    
+    // --- PREPARAÇÃO DO AMBIENTE ---
+    if type('cEmpAnt') == 'U'
+        rpcSetEnv('99','01')
+        lRPC := .T.
+    endif
+
+    // -- PRÉ-VALIDAÇÃO DO JSON  ---
+    // 1. Captura do JSON e verifica se é válido.
+    cError := jBodyReq:fromJson(oRest:getBodyRequest())
+    if !empty(cError)
+        jResp['error'] := "JSON Invalido: " + cError
+        oRest:setStatusCode(400)
+        oRest:setResponse(jResp:toJson())
+        if lRPC ; rpcClearEnv() ; endif
+        return .T.
+    endif
+
+    // 2. Criação das variaveis de requisição.
+    cCodigo := jBodyReq['codigo']
+    cLoja   := jBodyReq['loja']
+
+    // 3. Validação dos campos obrigatórios
+    if empty(cCodigo) .or. empty(cLoja)
+        jResp['error'] := "Campos 'codigo' e 'loja' sao obrigatorios no Body."
+        oRest:setStatusCode(400)
+        oRest:setResponse(jResp:toJson())
+        if lRPC ; rpcClearEnv() ; endif
+        return .T.
+    endif
+
+    // 4. Localização ANTES da exclusão
+    dbSelectArea("SA1")
+    SA1->(dbSetOrder(1))
+    
+    if !SA1->(dbSeek(xFilial("SA1") + cCodigo + cLoja))
+        jResp['error'] := 'Cliente nao localizado para exclusao.'
+        oRest:setStatusCode(404)
+        oRest:setResponse(jResp:toJson())
+        if lRPC ; rpcClearEnv() ; endif
+        return .T.
+    endif
+
+    // 5. Montagem do array para exclusão.
+    aDados := {;
+        {"A1_COD"  , cCodigo , Nil},;
+        {"A1_LOJA" , cLoja   , Nil};
+    }
+
+    // --- PROCESSAMENTO ---
+    // Se o cliente existe, segue para montagem do array de exclusão. 
+    // O ExecAuto vai tentar excluir, se não houver vínculos na SE1.
+    lMsErroAuto := .F.
+    msExecAuto({|x,y| mata030(x,y)}, aDados, nOpc)
+
+    // --- VALIDAÇÃO DE RESULTADO ---
+    // Se encontrar, o execauto falhou, se não encontrar, a exclusão foi bem sucedida.
+    dbSelectArea("SA1")
+    if !SA1->(dbSeek(xFilial("SA1") + cCodigo + cLoja))
+        // Se não achou retorna sucesso.
+        jResp['codigo'] := cCodigo
+        jResp['loja']   := cLoja
+        jResp['status'] := 'Cliente excluido com Sucesso!'
+        oRest:setStatusCode(200)
+
+    else
+        // Se achou retorna erro.
+        aLogAuto := getAutoGRLog()
+        
+        if ValType(aLogAuto) == "A" .and. Len(aLogAuto) > 0
+            cError := aLogAuto[1]
+        else
+            cError := "Erro de integridade: verifique se o cliente possui vinculos e tente novamente."
+        endif
+        
+        jResp['error'] := alltrim(strTran(cError, "THREAD ERROR", ""))
+        oRest:setStatusCode(400)
+    endif
+
+    oRest:setResponse(jResp:toJson())
+
+    if lRPC
+        rpcClearEnv()
+    endif
+
+return .T.
+
+method update_cliente() class CRUDClientes
+    local lRPC       as logical 
+    local jBodyReq   := jsonObject():new()
+    local jResp      := jsonObject():new()
+    local cError     := ""
+    local cCodigo    := ""
+    local cLoja      := ""
+    local aDados     := {}
+    local nOpc       := 4
+    Local aLogAuto   := {}
+    private lMsErroAuto := .F.
+    lRPC := .F.
+
+    // --- PREPARAÇÃO DO AMBIENTE ---
+    if type('cEmpAnt') == 'U'
+        rpcSetEnv('99','01')
+        lRPC := .T.
+    endif
+
+    // -- PRÉ-VALIDAÇÃO DO JSON  ---
+    // 1. Captura do JSON e verifica se é válido.
+    cError := jBodyReq:fromJson(oRest:getBodyRequest())
+
+    if !empty(cError)
+        jResp['error'] := "JSON Invalido: " + cError
+        oRest:setStatusCode(400)
+        oRest:setResponse(jResp:toJson())
+        return .T.
+    endif
+
+    // 2. Criação das variaveis de requisição.
+    cCodigo  := jBodyReq['codigo']
+    cLoja    := jBodyReq['loja']
+    cNome    := jBodyReq['nome']
+    cNomeRed := jBodyReq['nome_fantasia']
+    cTipoPes := jBodyReq['tipo']
+    cEnd     := jBodyReq['endereco']
+    cCidade  := jBodyReq['cidade']
+    cEstado  := jBodyReq['estado']
+
+    // 3. Validação dos campos obrigatórios
+    if empty(cCodigo) .or. empty(cLoja)
+        jResp['error'] := "Campos 'codigo' e 'loja' sao obrigatorios no Body."
+        oRest:setStatusCode(400)
+        oRest:setResponse(jResp:toJson())
+        if lRPC ; rpcClearEnv() ; endif
+        return .T.
+    endif
+
+    // 4. Localização do registro
+    dbSelectArea("SA1")
+    SA1->(dbSetOrder(1))
+    
+    IF !SA1->(dbSeek(xFilial("SA1") + cCodigo + cLoja))
+        jResp['error'] := 'Cliente nao encontrado.'
+        oRest:setStatusCode(404)
+        oRest:setResponse(jResp:toJson())
+         if lRPC ; rpcClearEnv() ; endif
+
+        return .T.
+    ENDIF
+    
+    // 5. Montagem do array para atualização.
+    aDados := {;
+        {"A1_COD"    , cCodigo  , Nil},;
+        {"A1_LOJA"   , cLoja    , Nil},;
+        {"A1_NOME"   , cNome    , Nil},;
+        {"A1_NREDUZ" , cNomeRed , Nil},;
+        {"A1_END"    , cEnd     , Nil},;
+        {"A1_EST"    , cEstado  , Nil},;
+        {"A1_MUN"    , cCidade  , Nil},;
+        {"A1_TIPO"   , cTipoPes , Nil};
+    }
+
+    // --- PROCESSAMENTO ---
+    // Optei por atualizar o A1_COD, mesmo que gere erros de referenciação.
+    // O ideal seria não permitir a alteração do código do cliente. 
+    msExecAuto({|x,y| mata030(x,y)}, aDados, nOpc)
+
+    // --- VALIDAÇÃO DE RESULTADO ---
+    // Se encontrar, o execauto falhou, se não encontrar, a atualização foi bem sucedida.
+    if lMsErroAuto
+
+        aLogAuto := getAutoGRLog()
+        
+        if ValType(aLogAuto) == "A" .and. Len(aLogAuto) > 0
+            cError := aLogAuto[1]
+        else
+            cError := "Erro ao executar atualização."
+        endif
+        
+        jResp['error'] := alltrim(strTran(cError, "THREAD ERROR", ""))
+        oRest:setResponse(jResp:toJson())
+        oRest:setStatusCode(500)
+    else
+        // Sucesso
+        dbSelectArea("SA1")
+        SA1->(dbSetOrder(1))
+        SA1->(dbSeek(xFilial("SA1") + jBodyReq['codigo'] + jBodyReq['loja']))
+
+        jResp['codigo'] := SA1->A1_COD
+        jResp['loja']   := SA1->A1_LOJA
+        jResp['nome']   := alltrim(SA1->A1_NOME)
+        jResp['nome_fantasia'] := alltrim(SA1->A1_NREDUZ)
+        jResp['tipo']   := alltrim(SA1->A1_TIPO)
+        jResp['endereco'] := alltrim(SA1->A1_END)
+        jResp['cidade'] := alltrim(SA1->A1_MUN)
+        jResp['estado'] := alltrim(SA1->A1_EST)
+        jResp['status'] := 'Alteracao realizada com Sucesso!'
+
+        oRest:setStatusCode(200)
+        oRest:setResponse(jResp:toJson())
+    endif
+
+    if lRPC
+        rpcClearEnv()
+    endif
+
+return .T.
+
+method incluir_cliente() class CRUDClientes
+    local lRPC       as logical 
+    local jBodyReq   := jsonObject():new()
+    local jResp      := jsonObject():new()
+    local cError     := ""
+    local aDados     := {}
+    local nOpc       := 3
+    Local aLogAuto   := {}
+    private lMsErroAuto := .F.
+    lRPC := .F.
+
+    // --- PREPARAÇÃO DO AMBIENTE ---
+    if type('cEmpAnt') == 'U'
+        rpcSetEnv('99','01')
+        lRPC := .T.
+    endif
+
+    // -- PRÉ-VALIDAÇÃO DO JSON  ---
+    // 1. Captura do JSON e verifica se é válido.
+    cError := jBodyReq:fromJson(oRest:getBodyRequest())
+    if !empty(cError)
+        jResp['error'] := "JSON Invalido: " + cError
+        oRest:setStatusCode(400)
+        oRest:setResponse(jResp:toJson())
+        if lRPC ; rpcClearEnv() ; endif
+        return .T.
+    endif
+
+    // 2. Montagem do array para inclusão.
+    aDados := {;
+        {"A1_COD"    , jBodyReq['codigo']         , Nil},;
+        {"A1_LOJA"   , jBodyReq['loja']           , Nil},;
+        {"A1_NOME"   , jBodyReq['nome']           , Nil},;
+        {"A1_NREDUZ" , jBodyReq['nome_fantasia']  , Nil},;
+        {"A1_TIPO"   , jBodyReq['tipo']           , Nil},;
+        {"A1_END"    , jBodyReq['endereco']       , Nil},;
+        {"A1_EST"    , jBodyReq['estado']         , Nil},;
+        {"A1_MUN"    , jBodyReq['cidade']         , Nil};
+    }
+
+    // 3. Localização ANTES da inclsão.
+    dbSelectArea("SA1")
+    SA1->(dbSetOrder(1))
+
+    if SA1->(dbSeek(xFilial("SA1") + jBodyReq['codigo'] + jBodyReq['loja']))
+        jResp['error'] := 'Cliente já cadastrado.'
+        oRest:setStatusCode(404)
+        oRest:setResponse(jResp:toJson())
+        if lRPC ; rpcClearEnv() ; endif
+        return .T.
+    endif
+
+    // --- PROCESSAMENTO ---
+    lMsErroAuto := .F.
+    msExecAuto({|x,y| mata030(x,y)}, aDados, nOpc)
+
+    // --- VALIDAÇÃO DE RESULTADO ---
+    // Se encontrar, o execauto falhou, se não encontrar, a inclusão foi bem sucedida.
+    if lMsErroAuto
+
+        aLogAuto := getAutoGRLog()
+
+        if valType(aLogAuto) == "A" .and. len(aLogAuto) > 0
+            cError := aLogAuto[1]
+        else
+            cError := "Erro ao executar a inclusão."
+        endif
+
+        jResp['error'] := alltrim(strTran(cError, "THREAD ERROR", ""))
+        oRest:setResponse(jResp:toJson())
+        oRest:setStatusCode(500)
+    else
+        // Sucesso
+        dbSelectArea("SA1")
+        SA1->(dbSetOrder(1))
+        SA1->(dbSeek(xFilial("SA1") + jBodyReq['codigo'] + jBodyReq['loja']))
+
+        jResp['codigo'] := SA1->A1_COD
+        jResp['loja']   := SA1->A1_LOJA
+        jResp['nome']   := alltrim(SA1->A1_NOME)
+        jResp['nome_fantasia'] := alltrim(SA1->A1_NREDUZ)
+        jResp['tipo']   := alltrim(SA1->A1_TIPO)
+        jResp['endereco'] := alltrim(SA1->A1_END)
+        jResp['cidade'] := alltrim(SA1->A1_MUN)
+        jResp['estado'] := alltrim(SA1->A1_EST)
+        jResp['status'] := 'Cliente incluido com Sucesso!'
+
+        oRest:setStatusCode(201)
+        oRest:setResponse(jResp:toJson())
+    endif
+
+    if lRPC
+        rpcClearEnv()
+    endif
+
+return .T.
+
+method recupera_cliente() class CRUDClientes
+    local lRPC       as logical 
+    local jPathParm  := oRest:getPathParamsRequest()
+    local jResp      := jsonObject():new()
+    local cCodigo    := ""
+    local cLoja      := ""
+    local cAlias     := "SA1"
+    private lMsErroAuto := .F.
+    lRPC := .F.
+
+    // --- PREPARAÇÃO DO AMBIENTE ---
+    if type('cEmpAnt') <> 'C'
+        rpcSetEnv('99','01')
+        lRPC := .T.
+    endif
+
+    // --- PRÉ-VALIDAÇÃO DO JSON ---
+    cCodigo := jPathParm['codigo']
+    cLoja   := jPathParm['loja']
+
+    if empty(cCodigo) .or. empty(cLoja)
+        jResp['error'] := "Parametros 'codigo' e 'loja' sao obrigatorios."
+        oRest:setStatusCode(400)
+        oRest:setResponse(jResp:toJson())
+        if lRPC ; rpcClearEnv() ; endif
+        return .T.
+    endif
+
+    // --- BUSCA DO REGISTRO ---
+    dbSelectArea(cAlias)
+    (cAlias)->(dbSetOrder(1))
+
+    if ! (cAlias)->(dbSeek(xFilial(cAlias) + cCodigo + cLoja))
+        jResp['error'] := 'Cliente nao encontrado.'
+        oRest:setStatusCode(404)
+        oRest:setResponse(jResp:toJson())
+        if lRPC ; rpcClearEnv() ; endif
+        return .T.
+    else
+        // Sucesso
+        dbSelectArea("SA1")
+        SA1->(dbSetOrder(1))
+        SA1->(dbSeek(xFilial("SA1") + cCodigo + cLoja))
+
+        jResp['codigo'] := SA1->A1_COD
+        jResp['loja']   := SA1->A1_LOJA
+        jResp['nome']   := alltrim(SA1->A1_NOME)
+        jResp['nome_fantasia'] := alltrim(SA1->A1_NREDUZ)
+        jResp['tipo']   := alltrim(SA1->A1_TIPO)
+        jResp['endereco'] := alltrim(SA1->A1_END)
+        jResp['cidade'] := alltrim(SA1->A1_MUN)
+        jResp['estado'] := alltrim(SA1->A1_EST)
+
+        oRest:setStatusCode(200)
+        oRest:setResponse(jResp:toJson())
+    endif
+    if lRPC
+        rpcClearEnv()
+    endif
+
+return .T.
+
+method lista_cliente() class CRUDClientes
+    local lRPC      as logical
+    local jResp     := jsonObject():new()
+    local jCliente  as json
+    local cAlias    := "SA1"
+    lRPC := .F.
+
+    // --- PREPARAÇÃO DO AMBIENTE ---
+    if type('cEmpAnt') <> 'C'
+        rpcSetEnv('99','01')
+        lRPC := .T.
+    endif
+
+    // Inicializa o objeto de resposta com um array vazio
+    jResp['clientes'] := {} 
+
+    dbSelectArea(cAlias)
+    (cAlias)->(dbSetOrder(1))
+    (cAlias)->(dbGoTop())
+
+    // --- ITERAÇÃO DOS DADOS ---
+    while ! (cAlias)->(Eof())
+        
+        jCliente := jsonObject():new()
+        
+        // Atribuição direta e segura
+        jCliente['codigo']   := (cAlias)->A1_COD
+        jCliente['loja']     := (cAlias)->A1_LOJA
+        jCliente['nome']     := alltrim((cAlias)->A1_NOME)
+        jCliente['fantasia'] := alltrim((cAlias)->A1_NREDUZ)
+        jCliente['endereco'] := alltrim((cAlias)->A1_END)
+        jCliente['cidade']   := alltrim((cAlias)->A1_MUN)
+        jCliente['estado']   := alltrim((cAlias)->A1_EST)
+
+        // Adiciona ao array de retorno
+        aadd(jResp['clientes'], jCliente)
+
+        (cAlias)->(dbSkip())
+    enddo
+
+    // --- RESPOSTA ---
+    oRest:setStatusCode(200)
+    oRest:setResponse(jResp:toJson())
+
+    // --- LIMPEZA ---
+    if lRPC
+        rpcClearEnv()
+    endif
+
+return .T.
+

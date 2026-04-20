@@ -1,0 +1,89 @@
+#include "totvs.ch"
+
+user function IMPORTAR_DADOS_CSV()
+    local oReader   as object
+    local cArquivo  as character
+    local cLinha    as character
+    local aDados    as array
+    local aAuto     as array
+    local nI        := 0
+    local nImport   := 0
+    local nErro     := 0
+    local cLogErro  := ""
+    
+    Private lMsErroAuto := .F.
+    Private lMsHelpAuto := .T. 
+
+    // 1. SELETOR DE ARQUIVOS
+    cArquivo := cGetFile("CSV|*.csv", "Selecione", 1, "C:\", .F., GETF_LOCALHARD, .T., .T.)
+    if Empty(cArquivo)
+        return .F.
+    endif
+
+    // 2. USO DA CLASSE FWFILEREADER (Mais moderna e leve)
+    oReader := FWFileReader():New(cArquivo)
+    
+    if !oReader:Open()
+        fwAlertError("Nao foi possivel abrir o arquivo local.")
+        return .F.
+    endif
+
+    // 3. GARANTIA DE AMBIENTE SEM RPCSETENV
+    // Se voce ja está dentro do Protheus, apenas garanta que as tabelas estao abertas
+    dbSelectArea("SX6") 
+    chkFile("SA1")      
+    
+    dbSelectArea("SA1")
+    SA1->(dbSetOrder(1))
+
+    // 4. LEITURA LINHA POR LINHA (Gasta menos memória)
+    while oReader:HasNextLine()
+        cLinha := oReader:GetNextLine()
+        nI++
+        
+        // Pula cabeçalho
+        if nI == 1 .or. Empty(cLinha)
+            loop
+        endif
+
+        aDados := strToKArr(cLinha, ";")
+
+        if Len(aDados) < 8
+            nErro++
+            cLogErro += "Linha " + cValToChar(nI) + ": Colunas insuficientes." + CRLF
+            loop
+        endif
+
+        // Verificação de duplicados
+        if SA1->(DbSeek(xFilial("SA1") + PadR(aDados[1], 6) + PadR(aDados[2], 2)))
+            nErro++
+            cLogErro += "Linha " + cValToChar(nI) + ": Cliente " + aDados[1] + " ja cadastrado." + CRLF
+            loop 
+        endif
+
+        lMsErroAuto := .F.
+        aAuto := {;
+            {"A1_COD"   , PadR(aDados[1], 6) , Nil},;
+            {"A1_LOJA"  , PadR(aDados[2], 2) , Nil},;
+            {"A1_NOME"  , aDados[3]          , Nil},;
+            {"A1_END"   , aDados[4]          , Nil},;
+            {"A1_NREDUZ", aDados[5]          , Nil},;
+            {"A1_TIPO"  , aDados[6]          , Nil},;
+            {"A1_EST"   , aDados[7]          , Nil},;
+            {"A1_MUN"   , aDados[8]          , Nil} ;
+        }
+
+        MSExecAuto({|x,y| Mata030(x,y)}, aAuto, 3)
+
+        if lMsErroAuto
+            nErro++
+            cLogErro += "Linha " + cValToChar(nI) + ": Erro -> " + AllTrim(GetAutoGRLog()) + CRLF
+        else
+            nImport++
+        endif
+    enddo
+
+    oReader:Close()
+    
+    formatRelat(nI-1, nImport, nErro, cLogErro)
+return

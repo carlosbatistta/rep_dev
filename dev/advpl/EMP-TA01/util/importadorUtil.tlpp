@@ -1,0 +1,56 @@
+#include "totvs.ch"
+#include "tlpp-core.th"
+#include "tlpp-object.th"
+
+#define DRIVE "C:\"
+
+user function ImportaEXCEL()
+    local oImporta := nil as object
+    local cArquivo := "" as character
+    local cDrive   := DRIVE as character
+    local cCabecalho := "" as character
+    local cItens     := "" as character
+    local cMsg       := "" as character
+    local nX         := 0 as integer
+    local nY         := 0 as integer
+
+        cArquivo := tFileDialog( "All files (*.csv) | All Text files (*.csv)",;
+                                "Selecao de Arquivos",,cDrive, .f.)
+
+        if(!empty(cArquivo))
+            oImporta := ImportadorSA1Class():new(cArquivo)
+            oImporta:lerArquivo()
+            oImporta:getItem()
+
+            for nX :=1 to len(oImporta:getCabecalho())
+                if(nX == 1)
+                    cCabecalho := oImporta:getCabecalho()[nX] + CRLF
+                else
+                    cCabecalho := " | " + oImporta:getCabecalho()[nX] + CRLF
+                endif
+            next
+
+            for nX := 1 to len(oImporta:getItem())
+
+                cItens += "Linha "+cValToChar(nX)
+
+                for nY := 1 to len(oImporta:getCabecalho()[nX])
+                    if(nY == 1)
+                        cItens := oImporta:getCabecalho()[nX][nY] + CRLF
+                    else
+                        cItens := " | " + oImporta:getCabecalho()[nX][nY] + CRLF
+                    endif
+                next
+
+            next
+
+            cMsg := cCabecalho + CRLF
+            cMsg += cItens
+
+            aviso(upper(funDesc()), alltrim(cMsg),{"OK"},3,FwFilialName())
+
+            FreeObj(oImporta)
+
+        endif
+
+return

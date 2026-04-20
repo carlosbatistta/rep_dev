@@ -1,0 +1,63 @@
+#include "totvs.ch"
+#include "tlpp-core.th"
+#include "tlpp-object.th"
+
+
+class ImportadorSA1Class
+
+    private data cArquivo as character
+    private data aCabecalho as array
+    private data aItens as array
+
+    public method new(cArquivo) constructor
+    public method getCabecalho() as array
+    public method getItem() as array
+    public method lerArquivo()
+    public method verificarItens(aLinhas)
+
+end class
+
+method new(cArquivo) class ImportadorSA1Class
+    default cArquivo := ""
+
+        ::cArquivo := cArquivo
+return
+method getCabecalho() as array class ImportadorSA1Class
+return ::aCabecalho
+method getItem() as array class ImportadorSA1Class
+return ::aItens
+method lerArquivo() class ImportadorSA1Class
+    local oArquivoLido := nil as object
+    local aLinhas      := {} as array
+
+        if(!empty(::cArquivo))
+            oArquivoLido := FWFileReader():new(::cArquivo)
+            if(oArquivoLido:open())
+                aLinhas := oArquivoLido.GetAllLines()
+                oArquivoLido:closed()   
+                if(len(aLinhas) > 0)
+                    ::verificarItens(aLInhas)
+                endif
+            endif 
+            FreeObj(oArquivoLido)        
+        endif
+
+return
+
+method verificarItens (aLInhas) class ImportadorSA1Class
+    local nX    := 0 as integer
+    local aAux  := {} as array
+    default aLinhas := {}
+        
+        for nX :=1 to len(aLinhas)
+            aAux := {}
+            aAux := strtokarr(aLinhas[nX],";")
+
+            if(nX == 1)
+                aCabecalho := aClone(aAux)
+            else
+                aadd(aItens, aAux)
+            endif
+        next
+return
+

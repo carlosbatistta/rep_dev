@@ -17,7 +17,20 @@
 		},
 		{
 			"label": "TLPP.ENVIRONMENT.GETINCLUDESTLPP"
+		},
+		{
+			"label": "SIGAFAT"
+		},
+		{
+			"label": "U_LER_ARQUIVO_TEXTO_2"
+		},
+		{
+			"label": "U_LER_ARQUIVO_TEXTO_1"
+		},
+		{
+			"label": "ClientesAPI"
 		}
 	],
-	"lastProgramExecuted": "sigamdi"
+	"lastProgramExecuted": "SIGAFAT",
+	"lastProgramArguments": []
 }

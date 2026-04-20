@@ -1,0 +1,77 @@
+#include "totvs.ch"
+
+/*/{Protheus.doc} 
+    autor: Carlos Batista
+    função: RelatorioClientesCSV
+    Gera relatório de clientes em formato CSV.
+/*/
+User Function RelatorioClientesCSV()
+
+    local cDir     := ""
+    local cFile    := ""
+    local cLinha   := ""
+    local nHandle  := -1
+    local cCRLF    := Chr(13) + Chr(10)
+
+    // Usuário escolhe o diretório para salvar o arquivo
+    cDir := FWInputBox("Informe o diretório:", "C:\Totvs")
+
+    // Validação do diretório
+    If Empty(cDir)
+        FWAlertError("Diretório não informado.")
+        Return
+    EndIf
+
+    // Garante barra
+    If Right(cDir,1) <> "\" .And. Right(cDir,1) <> "/"
+        cDir += "\"
+    EndIf
+
+    // Nome do arquivo
+    cFile := cDir + "RelatorioClientes_" + ".CSV"
+
+    // Cria arquivo
+    nHandle := FCreate(cFile)
+
+    If nHandle < 0
+        FWAlertError("Erro ao criar arquivo.")
+        Return
+    EndIf
+
+    // Cabeçalho
+    cLinha := "CODIGO;LOJA;NOME;NOMEREDUZ;TIPO;ENDERECO;CIDADE;ESTADO" + cCRLF
+    FWrite(nHandle, cLinha)
+
+    // Seleciona tabela SA1
+    DbSelectArea("SA1")
+    DbSetOrder(1)
+    DbGoTop()
+
+    While !Eof()
+
+        If !Deleted() .And. SA1->A1_MSBLQL <> "1" .And. SA1->A1_FILIAL == xFilial("SA1")
+
+            cLinha := ;
+                AllTrim(SA1->A1_COD)   + ";" + ;
+                AllTrim(SA1->A1_LOJA)  + ";" + ;
+                AllTrim(SA1->A1_NOME)  + ";" + ;
+                AllTrim(SA1->A1_NREDUZ) + ";" + ;
+                AllTrim(SA1->A1_TIPO)  + ";" + ;
+                AllTrim(SA1->A1_END)   + ";" + ;
+                AllTrim(SA1->A1_MUN)   + ";" + ;
+                AllTrim(SA1->A1_EST)   + cCRLF
+
+            FWrite(nHandle, cLinha)
+
+        EndIf
+
+        DbSkip()
+
+    EndDo
+
+    DbCloseArea()
+    FClose(nHandle)
+
+    FWAlertInfo("Relatório gerado: " + cFile)
+
+Return

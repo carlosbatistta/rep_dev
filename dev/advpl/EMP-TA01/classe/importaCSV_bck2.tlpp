@@ -1,0 +1,131 @@
+
+
+
+
+
+/**/*/*/*/*/*////*/
+
+
+#include "totvs.ch"
+
+/*/{Protheus.doc} IMPORTAR_DADOS_CSV
+    Importador de Clientes com relatório de processamento.
+/*/
+user function IMPORTAR_DADOS_CSV()
+    local cArquivo  as character
+    local cTexto    as character
+    local aLinhas   as array
+    local aDados    as array
+    local aAuto     as array
+    local nI        as numeric
+    local nOpc      as numeric
+    local lOk       := .T.
+    local nSucesso  := 0
+    local nFalha    := 0
+    local cLogErro  := ""
+    
+    Private lMsErroAuto := .F.
+
+    // 1. SELEÇÃO DO ARQUIVO
+    MsgRun("Iniciando seletor...", "Aguarde", {||cArquivo := cGetFile("CSV|*.csv", "Selecione", 1, "C:\", .F., GETF_LOCALHARD, .T., .T.)} )
+
+    if Empty(cArquivo)
+        return .F.
+    endif
+
+    // 2. LEITURA (Usando FT_ReadEditor para garantir leitura do Client)
+    cTexto := FT_ReadEditor(cArquivo)
+    
+    if Empty(cTexto)
+        fwAlertError("Arquivo vazio ou nao acessivel!")
+        return .F.
+    endif
+
+    aLinhas := strToKArr(cTexto, CHR(13) + CHR(10))
+
+    // 3. PREPARAÇÃO DO AMBIENTE
+    // Garante que o dicionário e a tabela estão acessíveis
+    if Select("SX6") == 0 ; dbSelectArea("SX6") ; endif 
+    ChkFile("SA1")
+    dbSelectArea("SA1")
+    SA1->(dbSetOrder(1)) 
+
+    // 4. PROCESSAMENTO
+    for nI := 1 to len(aLinhas)
+        aDados := strToKArr(aLinhas[nI], ";")
+        
+        // Pular cabeçalho
+        if nI == 1
+            if !("A1_COD" $ aLinhas[nI])
+                fwAlertError("Arquivo Inválido! Cabeçalho não encontrado.")
+                return .F.
+            endif
+            loop 
+        endif
+
+        // Pular linhas vazias
+        if Empty(aLinhas[nI]) .or. Len(aDados) < 2
+            loop
+        endif
+
+        lMsErroAuto := .F.
+
+        // Verificação de Duplicados (Se existir, ignoramos conforme sua regra)
+        if SA1->(DbSeek(xFilial("SA1") + PadR(aDados[1], 6) + PadR(aDados[2], 2)))
+            nFalha++
+            cLogErro += "Linha " + cValToChar(nI) + ": Codigo " + aDados[1] + " ja existe." + CRLF
+            loop
+        endif
+
+        nOpc := 3 // Incluir
+        aAuto := {;
+            {"A1_COD"   , PadR(aDados[1], 6) , Nil},;
+            {"A1_LOJA"  , PadR(aDados[2], 2) , Nil},;
+            {"A1_NOME"  , aDados[3]          , Nil},;
+            {"A1_END"   , aDados[4]          , Nil},;
+            {"A1_NREDUZ", aDados[5]          , Nil},;
+            {"A1_TIPO"  , aDados[6]          , Nil},;
+            {"A1_EST"   , aDados[7]          , Nil},;
+            {"A1_MUN"   , aDados[8]          , Nil} ;
+        }
+
+        MSExecAuto({|x,y| Mata030(x,y)}, aAuto, nOpc)
+
+        if lMsErroAuto
+            lOk := .F.
+            nFalha++
+            cLogErro += "Linha " + cValToChar(nI) + ": Erro no Codigo " + aDados[1] + " -> " + AllTrim(GetAutoGRLog()) + CRLF
+        else
+            nSucesso++
+        endif
+    next
+
+    // 5. RELATÓRIO FINAL
+    exibirFim(nSucesso, nFalha, cLogErro)
+
+return
+
+/*---------------------------------------------------------------------*/
+static function exibirFim(nSucesso, nFalha, cLogErro)
+    local cMsg := ""
+    
+    cMsg += "RESULTADO DA IMPORTAÇÃO:" + CRLF
+    cMsg += "---------------------------------------" + CRLF
+    cMsg += "Sucessos: " + cValToChar(nSucesso) + CRLF
+    cMsg += "Falhas/Ignorados: " + cValToChar(nFalha) + CRLF
+    cMsg += "---------------------------------------" + CRLF
+    
+    if !Empty(cLogErro)
+        cMsg += CRLF + "LOG DE OCORRÊNCIAS:" + CRLF
+        cMsg += cLogErro
+    endif
+
+    // Se o log for muito grande, mostra em uma janela com scroll
+    if Len(cMsg) > 1000
+        MemoWrite("import_log.txt", cMsg)
+        MsgInfo("Importação concluída. O log detalhado foi salvo em import_log.txt.", "Aviso")
+    endif
+
+    MsgInfo(cMsg, "Resumo da Importação")
+return
+

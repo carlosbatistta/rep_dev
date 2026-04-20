@@ -1,0 +1,142 @@
+#include "totvs.ch"
+
+/*/{Protheus.doc} 
+    autor: Carlos Batista
+    função: ImportadorCSV
+    Importador de Clientes via CSV utilizando TLPP e MsExecAuto.
+/*/
+user function ImportadorCSV()
+    local cArquivo  as character
+    local cTexto    as character
+    local aLinhas   as array
+    local aDados    as array
+    local aAuto     as array
+    local nI        as numeric
+    local nOpc      as numeric
+    local nSucesso  as numeric
+    local nFalha    as numeric
+    local cLogErro  as character
+
+    Private lMsErroAuto := .F.
+
+    nSucesso := 0
+    nFalha := 0
+    cLOgErro := ""
+
+    MsgRun("Iniciando seletor...", "Aguarde", {||cArquivo := cGetFile("CSV|*.csv", "Selecione", 1, "C:\", .F., GETF_LOCALHARD, .T., .T.)} )
+
+    // Verificação quando o seletor não retorna um caminho válido
+    if Empty(cArquivo)
+        Help("", 1, "ERRO_ARQUIVO",, "A janela de seleção não retornou um caminho válido.", 1, 0)
+        return .F.
+    endif
+
+    // --- LEITURA DO ARQUIVO ---
+    // Verificação da existência do arquivo
+    if File(cArquivo)
+        cTexto := MemoRead(cArquivo)
+        MsgInfo("Arquivo carregado com sucesso. Iniciando processamento...", "Aviso")
+
+    else
+        fwAlertError("Arquivo não encontrado!")
+        return .F.
+    endif
+
+    // Quebra o conteúdo em linhas
+    aLinhas := strToKArr(cTexto, CHR(13) + CHR(10))
+
+    // --- PROCESSAMENTO ---
+    dbSelectArea("SA1")
+    SA1->(dbSetOrder(1)) 
+
+    for nI := 1 to len(aLinhas)
+        // Quebra a linha em colunas
+        aDados := strToKArr(aLinhas[nI], ";")
+        
+        // 1. VERIFICAÇÃO DE CABEÇALHO
+        if nI == 1
+            //Regra de negócio simples para validar o arquivo: verificar se a primeira linha contém o cabeçalho esperado da tabela de Clientes
+            if !("A1_COD" $ aLinhas[nI])
+                fwAlertError("Arquivo Inválido! Cabeçalho não encontrado.")
+                return .F.
+            endif
+            loop 
+        endif
+
+        // Evita que linhas em branco ou mal formatadas travem o código
+        if Empty(aLinhas[nI]) .or. Len(aDados) < 2
+            loop
+        endif
+
+        // Reset do erro para cada registro
+        lMsErroAuto := .F.
+
+        // 2. VERIFICAÇÃO DE DUPLICADOS
+        if SA1->(DbSeek(xFilial("SA1") + PadR(aDados[1], 6) + PadR(aDados[2], 2)))
+            nFalha++
+            // Grava no log que o registro já existe e altera o cliente existente com os novos dados do CSV
+            cLogErro += "Linha " + cValToChar(nI) + ": Codigo " + aDados[1] + " ja existe. Registro alterado!" + CRLF
+            nOpc := 4 // Alterar
+        else
+            // Se não encontrar o cliente, segue para inclusão normalmente
+            nOpc := 3 // Incluir
+        endif
+
+        // 3. MONTAGEM DO ARRAY
+        aAuto := {;
+            {"A1_COD"   , PadR(aDados[1], 6) , Nil},;
+            {"A1_LOJA"  , PadR(aDados[2], 2) , Nil},;
+            {"A1_NOME"  , aDados[3]          , Nil},;
+            {"A1_END"   , aDados[4]          , Nil},;
+            {"A1_NREDUZ", aDados[5]          , Nil},;
+            {"A1_TIPO"  , aDados[6]          , Nil},;
+            {"A1_EST"   , aDados[7]          , Nil},;
+            {"A1_MUN"   , aDados[8]          , Nil} ;
+        }
+
+        // Inclusão de registros usando a rotina padrão do Protheus para importação
+        MSExecAuto({|x,y| Mata030(x,y)}, aAuto, nOpc)
+
+        // 4. VERIFICAÇÃO DE ERROS APÓS O EXEC AUTO
+        if lMsErroAuto
+            nFalha++
+            cLogErro += "Linha " + cValToChar(nI) + ": Erro no Codigo " + aDados[1] + " -> " + AllTrim(GetAutoGRLog()) + CRLF
+        else
+            nSucesso++
+        endif
+    next
+
+    // 5. RELATÓRIO FINAL
+    exibirFim(nSucesso, nFalha, cLogErro)
+return
+
+static function exibirFim(nSucesso, nFalha, cLogErro)
+    local cMsg      := ""
+    local cPathSRV  := "temp_log.txt"       
+    local cPathCli  := "C:\Totvs\" 
+    
+    cMsg += "RESULTADO DA IMPORTAÇÃO:" + CRLF
+    cMsg += "---------------------------------------" + CRLF
+    cMsg += "Processados com Sucesso: " + cValToChar(nSucesso) + CRLF
+    cMsg += "Falhas no ExecAuto: " + cValToChar(nFalha) + CRLF
+    cMsg += "---------------------------------------" + CRLF
+    
+    if !Empty(cLogErro)
+        cMsg += CRLF + "LOG DE OCORRÊNCIAS:" + CRLF
+        cMsg += cLogErro
+        
+        // Cria e grava o log temporariamente no servidor
+        MemoWrite(cPathSRV, cMsg)
+
+        // Copia para o Cliente usasndo o caminho do cPathCli
+        if CpyS2T(cPathSRV, cPathCli)
+            cMsg += CRLF + "Arquivo de log salvo com sucesso no seu PC: " + cPathCli
+        else
+            cMsg += CRLF + "[Aviso] Nao foi possivel salvar o arquivo em C:\temp\. Verifique se a pasta existe."
+        endif
+
+        fErase(cPathSRV)
+    endif
+
+    MsgInfo(cMsg, "Resumo da Importação")
+return
